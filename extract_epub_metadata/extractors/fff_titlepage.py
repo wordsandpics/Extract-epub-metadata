@@ -26,6 +26,15 @@ Also recognizes fichub.net's own front-matter filename
 (OEBPS/introduction.xhtml, no <h3>/<b> at all -- confirmed against
 tests/fixtures/hunted.epub, a fanfiction.net story downloaded via
 fichub.net) -- same <p>Label: value</p> shape, scraped the same way.
+
+The filename check is broad enough to also match Calibre's own
+auto-inserted cover page (often literally named "titlepage.xhtml"), which
+can sit earlier in the spine than the real title page -- confirmed
+against tests/fixtures/Purple Days - baurus.epub, a real FanFicFare/
+spacebattles.com download whose actual title_page.xhtml was never even
+reached because of this. A candidate that matches the filename/class
+check but has no actual title-page content doesn't stop the search --
+scanning continues to the next spine item instead.
 """
 import re
 
@@ -96,6 +105,14 @@ def extract_fff_titlepage(zf):
         if entries:
             result['label_entries'] = entries
 
-        return result if result else None
+        if result:
+            return result
+        # This candidate matched the filename/class check but turned out
+        # to have no actual title-page content -- e.g. Calibre's own
+        # auto-inserted cover page is often literally named
+        # "titlepage.xhtml" and can sit earlier in the spine than the
+        # real "title_page.xhtml" (confirmed against tests/fixtures/
+        # Purple Days - baurus.epub). Keep scanning rather than giving up
+        # on the first filename match, regardless of whether it panned out.
 
     return None

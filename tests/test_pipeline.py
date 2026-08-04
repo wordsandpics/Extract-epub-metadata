@@ -484,6 +484,43 @@ class FfnetViaWebToEpubTest(unittest.TestCase):
         self.assertEqual(labeled.get('storyId'), '123')
 
 
+class CoverPageBeforeTitlePageTest(unittest.TestCase):
+    """A real FanFicFare download (forums.spacebattles.com, a XenForo
+    forum) whose spine has Calibre's own auto-inserted cover page
+    ("titlepage.xhtml") *before* the real FFF title page
+    ("title_page.xhtml"). Both filenames match the title-page detection,
+    and the extractor used to lock onto the first match and give up
+    immediately even though the cover page has no actual title-page
+    content -- silently losing category/genre/status/dates/chapters/words
+    for any book shaped this way, not just this one. Regression fixture
+    for that bug."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'purple_days.epub'
+
+    def test_recovers_fields_past_the_cover_page(self):
+        fields, sources = extract_fields(str(self.EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('category'),
+                          ['A Song Of Ice And Fire', 'ASOIAF Joffrey Timeloop', 'AU'])
+        self.assertEqual(fields.get('genre'),
+                          ['A Song Of Ice And Fire', 'Alternate Universe', 'Time Loop'])
+        self.assertEqual(fields.get('status'), 'In-Progress')
+        self.assertEqual(fields.get('numChapters'), 139)
+        self.assertEqual(fields.get('numWords'), 823304)
+        for key in ('category', 'genre', 'status', 'numChapters', 'numWords'):
+            self.assertEqual(sources.get(key), 'fff_titlepage')
+
+    def test_cover_page_alone_yields_nothing(self):
+        # Direct unit test: a title-page-shaped file with no actual
+        # content must not stop the search on its own.
+        from extract_epub_metadata.extractors.fff_titlepage import _is_titlepage
+        import xml.etree.ElementTree as ET
+
+        cover_html = '<html><body><div><svg/></div></body></html>'
+        root = ET.fromstring(cover_html)
+        self.assertTrue(_is_titlepage(root, 'OEBPS/titlepage.xhtml'))
+
+
 class ComputeStandardFieldsTest(unittest.TestCase):
     """Mode 2 (direct-to-Calibre-fields): compute_standard_fields() is pure
     and needs no live Calibre, unlike apply_standard_fields()/
