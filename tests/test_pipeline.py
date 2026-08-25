@@ -521,6 +521,35 @@ class CoverPageBeforeTitlePageTest(unittest.TestCase):
         self.assertTrue(_is_titlepage(root, 'OEBPS/titlepage.xhtml'))
 
 
+class SingularAO3TagLabelTest(unittest.TestCase):
+    """AO3 singularizes several of its own preface dt labels when there's
+    exactly one tag in that category -- "Relationship:" instead of the
+    usual "Relationships:" for a single-pairing work. Only the plural
+    form was previously registered, so ships were silently dropped
+    entirely for any single-relationship AO3 work. Origin of this
+    fixture's epub itself is unconfirmed (provided as-is), but the
+    preface markup it contains is unmistakably AO3's own, unmodified."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'we_could_be_something.epub'
+
+    def test_ships_recovered_from_singular_relationship_label(self):
+        fields, sources = extract_fields(str(self.EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('ships'), ['Shane Hollander/Ilya Rozanov'])
+        self.assertEqual(sources.get('ships'), 'ao3_frontmatter')
+
+    def test_other_ao3_frontmatter_fields_still_populated(self):
+        # Regression guard: the rest of the preface (which does use the
+        # ordinary plural/singular forms) must be unaffected.
+        fields, _sources = extract_fields(str(self.EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('fandoms'), ['Heated Rivalry (TV)'])
+        self.assertEqual(fields.get('ao3categories'), ['M/M'])
+        self.assertEqual(fields.get('rating'), 'Explicit')
+        self.assertEqual(fields.get('warnings'), ['Creator Chose Not To Use Archive Warnings'])
+        self.assertEqual(fields.get('status'), 'In-Progress')
+
+
 class ComputeStandardFieldsTest(unittest.TestCase):
     """Mode 2 (direct-to-Calibre-fields): compute_standard_fields() is pure
     and needs no live Calibre, unlike apply_standard_fields()/

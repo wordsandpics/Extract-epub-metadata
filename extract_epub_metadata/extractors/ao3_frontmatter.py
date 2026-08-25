@@ -32,12 +32,24 @@ import re
 
 from ._epubxml import find_all, find_first, parse_opf, parse_xhtml, spine_item_paths, text_content
 
+
+# AO3 singularizes/pluralizes several of these dt labels depending on how
+# many tags are in that category (e.g. "Relationship:" for exactly one
+# pairing, "Relationships:" for more than one) -- confirmed against
+# tests/fixtures/We_Could_Be_Something.epub, a single-pairing work whose
+# "Relationship:" label was previously unrecognized (only the plural form
+# was registered), silently dropping ships entirely. Both forms are
+# registered for every category known to vary this way.
 _DT_TO_KEY = {
     'rating': 'rating',
     'archive warning': 'warnings',
+    'archive warnings': 'warnings',
     'category': 'ao3categories',
     'fandom': 'fandoms',
+    'fandoms': 'fandoms',
+    'relationship': 'ships',
     'relationships': 'ships',
+    'character': 'characters',
     'characters': 'characters',
     'additional tags': 'freeformtags',
     'language': 'language',
