@@ -83,7 +83,7 @@ regardless of which modes you use.
 ## Installing
 
 Download the latest `extract_epub_metadata-*.zip` from the
-[Releases page](https://github.com/wordsandpics/Ao3-epub-metadata/releases), then in the Calibre
+[Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases), then in the Calibre
 GUI: Preferences → Plugins → Load plugin from file, and pick the zip you downloaded.
 
 If you're working from a clone of this repository instead:
