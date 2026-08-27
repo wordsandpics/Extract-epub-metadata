@@ -45,8 +45,8 @@ EXPECTED_POPULATED_KEYS = {
     'chapterslashtotal', 'characters', 'dateCreated', 'datePublished',
     'dateUpdated', 'description', 'fandoms', 'formatext', 'formatname',
     'freeformtags', 'langcode', 'language', 'lastupdate', 'numChapters',
-    'numWords', 'rating', 'sectionUrl', 'ships', 'site', 'siteabbrev',
-    'status', 'storyId', 'storyUrl', 'title', 'warnings',
+    'numChaptersTotal', 'numWords', 'rating', 'sectionUrl', 'ships', 'site',
+    'siteabbrev', 'status', 'storyId', 'storyUrl', 'title', 'warnings',
 }
 
 
@@ -266,6 +266,11 @@ class UnknownChapterTotalTest(unittest.TestCase):
         self.assertEqual(fields.get('numChapters'), 41)
         self.assertIsInstance(fields['numChapters'], int)
         self.assertEqual(fields.get('chapterslashtotal'), '41/?')
+        # An unknown total is absent, not a fabricated/placeholder value --
+        # this fixture is what prompted adding numChaptersTotal at all
+        # (see KnownChapterTotalTest), so it's worth locking in the
+        # negative case right next to where the field was born.
+        self.assertNotIn('numChaptersTotal', fields)
 
     def test_status_not_fabricated_from_unknown_total(self):
         # Status still comes through fine here since this title page has
@@ -286,6 +291,77 @@ class UnknownChapterTotalTest(unittest.TestCase):
 
         self.assertNotIn('numChapters', fields)
         self.assertEqual(fields['numWords'], 1234)
+
+
+class KnownChapterTotalTest(unittest.TestCase):
+    """The final planned chapter count ("y" in "x/y") is genuinely distinct
+    data from the current/downloaded count ("x") -- a user composing their
+    own "x/y" display from two separate int custom columns needs it as its
+    own mappable field, not just folded into the combined
+    chapterslashtotal string. Added after a real report: a "total
+    chapters" int column was being mapped to numChapters (the current
+    count) for lack of any alternative, since no field carrying just the
+    total existed."""
+
+    def test_ao3_frontmatter_recovers_known_total(self):
+        from extract_epub_metadata.extractors.ao3_frontmatter import _parse_stats
+
+        result = {}
+        _parse_stats('Published: 2024-01-01\nWords: 1,234\nChapters: 12/24', result)
+
+        self.assertEqual(result.get('numChaptersTotal'), '24')
+        self.assertEqual(result.get('numChapters'), '12')
+
+    def test_ao3_frontmatter_omits_total_when_unknown(self):
+        from extract_epub_metadata.extractors.ao3_frontmatter import _parse_stats
+
+        result = {}
+        _parse_stats('Published: 2024-01-01\nWords: 1,234\nChapters: 12/?', result)
+
+        self.assertNotIn('numChaptersTotal', result)
+        self.assertEqual(result.get('numChapters'), '12')
+
+    def test_titlepage_slash_notation_recovers_known_total(self):
+        # Same n/total handling, but via mapping.py::_map_titlepage() --
+        # the path used for fichub-style/generic title pages rather than
+        # AO3's own native preface.
+        from extract_epub_metadata.mapping import _map_titlepage
+
+        titlepage = {'label_entries': {'Chapters': '12/24'}}
+        fields = _map_titlepage(titlepage)
+
+        self.assertEqual(fields.get('numChaptersTotal'), '24')
+        self.assertEqual(fields.get('numChapters'), '12')
+
+    def test_real_fixture_with_known_total_of_one(self):
+        # johnlock_a_random_day.epub is a complete, single-chapter fic --
+        # 1/1 is a real (if minimal) known-total case from an actual AO3
+        # native preface, not a synthetic one.
+        fields, sources = extract_fields(str(EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('numChaptersTotal'), 1)
+        self.assertIsInstance(fields['numChaptersTotal'], int)
+        self.assertEqual(sources.get('numChaptersTotal'), 'ao3_frontmatter')
+
+
+class StreisandUnknownTotalTest(unittest.TestCase):
+    """Real fixture reported directly: a chapter count of "16/?" was
+    suspected of being a mapping bug rather than correct extraction.
+    Confirmed correct -- the title page itself says "Chapters: 16/?", and
+    the total is genuinely unknown at the source (still-updating,
+    open-ended AO3 work). This fixture's own origin tool is unconfirmed
+    (provided as-is), but its title page matches the already-handled
+    fichub-style <p>Label: value</p> shape."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'something_something_streisand.epub'
+
+    def test_current_count_recovered_total_absent(self):
+        fields, sources = extract_fields(str(self.EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('numChapters'), 16)
+        self.assertEqual(fields.get('chapterslashtotal'), '16/?')
+        self.assertNotIn('numChaptersTotal', fields)
+        self.assertEqual(sources.get('numChapters'), 'fff_titlepage')
 
 
 class FfnetViaFichubTest(unittest.TestCase):

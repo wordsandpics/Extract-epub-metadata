@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.2.1-beta] - 2026-08-27
+
+### Added
+- A separate **Total Chapters (if known)** field, mappable to its own custom column —
+  previously the only way to get a chapter total was the combined "x/y" text field, with no way
+  to get just the total as its own number (e.g. for a template column that composes its own
+  "x/y" display from two separate int columns). Absent, not zero, when the source itself doesn't
+  know the total yet (an open-ended, still-updating work).
+- The custom column mapping dialog now labels its two columns ("Extracted Field" / "Write To
+  Column"), so it's clear at a glance which side is this plugin's data and which is your Calibre
+  column — the dropdown lists every column that's merely *type-compatible*, not just ones that
+  are semantically related, which could look like a mismatch without the header.
+
+### Fixed
+- A FanFicFare-downloaded EPUB whose spine has Calibre's own auto-inserted cover page (commonly
+  named literally `titlepage.xhtml`) ahead of the real title page could lose its entire
+  category/genre/status/dates/chapters/words silently — the extractor gave up on the first
+  title-page-shaped file it found even when that file turned out to have no actual content.
+- AO3 singularizes some of its own preface labels when there's exactly one tag in that category
+  ("Relationship:" instead of "Relationships:" for a single-pairing work) — only the plural form
+  was recognized, so ships were silently dropped entirely for any single-relationship work.
+
 ## [0.2.0-beta] - 2026-07-28
 
 ### Added

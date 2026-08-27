@@ -218,6 +218,13 @@ def _map_titlepage(titlepage):
                 if total != '?':
                     result.setdefault(
                         'status', 'Completed' if n == total else 'In-Progress')
+                    # A real planned-total is a genuinely distinct piece
+                    # of data from the current/downloaded count above --
+                    # some users compose their own "x/y" display from two
+                    # separate int columns (one per number) rather than
+                    # this plugin's single combined chapterslashtotal
+                    # string, so it needs its own mappable key.
+                    result['numChaptersTotal'] = total
                 continue
         if key == 'status':
             # Sites/tools spell this differently (fichub's own
@@ -427,7 +434,7 @@ def _finalize_numerics(fields):
     # gets through). Leaving a raw non-numeric string in place crashed
     # Calibre outright once it reached an int-typed custom column via
     # Mode 3 (calibre/db/write.py's adapt_number does a bare int(value)).
-    for key in ('numChapters', 'numWords'):
+    for key in ('numChapters', 'numWords', 'numChaptersTotal'):
         if key not in fields:
             continue
         value = fields[key]

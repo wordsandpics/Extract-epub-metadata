@@ -81,6 +81,11 @@ def _parse_stats(text, result):
         result['chapterslashtotal'] = '%s/%s' % (n, total)
         if n.isdigit():
             result['numChapters'] = n
+        if total.isdigit():
+            # A real planned-total ("12/24") is genuinely distinct data
+            # from the current/downloaded count -- absent entirely for an
+            # open-ended work ("12/?"), where there's nothing to recover.
+            result['numChaptersTotal'] = total
         result['status'] = 'Completed' if n == total else 'In-Progress'
     m = _PUBLISHED_RE.search(text)
     if m:

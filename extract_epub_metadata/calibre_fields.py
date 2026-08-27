@@ -149,7 +149,7 @@ KEY_KINDS = {
     'fandoms': 'list', 'ships': 'list', 'characters': 'list', 'warnings': 'list',
     'freeformtags': 'list', 'ao3categories': 'list', 'author': 'list',
     'authorId': 'list', 'authorUrl': 'list', 'lastupdate': 'list',
-    'numWords': 'int', 'numChapters': 'int',
+    'numWords': 'int', 'numChapters': 'int', 'numChaptersTotal': 'int',
     'datePublished': 'datetime', 'dateUpdated': 'datetime', 'dateCreated': 'datetime',
 }
 
@@ -199,6 +199,7 @@ FIELD_LABELS = {
     'lastupdate': 'Last Update (text)',
     'numWords': 'Word Count',
     'numChapters': 'Chapter Count',
+    'numChaptersTotal': 'Total Chapters (if known)',
     'datePublished': 'Date Published',
     'dateUpdated': 'Date Updated',
     'dateCreated': 'Date Recovered',
@@ -224,6 +225,9 @@ FIELD_HELP = {
     'storyUrl': 'Link to the original story.',
     'sectionUrl': 'Same as Story URL, unless only part of the story was recovered.',
     'chapterslashtotal': 'Chapters recovered vs. total chapters, e.g. "12/12".',
+    'numChaptersTotal': 'The final planned chapter count, only present when the source itself '
+                         'reports one -- absent (not zero) for an open-ended, still-updating '
+                         'work whose author hasn\'t set a total.',
     'fandoms': 'The fandom(s)/canon(s) this story is set in.',
     'ships': 'Relationships/pairings, as tagged on the source site.',
     'warnings': "Archive warnings, e.g. \"Creator Chose Not To Use Archive Warnings\".",

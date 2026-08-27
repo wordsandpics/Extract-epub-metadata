@@ -170,6 +170,20 @@ class ColumnMappingDialog(QDialog):
         form_widget = QWidget(scroll)
         form = QFormLayout(form_widget)
 
+        # The dropdown lists every column compatible by *datatype* alone
+        # (calibre_fields.py::compatible_columns_for_key doesn't try to
+        # guess semantic relevance), so e.g. a "chapters" text column
+        # shows up as a candidate for "Category" too, not just "Chapters
+        # (Downloaded/Total)" -- confusing without a clear header
+        # distinguishing "this plugin's field" from "your column".
+        header_field = QLabel('Extracted Field', form_widget)
+        header_column = QLabel('Write To Column', form_widget)
+        for header in (header_field, header_column):
+            font = header.font()
+            font.setBold(True)
+            header.setFont(font)
+        form.addRow(header_field, header_column)
+
         self.rows = []
         column_names = {key: col['name'] for key, col in custom_columns.items()}
         for metadata_key in sorted(ALL_METADATA_KEYS, key=field_label):
