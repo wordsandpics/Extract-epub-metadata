@@ -156,6 +156,9 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Development
 
+See [DEVELOPMENT.md](DEVELOPMENT.md) for architecture, design rationale, and the FanFicFare
+internals research behind several of the trickier fixes.
+
 ```sh
 python3 -m unittest discover -s tests -v
 ```
