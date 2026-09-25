@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.3.0-beta] - 2026-09-25
+
+### Added
+- AO3 works recovered from an Internet Archive **Wayback Machine** snapshot. The
+  snapshot URL (`web.archive.org/web/<timestamp>/https://archiveofourown.org/works/…`) is
+  unwrapped to the canonical AO3 URL for the story URL, so site, story ID, author link and
+  FanFicFare's adapter lookup all work as for a direct AO3 download. The snapshot URL is kept as
+  a new **Wayback Machine URL** field (`waybackUrl`) in the Saved Metadata, also mappable to a
+  custom column.
+- Tags, rating, warnings, fandom, relationships, characters, language, stats and summary are
+  recovered from AO3's *work page* metadata block (as WebToEpub saves it), not just from the
+  preface of AO3's own downloads. Works with both WebToEpub's "Information" page and a whole
+  AO3 page saved by the "Save as eBook" browser extension (which strips all CSS
+  classes); the latter also yields the work's title and author from the page.
+- AO3's own **PDF** downloads converted to EPUB (e.g. in Calibre): rating, warnings, category,
+  fandoms, relationships, characters, tags, series, stats, title, author and summary are read
+  from the preserved AO3 preface page.
+- **Series** is now recovered (from AO3 downloads, AO3 work pages and AO3 PDFs) — FanFicFare's
+  own `series`/`seriesUrl` keys, written to Calibre's Series field by "Update standard Calibre
+  metadata" and mappable to a custom column.
+
+### Fixed
+- Story URLs on AO3's old `download.archiveofourown.org` host are recognized, and normalized to
+  `https://archiveofourown.org/works/…`.
+- Calibre's "Unknown" placeholder author is no longer treated as a real author name (it produced
+  an AO3 profile link for a user called "Unknown").
+- "Update standard Calibre metadata" read the wrong series key (FanFicFare's *second* series).
+- A whole AO3 page saved as an EPUB carries the *page's* metadata in the EPUB itself — the
+  browser-tab title ("Title - author - Fandom [Archive of Our Own]"), "Organization for
+  Transformative Works" as author, and AO3's site tagline as description. Those no longer
+  override the real title/author/summary recovered from the page.
+- The `url` identifier is now added even when the book already has a `uri` identifier, if that
+  `uri` is a Wayback Machine snapshot (Calibre imports one from these EPUBs). FanFicFare reads
+  `url` first, so it now gets the real AO3 URL; the snapshot `uri` is left in place.
+- AO3 stats with no whitespace between entries ("Chapters:1/1Comments:41") no longer turn a
+  finished work into In-Progress with no chapter total.
+
 ## [0.2.1-beta] - 2026-08-27
 
 ### Added

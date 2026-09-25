@@ -81,7 +81,7 @@ def compute_standard_fields(fields):
     if fields.get('description'):
         computed['comments'] = fields['description']
 
-    series_raw = fields.get('series01')
+    series_raw = fields.get('series')
     if series_raw:
         computed['series'] = series_raw
 
@@ -143,9 +143,9 @@ def apply_standard_fields(db, book_id, computed, overwrite):
 KEY_KINDS = {
     'title': 'text', 'description': 'text', 'rating': 'text', 'language': 'text',
     'langcode': 'text', 'site': 'text', 'siteabbrev': 'text', 'status': 'text',
-    'storyId': 'text', 'storyUrl': 'text', 'sectionUrl': 'text',
+    'storyId': 'text', 'storyUrl': 'text', 'sectionUrl': 'text', 'waybackUrl': 'text',
     'chapterslashtotal': 'text', 'formatname': 'text', 'formatext': 'text',
-    'byline': 'text',
+    'byline': 'text', 'series': 'text', 'seriesUrl': 'text',
     'fandoms': 'list', 'ships': 'list', 'characters': 'list', 'warnings': 'list',
     'freeformtags': 'list', 'ao3categories': 'list', 'author': 'list',
     'authorId': 'list', 'authorUrl': 'list', 'lastupdate': 'list',
@@ -187,6 +187,9 @@ FIELD_LABELS = {
     'storyId': 'Story ID',
     'storyUrl': 'Story URL',
     'sectionUrl': 'Story URL (Section)',
+    'series': 'Series',
+    'seriesUrl': 'Series URL',
+    'waybackUrl': 'Wayback Machine URL',
     'chapterslashtotal': 'Chapters (Downloaded/Total)',
     'formatname': 'File Format',
     'formatext': 'File Extension',
@@ -224,6 +227,11 @@ FIELD_HELP = {
     'storyId': "The site's internal ID number for this story.",
     'storyUrl': 'Link to the original story.',
     'sectionUrl': 'Same as Story URL, unless only part of the story was recovered.',
+    'series': 'First series this work is part of, as "Name [N]" (Calibre splits out the '
+              'number itself).',
+    'seriesUrl': "Link to that series' page.",
+    'waybackUrl': 'The Internet Archive snapshot this copy was downloaded from, when it '
+                  'came from the Wayback Machine rather than the live site.',
     'chapterslashtotal': 'Chapters recovered vs. total chapters, e.g. "12/12".',
     'numChaptersTotal': 'The final planned chapter count, only present when the source itself '
                          'reports one -- absent (not zero) for an open-ended, still-updating '

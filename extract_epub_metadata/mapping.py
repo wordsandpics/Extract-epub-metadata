@@ -19,10 +19,12 @@ from urllib.parse import quote
 from zipfile import ZipFile
 
 from .extractors.ao3_frontmatter import extract_ao3_frontmatter
+from .extractors.ao3_pdf_preface import extract_ao3_pdf_preface
 from .extractors.fallback_link_scan import extract_story_url_fallback
 from .extractors.ffnet_infopage import extract_ffnet_infopage
 from .extractors.fff_titlepage import extract_fff_titlepage
 from .extractors.opf import extract_opf
+from .extractors._urls import canonical_ao3_url, unwrap_wayback_url
 
 # key -> (siteabbrev, )  -- 'site' itself already holds the domain, which is
 # also what FFF uses as the human-facing "Publisher" value, so there's no
@@ -92,6 +94,7 @@ LIST_KEYS = {
 }
 
 _WORKS_URL_RE = re.compile(r'/works/(\d+)')
+_AO3_PAGE_TITLE_SUFFIX = '[Archive of Our Own]'
 # fanfiction.net's own story-URL shape, e.g. ".../s/5853767/1/Hunted"
 # (confirmed against tests/fixtures/hunted.epub).
 _FFNET_STORY_ID_RE = re.compile(r'/s/(\d+)')
@@ -264,18 +267,26 @@ def extract_fields(epub_stream):
         opf = extract_opf(zf)
         titlepage = extract_fff_titlepage(zf)
         ao3 = extract_ao3_frontmatter(zf)
+        ao3_pdf = extract_ao3_pdf_preface(zf)
         ffnet_info = extract_ffnet_infopage(zf)
         fallback_url = extract_story_url_fallback(zf)
 
     titlepage_mapped = _map_titlepage(titlepage)
     ao3_fields = dict(ao3 or {})
+    ao3_pdf_fields = dict(ao3_pdf or {})
     ffnet_fields = dict(ffnet_info or {})
 
     opf_fields = {}
     if opf.get('title'):
         opf_fields['title'] = opf['title']
-    if opf.get('authors'):
-        opf_fields['author'] = opf['authors']
+    # "Unknown" is Calibre's own placeholder for a book with no author (e.g.
+    # a PDF converted to EPUB -- tests/fixtures/game_changer.epub), not
+    # data: dropped, so a real author from a later tier can fill in, and
+    # nothing gets derived from it (it used to yield an AO3 profile URL
+    # for a user literally named "Unknown").
+    authors = [a for a in (opf.get('authors') or []) if a.strip().lower() != 'unknown']
+    if authors:
+        opf_fields['author'] = authors
     if opf.get('language'):
         # dc:language is a code (e.g. "en"), not a display name -- FFF's
         # 'language' key holds the display name ("English"); the code
@@ -308,13 +319,29 @@ def extract_fields(epub_stream):
 
     fallback_fields = {'storyUrl': fallback_url} if fallback_url else {}
 
-    fields = _merge(opf_fields, titlepage_mapped, ao3_fields, ffnet_fields, fallback_fields)
+    # A whole web page saved as an EPUB by a generic browser extension gets
+    # the *page's* metadata in its OPF, not the story's -- for AO3 that's
+    # the browser-tab title ("Title - pseud (user) - Fandom [Archive of Our
+    # Own]"), AO3's own <meta> author ("Organization for Transformative
+    # Works") and site tagline as the description (confirmed against
+    # tests/fixtures/enough_is_enough.epub). The page body has the real
+    # values, so demote those three to fill-only-if-missing, last.
+    opf_weak_fields = {}
+    if str(opf_fields.get('title') or '').rstrip().endswith(_AO3_PAGE_TITLE_SUFFIX):
+        for key in ('title', 'author', 'description'):
+            if key in opf_fields:
+                opf_weak_fields[key] = opf_fields.pop(key)
+
+    fields = _merge(opf_fields, titlepage_mapped, ao3_fields, ao3_pdf_fields, ffnet_fields,
+                    fallback_fields,
+                    opf_weak_fields)
 
     source_tiers = {}
     for tier_name, tier_fields in (
         ('opf', opf_fields), ('fff_titlepage', titlepage_mapped),
-        ('ao3_frontmatter', ao3_fields), ('ffnet_infopage', ffnet_fields),
-        ('fallback_link_scan', fallback_fields),
+        ('ao3_frontmatter', ao3_fields), ('ao3_pdf_preface', ao3_pdf_fields),
+        ('ffnet_infopage', ffnet_fields),
+        ('fallback_link_scan', fallback_fields), ('opf', opf_weak_fields),
     ):
         for key in tier_fields:
             if fields.get(key) == tier_fields[key]:
@@ -329,6 +356,21 @@ def extract_fields(epub_stream):
 
 def _derive_fields(fields):
     story_url = fields.get('storyUrl')
+    # A Wayback Machine snapshot URL (every URL in a WebToEpub-from-
+    # web.archive.org EPUB is one -- tests/fixtures/putting_up_shelves.epub)
+    # is swapped for the original it wraps, so site/storyId/authorUrl and
+    # FanFicFare's adapter lookup all see the real site. The snapshot URL
+    # itself is kept in its own key: it's the only way back to this exact
+    # copy if the work has since been deleted or hidden on the live site.
+    original_url = unwrap_wayback_url(story_url)
+    if original_url:
+        fields.setdefault('waybackUrl', story_url)
+        story_url = fields['storyUrl'] = original_url
+    # download.archiveofourown.org / http:// / chapter-page variants of a
+    # live AO3 URL (tests/fixtures/game_changer.epub) -> the canonical form.
+    canonical_url = canonical_ao3_url(story_url)
+    if canonical_url:
+        story_url = fields['storyUrl'] = canonical_url
     site = fields.get('site')
     if not site and story_url:
         m = re.match(r'^https?://(?:www\.)?([^/]+)/', story_url)

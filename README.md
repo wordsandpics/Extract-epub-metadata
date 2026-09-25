@@ -11,7 +11,13 @@ example because of Cloudflare, deleted works, manual downloads, or archived copi
 
 This plugin is built and tested primarily around [Archive of Our Own](https://archiveofourown.org)
 downloads. fanfiction.net EPUBs from [fichub.net](https://fichub.net) or the
-[WebToEpub](https://github.com/dteviot/WebToEpub) browser extension are also explicitly supported.
+[WebToEpub](https://github.com/dteviot/WebToEpub) browser extension are also explicitly supported,
+as are AO3 works saved from an [Internet Archive Wayback Machine](https://web.archive.org)
+snapshot, either with WebToEpub or with the
+[Save as eBook](https://chromewebstore.google.com/detail/save-as-ebook/haaplkpoiimngbppjihnegfmpejdnffj)
+browser extension (which saves the whole page). With Save as eBook, save the work's
+"Entire Work" snapshot (`?view_full_work=true`) — otherwise you only get the chapter on screen.
+AO3's own **PDF** downloads, converted to EPUB (e.g. in Calibre), are supported too.
 Other sites and tools may work too — the extraction degrades gracefully rather than erroring out —
 but haven't been tested, so your mileage may vary.
 
@@ -47,7 +53,7 @@ column so FFF can do its thing.
 ## Known limitations
 
 This is early and has mostly been tested against one real example per source/tool combination
-(AO3 direct, AO3 via fichub.net, fanfiction.net via fichub.net, fanfiction.net via WebToEpub) —
+(AO3 direct, AO3 via fichub.net, AO3 via the Wayback Machine + WebToEpub or Save as eBook, AO3 PDF converted to EPUB, fanfiction.net via fichub.net, fanfiction.net via WebToEpub) —
 treat it as a beta looking for real-world edge cases, not a finished, broadly-tested tool.
 
 - Crossover fics (multiple fandoms) downloaded from fanfiction.net via WebToEpub will only get
@@ -67,13 +73,24 @@ Metadata is extracted from multiple sources, preferring the most complete source
 2. A title page, if the EPUB has one — either FanFicFare's own generated page, or a
    fichub.net-style front-matter page (a similar but not identical layout).
 3. AO3's own native front-matter preface, if the EPUB was downloaded directly from
-   [Archive of Our Own](https://archiveofourown.org).
-4. fanfiction.net's own native story-info page, as saved verbatim by the WebToEpub browser
+   [Archive of Our Own](https://archiveofourown.org) — or AO3's work-page metadata block, as
+   saved by WebToEpub.
+4. AO3's preface page in an AO3 PDF download that was converted to EPUB (read from the text, since
+   the conversion keeps no structure).
+5. fanfiction.net's own native story-info page, as saved verbatim by the WebToEpub browser
    extension.
-5. A generic scan for the first recognized fanfic-site link, as a last-resort way to recover the
+6. A generic scan for the first recognized fanfic-site link, as a last-resort way to recover the
    story URL.
 
 Earlier sources take precedence; later sources only fill in missing values.
+
+**Wayback Machine copies.** When the story URL is a `web.archive.org` snapshot, the plugin uses
+the original URL it wraps (e.g. `https://archiveofourown.org/works/…`) as the story URL, so site,
+story ID and author link are recovered and FanFicFare picks the right site adapter. The
+snapshot URL itself is kept in the Saved Metadata as `waybackUrl` (and is available to map to a
+custom column), since it may be the only way back to that exact copy. Stats (status, chapter and
+word counts) reflect the snapshot's date, not the live site. FanFicFare stores `waybackUrl` but only shows
+it to `personal.ini` templates if you add it to `extra_valid_entries`.
 
 When a story URL is recovered, the plugin can also add it as a `url` identifier (if one doesn't
 already exist). FanFicFare uses this identifier to determine which site adapter to use when it
@@ -85,6 +102,11 @@ regardless of which modes you use.
 Download the latest `extract_epub_metadata-*.zip` from the
 [Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases), then in the Calibre
 GUI: Preferences → Plugins → Load plugin from file, and pick the zip you downloaded.
+
+> **Download the right file.** On the release page, use the zip listed under **Assets** named
+> `extract_epub_metadata-vX.Y.Z-beta.zip` — *not* the "Source code (zip)" link GitHub adds
+> automatically. The source download nests the plugin inside a folder, and Calibre will reject it
+> with *"does not contain a top-level `__init__.py` file"*.
 
 If you're working from a clone of this repository instead:
 

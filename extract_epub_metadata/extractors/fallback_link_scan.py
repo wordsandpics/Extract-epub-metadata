@@ -10,14 +10,18 @@ Extend _SITE_PATTERNS as more sites are supported.
 import re
 
 from ._epubxml import find_all, parse_opf, parse_xhtml, spine_item_paths
+from ._urls import unwrap_wayback_url
 
 _SITE_PATTERNS = [
-    re.compile(r'^https?://(www\.)?archiveofourown\.org/works/\d+', re.I),
+    re.compile(r'^https?://(www\.|download\.)?archiveofourown\.org/works/\d+', re.I),
     re.compile(r'^https?://(www\.|m\.)?fanfiction\.net/s/\d+', re.I),
 ]
 
 
 def _is_recognized_url(href):
+    # A Wayback snapshot of a recognized URL counts too -- returned as-is
+    # (still wrapped); mapping.py unwraps it and keeps the snapshot URL.
+    href = unwrap_wayback_url(href) or href
     return any(p.match(href) for p in _SITE_PATTERNS)
 
 

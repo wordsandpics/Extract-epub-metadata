@@ -30,6 +30,9 @@ from extract_epub_metadata.calibre_fields import (  # noqa: E402
     STATUS_COMPLETE_KEY, compatible_columns_for_key, compute_custom_column_values,
     compute_standard_fields, field_label, permitted_keys_for_datatype,
 )
+from extract_epub_metadata.extractors._urls import canonical_ao3_url, unwrap_wayback_url  # noqa: E402
+from extract_epub_metadata.extractors.ao3_frontmatter import parse_series, series_fields  # noqa: E402
+from extract_epub_metadata.extractors.fallback_link_scan import _is_recognized_url  # noqa: E402
 from extract_epub_metadata.mapping import extract_fields  # noqa: E402
 from extract_epub_metadata.serialize import serialize_saved_metadata  # noqa: E402
 
@@ -625,6 +628,270 @@ class SingularAO3TagLabelTest(unittest.TestCase):
         self.assertEqual(fields.get('warnings'), ['Creator Chose Not To Use Archive Warnings'])
         self.assertEqual(fields.get('status'), 'In-Progress')
 
+    def test_series_from_native_preface(self):
+        # AO3's own download preface -- series used to be dropped for every
+        # tier; found while adding game_changer.epub's PDF-preface support.
+        fields, sources = extract_fields(str(self.EPUB_FIXTURE))
+
+        self.assertEqual(fields.get('series'), '(We Could Be) Something Great [1]')
+        self.assertEqual(fields.get('seriesUrl'), 'https://archiveofourown.org/series/6049461')
+        self.assertEqual(sources.get('series'), 'ao3_frontmatter')
+
+
+class AO3ViaWaybackWebToEpubTest(unittest.TestCase):
+    """An AO3 work recovered from its Internet Archive Wayback Machine
+    snapshot via WebToEpub -- the use case being fics no longer available
+    on the live site. Two things were new: (1) every URL in the EPUB (OPF
+    identifier, each dc:source, NCX uid) is the web.archive.org snapshot
+    URL, so site came out as "web.archive.org" and nothing AO3-specific
+    derived; (2) the tags live in AO3's *work page* markup
+    (`<dl class="work meta group">`, copied into WebToEpub's Information
+    page), not the `<div id="preface">` of AO3's own downloads, so the
+    AO3 tier found nothing at all. Also exposed a stats-regex bug: this
+    shape's flattened stats have no whitespace ("Chapters:1/1Comments:41"),
+    and the old `\\S+` total swallowed the rest, turning a finished 1/1
+    work In-Progress with no total."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'putting_up_shelves.epub'
+    WAYBACK_URL = 'https://web.archive.org/web/20171212114900/https://archiveofourown.org/works/6173518'
+
+    def setUp(self):
+        self.fields, self.sources = extract_fields(str(self.EPUB_FIXTURE))
+
+    def test_story_url_is_canonical_ao3_not_the_snapshot(self):
+        self.assertEqual(self.fields.get('storyUrl'), 'https://archiveofourown.org/works/6173518')
+        self.assertEqual(self.fields.get('sectionUrl'), self.fields['storyUrl'])
+        self.assertEqual(self.fields.get('site'), 'archiveofourown.org')
+        self.assertEqual(self.fields.get('siteabbrev'), 'ao3')
+        self.assertEqual(self.fields.get('storyId'), '6173518')
+        self.assertEqual(self.fields.get('authorUrl'),
+                          ['https://archiveofourown.org/users/iriswallpaper/pseuds/iriswallpaper'])
+
+    def test_snapshot_url_kept_in_saved_metadata(self):
+        self.assertEqual(self.fields.get('waybackUrl'), self.WAYBACK_URL)
+        blob = serialize_saved_metadata(self.fields)
+        self.assertIn("id='waybackUrl'>%s</div>" % self.WAYBACK_URL, blob)
+
+    def test_recovers_tags_from_work_page_markup(self):
+        f = self.fields
+        self.assertEqual(f.get('rating'), 'Explicit')
+        self.assertEqual(f.get('warnings'), ['No Archive Warnings Apply'])
+        self.assertEqual(f.get('ao3categories'), ['M/M'])
+        self.assertEqual(f.get('fandoms'), ['Sherlock (TV)'])
+        self.assertEqual(f.get('ships'), ['Sherlock Holmes/Original Male Character(s)',
+                                          'Sherlock Holmes/Chippers'])
+        self.assertEqual(f.get('characters'), ['Sherlock Holmes', 'Chippers the Chip Shop Owner'])
+        self.assertEqual(len(f.get('freeformtags') or []), 25)
+        self.assertEqual(f['freeformtags'][-1], 'Season/Series 03')
+        self.assertEqual(f.get('language'), 'English')
+        self.assertEqual(self.sources.get('fandoms'), 'ao3_frontmatter')
+
+    def test_title_and_author_still_from_opf(self):
+        # The work page has neither -- must not pick up the "Information"
+        # heading or anything from the summary.
+        self.assertEqual(self.fields.get('title'), 'Putting Up Shelves')
+        self.assertEqual(self.fields.get('author'), ['iriswallpaper'])
+
+    def test_unspaced_stats_parse_correctly(self):
+        self.assertEqual(self.fields.get('status'), 'Completed')
+        self.assertEqual(self.fields.get('chapterslashtotal'), '1/1')
+        self.assertEqual(self.fields.get('numChapters'), 1)
+        self.assertEqual(self.fields.get('numChaptersTotal'), 1)
+        self.assertEqual(self.fields.get('numWords'), 4674)
+        self.assertEqual(self.fields.get('datePublished'), datetime.datetime(2016, 3, 6))
+
+    def test_live_engagement_stats_not_fabricated(self):
+        for key in ('hits', 'kudos', 'bookmarks', 'comments'):
+            self.assertNotIn(key, self.fields)
+
+    def test_description_is_the_summary_only(self):
+        desc = self.fields.get('description') or ''
+        self.assertTrue(desc.startswith('Sherlock stood on the pavement'))
+        # <br/> inside a paragraph must not glue words together.
+        self.assertIn('Fall 2015\nPutting Up Shelves\nabout', desc)
+        self.assertTrue(desc.endswith('gurkenpflaster.tumblr.com.'))
+        # Author's notes are a separate block, not part of the summary.
+        self.assertNotIn('MissDavis', desc)
+
+    def test_unwrap_wayback_url_variants(self):
+        self.assertEqual(unwrap_wayback_url(self.WAYBACK_URL),
+                          'https://archiveofourown.org/works/6173518')
+        # Flagged capture, collapsed scheme slashes, AO3 sub-page, http.
+        self.assertEqual(unwrap_wayback_url(
+            'http://web.archive.org/web/2017id_/http:/archiveofourown.org/works/1/chapters/2'),
+            'https://archiveofourown.org/works/1')
+        # No embedded scheme at all; non-AO3 sites unwrapped but untouched.
+        self.assertEqual(unwrap_wayback_url(
+            'https://web.archive.org/web/20200101000000/www.fanfiction.net/s/5/1/X'),
+            'https://www.fanfiction.net/s/5/1/X')
+        self.assertIsNone(unwrap_wayback_url('https://archiveofourown.org/works/1'))
+        self.assertIsNone(unwrap_wayback_url(None))
+
+    def test_fallback_link_scan_recognizes_snapshot_links(self):
+        self.assertTrue(_is_recognized_url(self.WAYBACK_URL))
+        self.assertFalse(_is_recognized_url(
+            'https://web.archive.org/web/2017/http://skulls-and-tea.tumblr.com/post/1'))
+
+
+class AO3WaybackWholePageSaveTest(unittest.TestCase):
+    """The same Wayback-snapshot-of-an-AO3-work use case as above, but
+    saved by a different browser extension: a generic "save page as
+    EPUB" tool that keeps the whole page (site header, Wayback toolbar,
+    comments) and strips every `class` attribute -- so the class-based
+    work-page detection written for the WebToEpub fixture found nothing.
+    Its OPF also describes the *page*, not the story: title is the
+    browser-tab title, author is AO3's own <meta> author ("Organization
+    for Transformative Works"), description is AO3's site tagline. On
+    the plus side, the work's own title and byline are in the page."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'enough_is_enough.epub'
+
+    def setUp(self):
+        self.fields, self.sources = extract_fields(str(self.EPUB_FIXTURE))
+
+    def test_page_level_opf_metadata_does_not_win(self):
+        self.assertEqual(self.fields.get('title'), 'Enough is Enough')
+        self.assertEqual(self.sources.get('title'), 'ao3_frontmatter')
+        self.assertNotIn('Organization for Transformative Works', self.fields.get('author'))
+        self.assertNotIn('project of the Organization', self.fields.get('description'))
+
+    def test_author_fields_match_fanficfare_ao3_adapter(self):
+        # pseud != username: FFF's author is the link text, authorId the
+        # pseud, authorUrl the (unwrapped) pseud URL.
+        self.assertEqual(self.fields.get('author'), ['sussexbound (SamanthaLenore)'])
+        self.assertEqual(self.fields.get('authorId'), ['sussexbound'])
+        self.assertEqual(self.fields.get('authorUrl'),
+                          ['https://archiveofourown.org/users/SamanthaLenore/pseuds/sussexbound'])
+
+    def test_story_url_unwrapped_from_view_full_work_snapshot(self):
+        self.assertEqual(self.fields.get('storyUrl'), 'https://archiveofourown.org/works/14687871')
+        self.assertEqual(self.fields.get('storyId'), '14687871')
+        self.assertEqual(self.fields.get('siteabbrev'), 'ao3')
+        self.assertEqual(self.fields.get('waybackUrl'),
+                          'https://web.archive.org/web/20190411192321/'
+                          'https://archiveofourown.org/works/14687871?view_full_work=true')
+
+    def test_recovers_tags_without_class_attributes(self):
+        f = self.fields
+        self.assertEqual(f.get('rating'), 'Explicit')
+        self.assertEqual(f.get('warnings'), ['No Archive Warnings Apply'])
+        self.assertEqual(f.get('ao3categories'), ['M/M'])
+        self.assertEqual(f.get('fandoms'), ['Sherlock (TV)', 'Sherlock Holmes & Related Fandoms'])
+        self.assertEqual(f.get('ships'), ['Sherlock Holmes/John Watson'])
+        self.assertEqual(f.get('characters'), ['Sherlock Holmes', 'John Watson'])
+        self.assertEqual(len(f.get('freeformtags') or []), 19)
+        self.assertEqual(f.get('language'), 'English')
+
+    def test_stats(self):
+        self.assertEqual(self.fields.get('status'), 'Completed')
+        self.assertEqual(self.fields.get('numChapters'), 3)
+        self.assertEqual(self.fields.get('numChaptersTotal'), 3)
+        self.assertEqual(self.fields.get('numWords'), 10722)
+        self.assertEqual(self.fields.get('datePublished'), datetime.datetime(2018, 5, 17))
+        self.assertEqual(self.fields.get('dateUpdated'), datetime.datetime(2018, 6, 6))
+
+    def test_description_is_the_work_summary_only(self):
+        desc = self.fields.get('description') or ''
+        self.assertTrue(desc.startswith('John feels a momentary twinge of fondness'))
+        self.assertTrue(desc.endswith("and that\u2019s enough."))
+        self.assertNotIn('stand alone ficlet', desc)  # that's the notes
+
+
+class AO3PdfConvertedTest(unittest.TestCase):
+    """AO3's own PDF download, converted to EPUB in Calibre -- the work
+    was later taken down (its last "chapter" is the author's notice), so
+    this copy is all that's left. The OPF has only Calibre placeholders
+    (author "Unknown", no URL). AO3's preface survives as one <p> per
+    printed line: labels as plain text, values wrapped onto unlabeled
+    continuation lines, and tag links misaligned by the PDF (commas linked
+    to the wrong tag; three tags with no link of their own) -- so values
+    are read from the text, never the links. Also the first fixture with a
+    Series line, which exposed that series wasn't extracted from any tier
+    and that Mode 2 read FFF's *second*-series key (series01)."""
+
+    EPUB_FIXTURE = TESTS_DIR / 'fixtures' / 'game_changer.epub'
+
+    def setUp(self):
+        self.fields, self.sources = extract_fields(str(self.EPUB_FIXTURE))
+
+    def test_story_url_from_download_host_is_canonicalized(self):
+        self.assertEqual(self.fields.get('storyUrl'), 'https://archiveofourown.org/works/8943052')
+        self.assertEqual(self.fields.get('storyId'), '8943052')
+        self.assertEqual(self.fields.get('siteabbrev'), 'ao3')
+
+    def test_placeholder_author_replaced_by_byline(self):
+        self.assertEqual(self.fields.get('author'), ['EloiseReed'])
+        self.assertEqual(self.sources.get('author'), 'ao3_pdf_preface')
+        self.assertEqual(self.fields.get('authorUrl'),
+                          ['https://archiveofourown.org/users/EloiseReed/pseuds/EloiseReed'])
+
+    def test_tags_read_from_text_not_misaligned_links(self):
+        f = self.fields
+        self.assertEqual(f.get('rating'), 'Mature')
+        self.assertEqual(f.get('warnings'), ['No Archive Warnings Apply'])
+        self.assertEqual(f.get('ao3categories'), ['M/M'])
+        self.assertEqual(f.get('fandoms'), ['Captain America (Movies)',
+                                            'Captain America - All Media Types'])
+        self.assertEqual(f.get('ships'), ['James "Bucky" Barnes/Steve Rogers'])
+        # "George" / "Barnes (Marvel)" wrapped over two lines.
+        self.assertEqual(f.get('characters'), ['Steve Rogers', 'James "Bucky" Barnes',
+                                               'Winifred Barnes', 'George Barnes (Marvel)'])
+        tags = f.get('freeformtags') or []
+        self.assertEqual(len(tags), 14)
+        # Covered by a single misaligned link in the PDF / no link at all.
+        for tag in ('Family Fluff', 'Christmas Presents', 'England (Country)', 'overseas visits'):
+            self.assertIn(tag, tags)
+
+    def test_series(self):
+        self.assertEqual(self.fields.get('series'), 'Game Changer [2]')
+        self.assertEqual(self.fields.get('seriesUrl'), 'https://archiveofourown.org/series/611269')
+        self.assertEqual(self.fields.get('series00'), 'Game Changer [2]')
+        self.assertEqual(compute_standard_fields(self.fields).get('series'), 'Game Changer [2]')
+
+    def test_wrapped_stats_with_unknown_total(self):
+        self.assertEqual(self.fields.get('status'), 'In-Progress')
+        self.assertEqual(self.fields.get('numChapters'), 3)
+        self.assertNotIn('numChaptersTotal', self.fields)
+        self.assertEqual(self.fields.get('numWords'), 15504)
+        self.assertEqual(self.fields.get('datePublished'), datetime.datetime(2016, 12, 21))
+        self.assertEqual(self.fields.get('dateUpdated'), datetime.datetime(2017, 10, 10))
+
+    def test_summary_paragraphs_rejoined(self):
+        self.assertEqual(self.fields.get('description'),
+                         'A collection of one-shot stories that will serve as a sequel to Game '
+                         'Changer, an AU fic in which Steve Rogers is the captain of the New York '
+                         'Rangers hockey team.\n\nI\'m open to requests for stories in this '
+                         'series! You can put them in the comments, or hit me up on Tumblr.')
+
+    def test_series_parsing_across_ao3_shapes(self):
+        # Synthetic, per the other AO3 shapes' known markup (no fixture has
+        # a series there yet): download-preface dd with two series, and a
+        # Wayback-wrapped work-page link.
+        dd = ET.fromstring(
+            '<dd>Part 1 of <a href="https://archiveofourown.org/series/5">First</a>, '
+            'Part 3 of <a href="https://archiveofourown.org/series/9">Second One</a></dd>')
+        self.assertEqual(parse_series([dd]), [
+            ('First', 1, 'https://archiveofourown.org/series/5'),
+            ('Second One', 3, 'https://archiveofourown.org/series/9')])
+        self.assertEqual(series_fields(parse_series([dd])), {
+            'series': 'First [1]', 'seriesUrl': 'https://archiveofourown.org/series/5',
+            'series00': 'First [1]', 'series00Url': 'https://archiveofourown.org/series/5',
+            'series01': 'Second One [3]', 'series01Url': 'https://archiveofourown.org/series/9'})
+        wrapped = ET.fromstring(
+            '<dd><span>Part 4 of <a href="https://web.archive.org/web/2019/'
+            'https://archiveofourown.org/series/7">S</a></span></dd>')
+        self.assertEqual(parse_series([wrapped]), [('S', 4, 'https://archiveofourown.org/series/7')])
+        # No usable link: plain text fallback, no URL.
+        self.assertEqual(parse_series([ET.fromstring('<p>Part 2 of Game Changer</p>')]),
+                         [('Game Changer', 2, None)])
+
+    def test_canonical_ao3_url(self):
+        self.assertEqual(canonical_ao3_url('http://download.archiveofourown.org/works/1/chapters/2'),
+                         'https://archiveofourown.org/works/1')
+        self.assertEqual(canonical_ao3_url('https://www.archiveofourown.org/series/3'),
+                         'https://archiveofourown.org/series/3')
+        self.assertIsNone(canonical_ao3_url('https://www.fanfiction.net/s/5/1/X'))
+
 
 class ComputeStandardFieldsTest(unittest.TestCase):
     """Mode 2 (direct-to-Calibre-fields): compute_standard_fields() is pure
@@ -670,7 +937,7 @@ class ComputeStandardFieldsTest(unittest.TestCase):
         self.assertNotIn('<p>', self.computed['comments'])
 
     def test_no_series_when_not_extracted(self):
-        # this fixture's extraction never populates a series01 key.
+        # this fixture's extraction never populates a series key.
         self.assertNotIn('series', self.computed)
 
     def test_pubdate_and_language(self):
@@ -773,8 +1040,8 @@ class CustomColumnMappingTest(unittest.TestCase):
         self.assertNotIn('#enum_col', values)
 
     def test_series_column(self):
-        fields_with_series = dict(self.fields, series01='My Series [3]')
-        mapping = {'#series_col': 'series01'}
+        fields_with_series = dict(self.fields, series='My Series [3]')
+        mapping = {'#series_col': 'series'}
         values = compute_custom_column_values(fields_with_series, mapping, self.columns)
         self.assertEqual(values['#series_col'], 'My Series [3]')
 

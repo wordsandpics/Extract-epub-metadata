@@ -19,6 +19,7 @@ from calibre_plugins.extract_epub_metadata.config import (
     KEY_MODE3_ENABLED, KEY_OVERWRITE, KEY_PREVIEW, KEY_SHOW_CONFIRMATION, get_prefs,
 )
 from calibre_plugins.extract_epub_metadata.dialogs import BookResult, PreviewDialog
+from calibre_plugins.extract_epub_metadata.extractors._urls import is_wayback_url
 from calibre_plugins.extract_epub_metadata.mapping import extract_fields
 from calibre_plugins.extract_epub_metadata.serialize import serialize_saved_metadata
 
@@ -146,7 +147,14 @@ class ExtractEpubMetadataAction(InterfaceAction):
                 fields, column_mapping, custom_columns)
 
         identifiers = db.field_for('identifiers', book_id, default_value={}) or {}
-        identifier_already_set = bool(identifiers.get('url') or identifiers.get('uri'))
+        # A Wayback snapshot URL in 'uri' (Calibre imports a WebToEpub-from-
+        # web.archive.org EPUB's OPF identifier as exactly that) doesn't
+        # count: FanFicFare has no adapter for web.archive.org, and it reads
+        # 'url' before 'uri', so adding the real story URL as 'url' fixes
+        # its lookup while leaving the snapshot link in 'uri' untouched.
+        existing_uri = (identifiers.get('uri') or '').replace('|', ':')
+        identifier_already_set = bool(
+            identifiers.get('url') or (existing_uri and not is_wayback_url(existing_uri)))
         story_url = fields.get('storyUrl') if prefs[KEY_ADD_IDENTIFIER] else None
 
         return BookResult(
