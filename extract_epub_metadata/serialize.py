@@ -110,6 +110,8 @@ def serialize_saved_metadata(fields):
     Returns the HTML fragment to write into the Saved Metadata column,
     matching fanficfare/story.py's Story.dump_html_metadata() output.
     """
+    if fields.get('collectionType'):
+        raise ValueError('FanFicFare Saved Metadata supports single stories, not collections.')
     blocks = []
     for key in sorted(fields.keys()):
         value = fields[key]

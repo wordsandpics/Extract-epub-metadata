@@ -664,8 +664,10 @@ class AO3ViaWaybackWebToEpubTest(unittest.TestCase):
         self.assertEqual(self.fields.get('site'), 'archiveofourown.org')
         self.assertEqual(self.fields.get('siteabbrev'), 'ao3')
         self.assertEqual(self.fields.get('storyId'), '6173518')
-        self.assertEqual(self.fields.get('authorUrl'),
-                          ['https://archiveofourown.org/users/iriswallpaper/pseuds/iriswallpaper'])
+        # This information page has no author profile link. A bare OPF
+        # creator does not establish the username/pseud URL.
+        self.assertNotIn('authorUrl', self.fields)
+        self.assertNotIn('authorId', self.fields)
 
     def test_snapshot_url_kept_in_saved_metadata(self):
         self.assertEqual(self.fields.get('waybackUrl'), self.WAYBACK_URL)
@@ -929,12 +931,9 @@ class ComputeStandardFieldsTest(unittest.TestCase):
         # deduped: no tag should appear twice in the source lists->flattened list
         self.assertEqual(len(self.computed['tags']), len(tags))
 
-    def test_comments_is_raw_not_sanitized(self):
-        # sanitize_comments_html() needs a real Calibre import -- deferred
-        # to apply_standard_fields() at write time, see calibre_fields.py's
-        # module docstring. Here it should just be the plain description.
-        self.assertEqual(self.computed['comments'], self.fields['description'])
-        self.assertNotIn('<p>', self.computed['comments'])
+    def test_comments_wraps_and_escapes_plain_description(self):
+        from html import escape
+        self.assertEqual(self.computed['comments'], '<p>%s</p>' % escape(self.fields['description']))
 
     def test_no_series_when_not_extracted(self):
         # this fixture's extraction never populates a series key.

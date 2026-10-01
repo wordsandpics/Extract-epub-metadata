@@ -13,9 +13,9 @@ customizability; it's a simpler no-round-trip-needed path for the common
 case, not a full FFF replacement.
 
 compute_standard_fields() is pure (no Calibre import needed) and unit-
-testable the same way as mapping.py/serialize.py -- it returns the *raw*
-description under 'comments' rather than sanitizing it, so this module
-stays importable outside a real Calibre install (Calibre's own
+testable the same way as mapping.py/serialize.py -- it formats plain
+descriptions as escaped HTML, preserves collection descriptions, and
+defers sanitizing until writing, so it stays importable outside Calibre (Calibre's own
 sanitize_comments_html(), which FFF itself uses, needs a real
 `calibre.library` package). apply_standard_fields() and
 apply_custom_column_mapping() need a live `db`
@@ -46,7 +46,7 @@ def compute_standard_fields(fields):
     """
     fields: the dict mapping.py::extract_fields() produces.
     Returns a sparse dict of whatever standard Calibre fields can be
-    computed: title, authors, tags, comments (raw, unsanitized), series,
+    computed: title, authors, tags, comments (HTML, unsanitized), series,
     pubdate, language. Missing source data means a missing key, not a
     fabricated default.
 
@@ -66,7 +66,7 @@ def compute_standard_fields(fields):
 
     tags = []
     seen = set()
-    for key in TAG_SOURCE_KEYS:
+    for key in (('collectionTags',) if fields.get('collectionType') else TAG_SOURCE_KEYS):
         value = fields.get(key)
         if not value:
             continue
@@ -79,7 +79,12 @@ def compute_standard_fields(fields):
         computed['tags'] = sorted(tags)
 
     if fields.get('description'):
-        computed['comments'] = fields['description']
+        if fields.get('collectionType'):
+            computed['comments'] = fields['description']  # outer description may be rich HTML
+        else:
+            from html import escape
+            description = escape(fields['description']).replace('\n', '<br />')
+            computed['comments'] = '<p>%s</p>' % description
 
     series_raw = fields.get('series')
     if series_raw:
@@ -90,11 +95,52 @@ def compute_standard_fields(fields):
 
     if fields.get('language'):
         computed['language'] = fields['language']
+    elif fields.get('collectionType') and fields.get('langcode'):
+        computed['language'] = fields['langcode']
 
     return computed
 
 
-def apply_standard_fields(db, book_id, computed, overwrite):
+STANDARD_FIELD_MAP = {
+    'title': 'title', 'authors': 'authors', 'tags': 'tags',
+    'comments': 'comments', 'series': 'series', 'pubdate': 'pubdate',
+    'language': 'languages',
+}
+
+
+def plan_standard_fields(db, book_id, computed, overwrite):
+    pending, skipped = {}, {}
+    for key, value in computed.items():
+        target = STANDARD_FIELD_MAP.get(key)
+        if target is None:
+            continue
+        if not overwrite and standard_field_is_populated(target, db.field_for(target, book_id)):
+            skipped[key] = value
+        else:
+            pending[key] = value
+    return pending, skipped
+
+
+def standard_field_is_populated(field, value):
+    """Calibre's blank date and localized Unknown author are placeholders."""
+    if field == 'pubdate':
+        from calibre.utils.date import is_date_undefined
+        return not is_date_undefined(value)
+    if field == 'authors' and value:
+        import builtins
+        translate = getattr(builtins, '_', lambda text: text)
+        return list(value) not in (['Unknown'], [translate('Unknown')])
+    return bool(value)
+
+
+def write_field(db, book_id, field, value, written):
+    """Track actual database changes, including progress before an error."""
+    changed = db.set_field(field, {book_id: value})
+    if book_id in changed:
+        written.append(field)
+
+
+def apply_standard_fields(db, book_id, computed, overwrite, written=None):
     """
     Writes `computed` (compute_standard_fields()'s output) into the book's
     real Calibre fields via db.new_api.set_field(). Only touches a field
@@ -105,28 +151,18 @@ def apply_standard_fields(db, book_id, computed, overwrite):
     """
     from calibre.library.comments import sanitize_comments_html
 
-    field_map = {
-        'title': 'title',
-        'authors': 'authors',
-        'tags': 'tags',
-        'comments': 'comments',
-        'series': 'series',
-        'pubdate': 'pubdate',
-        'language': 'languages',
-    }
-    written = []
-    for computed_key, calibre_field in field_map.items():
+    written = [] if written is None else written
+    for computed_key, calibre_field in STANDARD_FIELD_MAP.items():
         if computed_key not in computed:
             continue
-        if not overwrite and db.field_for(calibre_field, book_id):
+        if not overwrite and standard_field_is_populated(calibre_field, db.field_for(calibre_field, book_id)):
             continue
         value = computed[computed_key]
         if computed_key == 'comments':
             value = sanitize_comments_html(value)
         elif calibre_field == 'languages':
             value = [value]
-        db.set_field(calibre_field, {book_id: value})
-        written.append(calibre_field)
+        write_field(db, book_id, calibre_field, value, written)
     return written
 
 
@@ -151,6 +187,11 @@ KEY_KINDS = {
     'authorId': 'list', 'authorUrl': 'list', 'lastupdate': 'list',
     'numWords': 'int', 'numChapters': 'int', 'numChaptersTotal': 'int',
     'datePublished': 'datetime', 'dateUpdated': 'datetime', 'dateCreated': 'datetime',
+    'collectionUrl': 'text', 'collectionTags': 'list', 'collectionStatus': 'text',
+    'collectionStoryCount': 'int', 'collectionCompletedCount': 'int',
+    'collectionUnknownCount': 'int',
+    'collectionChapterCount': 'int', 'collectionDateBegun': 'datetime',
+    'collectionDateUpdated': 'datetime',
 }
 
 # Synthetic boolean key, not in `fields` directly -- derived from `status`
@@ -207,6 +248,15 @@ FIELD_LABELS = {
     'dateUpdated': 'Date Updated',
     'dateCreated': 'Date Recovered',
     STATUS_COMPLETE_KEY: 'Completed? (yes/no)',
+    'collectionUrl': 'Collection URL',
+    'collectionTags': 'Collection Tags (from EPUB)',
+    'collectionStatus': 'Series Completion (from saved page)',
+    'collectionStoryCount': 'Collection Story/Work Count',
+    'collectionCompletedCount': 'Collection Completed Story Count',
+    'collectionUnknownCount': 'Collection Unknown Status Count',
+    'collectionChapterCount': 'Collection Total Chapters',
+    'collectionDateBegun': 'Series Begun (from saved page)',
+    'collectionDateUpdated': 'Series Updated (from saved page)',
 }
 
 # Explains what each field actually means/where it comes from -- shown as
@@ -244,6 +294,13 @@ FIELD_HELP = {
     'lastupdate': 'Human-readable last-updated text, e.g. "2024/03".',
     'dateCreated': 'When this plugin ran -- not a date from the source site.',
     STATUS_COMPLETE_KEY: 'True if the recovered status is "Completed", false otherwise.',
+    'collectionUrl': 'The anthology or series URL, not an individual story URL.',
+    'collectionStatus': 'The saved series page completion flag; it does not describe each story.',
+    'collectionStoryCount': 'Embedded stories recovered, or the work count reported by the saved series page.',
+    'collectionCompletedCount': 'Known completed stories. Partial counts exclude unknown statuses; absent if all statuses are unknown.',
+    'collectionUnknownCount': 'Embedded stories with no recognizable completion status.',
+    'numWords': 'Word count for the book. For collections, a reliable total across all embedded stories or an explicit total on the saved series page.',
+    'collectionChapterCount': 'Sum of valid chapter counts for every embedded story; absent if any count is unknown.',
 }
 
 
@@ -325,8 +382,11 @@ def _coerce_for_column(fields, metadata_key, column):
         return (status == 'Completed'), True
 
     value = fields.get(metadata_key)
-    if not value:
+    if value is None or value == '' or value == []:
         return None, False
+    if metadata_key == 'description' and fields.get('collectionType'):
+        from .extractors._text import html_to_text
+        value = html_to_text(value)
     kind = KEY_KINDS.get(metadata_key)
     values = value if isinstance(value, list) else [value]
 
@@ -382,11 +442,12 @@ def compute_custom_column_values(fields, mapping, column_metadata):
     return computed
 
 
-def apply_custom_column_mapping(db, book_id, computed_values):
+def apply_custom_column_mapping(db, book_id, computed_values, written=None):
     """
     Writes `computed_values` (compute_custom_column_values()'s output) via
     db.new_api.set_field(). Returns the list of column lookup keys written.
     """
+    written = [] if written is None else written
     for column_key, value in computed_values.items():
-        db.set_field(column_key, {book_id: value})
-    return list(computed_values.keys())
+        write_field(db, book_id, column_key, value, written)
+    return written

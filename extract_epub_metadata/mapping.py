@@ -15,8 +15,12 @@ reliable source for title/authors/language/description when present.
 """
 import datetime
 import re
-from urllib.parse import quote
+from html import escape
 from zipfile import ZipFile
+
+from .collections import extract_collection, primary_url
+from .extractors._numbers import parse_count
+from .extractors._text import html_to_text
 
 from .extractors.ao3_frontmatter import extract_ao3_frontmatter
 from .extractors.ao3_pdf_preface import extract_ao3_pdf_preface
@@ -24,6 +28,7 @@ from .extractors.fallback_link_scan import extract_story_url_fallback
 from .extractors.ffnet_infopage import extract_ffnet_infopage
 from .extractors.fff_titlepage import extract_fff_titlepage
 from .extractors.opf import extract_opf
+from .extractors.pdf_header import extract_pdf_header
 from .extractors._urls import canonical_ao3_url, unwrap_wayback_url
 
 # key -> (siteabbrev, )  -- 'site' itself already holds the domain, which is
@@ -98,7 +103,6 @@ _AO3_PAGE_TITLE_SUFFIX = '[Archive of Our Own]'
 # fanfiction.net's own story-URL shape, e.g. ".../s/5853767/1/Hunted"
 # (confirmed against tests/fixtures/hunted.epub).
 _FFNET_STORY_ID_RE = re.compile(r'/s/(\d+)')
-_TAG_RE = re.compile(r'<[^>]+>')
 # "Label: value" for one segment of a composite line, e.g. fanfiction.net's
 # own "Rated: Fiction M - Language: English - Genre: ... - Reviews: ..."
 # (confirmed against tests/fixtures/hunted.epub). Deliberately the same
@@ -133,9 +137,7 @@ def _coerce_for_key(key, value):
 
 
 def _strip_html(text):
-    if not text:
-        return text
-    return _TAG_RE.sub('', text).strip()
+    return html_to_text(text)
 
 
 def _parse_date(value):
@@ -265,16 +267,21 @@ def extract_fields(epub_stream):
     """
     with ZipFile(epub_stream) as zf:
         opf = extract_opf(zf)
+        collection = extract_collection(zf, opf)
+        if collection is not None:
+            return collection
         titlepage = extract_fff_titlepage(zf)
         ao3 = extract_ao3_frontmatter(zf)
         ao3_pdf = extract_ao3_pdf_preface(zf)
         ffnet_info = extract_ffnet_infopage(zf)
+        pdf_header = extract_pdf_header(zf)
         fallback_url = extract_story_url_fallback(zf)
 
     titlepage_mapped = _map_titlepage(titlepage)
     ao3_fields = dict(ao3 or {})
     ao3_pdf_fields = dict(ao3_pdf or {})
     ffnet_fields = dict(ffnet_info or {})
+    pdf_header_fields = dict(pdf_header or {})
 
     opf_fields = {}
     if opf.get('title'):
@@ -285,7 +292,10 @@ def extract_fields(epub_stream):
     # nothing gets derived from it (it used to yield an AO3 profile URL
     # for a user literally named "Unknown").
     authors = [a for a in (opf.get('authors') or []) if a.strip().lower() != 'unknown']
-    if authors:
+    # AO3's explicit byline links identify individual authors. Its OPF
+    # may collapse coauthors into one comma-separated creator string.
+    # Prefer the structured names instead of guessing at comma separators.
+    if authors and not ao3_fields.get('author'):
         opf_fields['author'] = authors
     if opf.get('language'):
         # dc:language is a code (e.g. "en"), not a display name -- FFF's
@@ -302,16 +312,8 @@ def extract_fields(epub_stream):
     # fall back to unconditionally) can easily be the cover image URL,
     # not the story. Confirmed harmless for every other fixture: FFF's
     # own EPUBs already carry the identical URL in both places.
-    identifier_url = None
-    for scheme in ('url', 'uri'):
-        candidate = (opf.get('identifiers') or {}).get(scheme)
-        if candidate and candidate.startswith(('http://', 'https://')):
-            identifier_url = candidate
-            break
-    if identifier_url:
-        opf_fields['storyUrl'] = identifier_url
-    elif opf.get('dc_source'):
-        opf_fields['storyUrl'] = opf['dc_source']
+    if primary_url(opf):
+        opf_fields['storyUrl'] = primary_url(opf)
     fanficfare_uid = opf.get('fanficfare_uid')
     if fanficfare_uid:
         opf_fields.setdefault('site', fanficfare_uid.get('site'))
@@ -333,6 +335,7 @@ def extract_fields(epub_stream):
                 opf_weak_fields[key] = opf_fields.pop(key)
 
     fields = _merge(opf_fields, titlepage_mapped, ao3_fields, ao3_pdf_fields, ffnet_fields,
+                    pdf_header_fields,
                     fallback_fields,
                     opf_weak_fields)
 
@@ -341,6 +344,7 @@ def extract_fields(epub_stream):
         ('opf', opf_fields), ('fff_titlepage', titlepage_mapped),
         ('ao3_frontmatter', ao3_fields), ('ao3_pdf_preface', ao3_pdf_fields),
         ('ffnet_infopage', ffnet_fields),
+        ('pdf_header', pdf_header_fields),
         ('fallback_link_scan', fallback_fields), ('opf', opf_weak_fields),
     ):
         for key in tier_fields:
@@ -395,27 +399,24 @@ def _derive_fields(fields):
         fields.setdefault('byline', author_name)
 
         # authorId/authorUrl before authorHTML, which needs the URL.
-        if site == 'archiveofourown.org' and len(author_list) == 1:
-            fields.setdefault('authorId', [author_list[0]])
-            fields.setdefault('authorUrl', ['https://archiveofourown.org/users/%s/pseuds/%s' % (
-                quote(author_list[0]), quote(author_list[0]))])
-        elif fields.get('authorUrl') and not isinstance(fields['authorUrl'], list):
+        if fields.get('authorUrl') and not isinstance(fields['authorUrl'], list):
             fields['authorUrl'] = [fields['authorUrl']]
 
         author_url_scalar = (fields.get('authorUrl') or [''])[0]
         if author_url_scalar:
             fields.setdefault('authorHTML', "<a class='authorlink' href='%s'>%s</a>" % (
-                author_url_scalar, author_name))
+                escape(author_url_scalar, quote=True), escape(author_name)))
         else:
             # No recovered author URL (common for non-AO3 sites, e.g.
             # fanfiction.net via fichub.net -- confirmed against
             # tests/fixtures/hunted.epub) -- plain name rather than a
             # broken <a href=''> link.
-            fields.setdefault('authorHTML', author_name)
+            fields.setdefault('authorHTML', escape(author_name))
 
     title = fields.get('title')
     if title and story_url:
-        fields.setdefault('titleHTML', "<a class='titlelink' href='%s'>%s</a>" % (story_url, title))
+        fields.setdefault('titleHTML', "<a class='titlelink' href='%s'>%s</a>" % (
+            escape(story_url, quote=True), escape(title)))
 
     # 'language' is the display name ("English"); 'langcode' is the ISO
     # code. Whichever we have, backfill the other as best-effort.
@@ -482,8 +483,8 @@ def _finalize_numerics(fields):
         value = fields[key]
         if isinstance(value, int):
             continue
-        digits = str(value).replace(',', '').strip()
-        if digits.isdigit():
-            fields[key] = int(digits)
+        number = parse_count(value)
+        if number is not None:
+            fields[key] = number
         else:
             del fields[key]

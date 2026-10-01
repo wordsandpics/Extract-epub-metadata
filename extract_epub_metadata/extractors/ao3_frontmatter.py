@@ -58,6 +58,7 @@ and byline (<h3> of /users/<id>/pseuds/<pseud> links) inside
 """
 import re
 
+
 from ._urls import canonical_ao3_url, unwrap_wayback_url
 from ._epubxml import (
     find_all, find_first, local_name, parse_opf, parse_xhtml, spine_item_paths, text_content,
@@ -88,7 +89,7 @@ _DT_TO_KEY = {
 _SCALAR_KEYS = {'rating', 'language'}
 
 _WORKS_URL_RE = re.compile(r'/works/(\d+)')
-_WORDS_RE = re.compile(r'Words:\s*([\d,]+)')
+_WORDS_RE = re.compile(r'Words:\s*([0-9][0-9, \u00a0\u2007\u2009\u202f]*)')
 # Digits/'?' only, not \S+ -- the work-page shape's nested stats <dl> has
 # no whitespace between entries once flattened ("Chapters:1/1Comments:41"),
 # and \S+ swallowed the rest of the line into the total, which then never
@@ -168,6 +169,29 @@ def _find_work_summary(root):
 _PSEUD_URL_RE = re.compile(r'/users/([^/?#]+)/pseuds/([^/?#]+)')
 
 
+def _parse_download_authors(preface, result):
+    """Native AO3 bylines mark individual pseud links with rel=author.
+
+    Calibre may split the byline into the next spine document after the
+    tags page, while the OPF combines all authors into one creator string.
+    """
+    links = []
+    for a in find_all(preface, 'a'):
+        if 'author' not in (a.get('rel') or '').split():
+            continue
+        href = unwrap_wayback_url(a.get('href') or '') or a.get('href') or ''
+        match = _PSEUD_URL_RE.search(href)
+        name = ' '.join(text_content(a).split())
+        if match and name:
+            links.append((name, match.group(1), match.group(2)))
+    if links:
+        result['author'] = [name for name, _user, _pseud in links]
+        result['authorId'] = [pseud for _name, _user, pseud in links]
+        result['authorUrl'] = ['https://archiveofourown.org/users/%s/pseuds/%s' % (user, pseud)
+                               for _name, user, pseud in links]
+        result['byline'] = ', '.join(result['author'])
+
+
 def _parse_workskin_header(root, result):
     """Title and byline from <div id="workskin"> (whole-page saves only --
     WebToEpub's Information page has neither). Author fields mirror
@@ -199,7 +223,7 @@ def _parse_workskin_header(root, result):
         return
 
 
-_SERIES_POSITION_RE = re.compile(r'Part\s+(\d+)\s+of\s*$', re.I)
+_SERIES_POSITION_RE = re.compile(r'Part\s+(\d+)\s+of(?:\s+the)?\s*$', re.I)
 _SERIES_TEXT_RE = re.compile(r'Part\s+(\d+)\s+of\s+(.+?)\s*(?=,\s*Part\s+\d+\s+of\s|$)', re.I)
 _SERIES_HREF_RE = re.compile(r'/series/\d+')
 
@@ -214,6 +238,7 @@ def parse_series(elems):
     lose or misplace them), falls back to reading the plain text. `elems`
     is a list so a value wrapped over several lines can be passed whole."""
     found = []
+    has_series_link = [False]
     pending = ['']
 
     def walk(e):
@@ -221,6 +246,7 @@ def parse_series(elems):
         for child in e:
             href = child.get('href') or ''
             if local_name(child.tag) == 'a' and _SERIES_HREF_RE.search(href):
+                has_series_link[0] = True
                 m = _SERIES_POSITION_RE.search(pending[0])
                 name = ' '.join(text_content(child).split())
                 if m and name:
@@ -235,6 +261,8 @@ def parse_series(elems):
         walk(elem)
     if found:
         return found
+    if has_series_link[0]:
+        return []  # do not reinterpret link/navigation text as a series title
     text = ' '.join(' '.join(text_content(e).split()) for e in elems)
     return [(m.group(2), int(m.group(1)), None) for m in _SERIES_TEXT_RE.finditer(text)]
 
@@ -317,12 +345,15 @@ def extract_ao3_frontmatter(zf):
     if opf_root is None:
         return None
 
+    download_result = {}
     for path in spine_item_paths(zf, opf_root, opf_path):
         root = parse_xhtml(zf, path)
         if root is None:
             continue
         preface = _find_preface(root)
         if preface is None:
+            if download_result:
+                return download_result
             work_meta = _find_work_meta(root)
             if work_meta is None:
                 continue
@@ -337,6 +368,7 @@ def extract_ao3_frontmatter(zf):
             continue
 
         result = {}
+        _parse_download_authors(preface, result)
 
         message = find_first(preface, 'p')
         if message is not None:
@@ -357,6 +389,7 @@ def extract_ao3_frontmatter(zf):
         if dl is not None:
             _parse_dl(dl, result)
 
-        return result if result else None
+        for key, value in result.items():
+            download_result.setdefault(key, value)
 
-    return None
+    return download_result or None

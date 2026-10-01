@@ -1,6 +1,6 @@
 from calibre.customize import InterfaceActionBase
 
-__version__ = (0, 3, 0)
+__version__ = (1, 0, 0)
 
 
 class ExtractEpubMetadataBase(InterfaceActionBase):
@@ -12,15 +12,13 @@ class ExtractEpubMetadataBase(InterfaceActionBase):
 
     name = 'Extract Epub Metadata'
     description = (
-        'Extracts FanFicFare-compatible metadata from an EPUB in your '
-        'Calibre library and writes it to the configured Saved Metadata '
-        "column, ready for FanFicFare’s Update Calibre Metadata from "
-        'Saved Metadata Column action.'
+        'Recover metadata from fanfiction EPUBs already in Calibre; save it '
+        'for FanFicFare or write standard and custom fields.'
     )
     supported_platforms = ['windows', 'osx', 'linux']
     author = 'wordsandpics'
     version = __version__
-    minimum_calibre_version = (5, 0, 0)
+    minimum_calibre_version = (6, 0, 0)
 
     actual_plugin = 'calibre_plugins.extract_epub_metadata.action:ExtractEpubMetadataAction'
 

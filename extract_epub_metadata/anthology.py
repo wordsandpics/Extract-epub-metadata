@@ -1,11 +1,8 @@
 """
-"Extract story status from anthology": a second, independent action in
-this plugin (not part of the extract_fields()/mapping.py pipeline used by
-the main "Extract Metadata" action). FanFicFare can bundle several
-separately-downloaded fics into one EPUB via `epubmerge`; the bundle's own
-aggregate metadata only ever carries ONE completion status for the whole
-thing (In-Progress if *any* included fic is unfinished). This module
-recovers each individual fic's own status instead.
+Embedded-story reading and the separate "Extract story status from anthology"
+action. collections.py also reuses this reader for the main extraction preview
+and reliable totals. Outer bundle status can differ from individual story
+status; this module recovers each story's own metadata.
 
 Verified directly against a real epubmerge-produced anthology (7 fics,
 fics 1-6 Completed, fic 7 In-Progress) via calibre-debug and direct
@@ -24,11 +21,11 @@ Calibre import) and unit-testable the same way as mapping.py/
 calibre_fields.py.
 """
 import datetime
-import re
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
 from .extractors._epubxml import find_all, find_first, parse_opf, parse_xhtml, spine_item_paths, text_content
+from .extractors._numbers import parse_count
 
 _DATE_FORMATS = ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d')
 
@@ -102,10 +99,7 @@ def _scrape_title_page(root):
 
 
 def _parse_int(value):
-    if not value:
-        return None
-    digits = re.sub(r'[^\d]', '', value)
-    return int(digits) if digits else None
+    return parse_count(value)
 
 
 def _parse_date(value):
@@ -143,6 +137,14 @@ def _enrich_from_content_opf(zf, title_page_path, record):
         root = ET.fromstring(zf.read(path))
     except (KeyError, ET.ParseError):
         return
+
+    authors = [text_content(e).strip() for e in find_all(root, 'creator')
+               if text_content(e).strip()]
+    if authors:
+        record['author'] = authors
+    description = find_first(root, 'description')
+    if description is not None and text_content(description).strip():
+        record['description'] = text_content(description).strip()
 
     if not record.get('status'):
         for subject in find_all(root, 'subject'):
@@ -190,17 +192,17 @@ def extract_fic_records(zf: ZipFile):
     for group in groups:
         title_page_path = group['title_page_path']
         root = parse_xhtml(zf, title_page_path)
-        if root is None:
-            continue
-
-        scraped = _scrape_title_page(root)
+        scraped = _scrape_title_page(root) if root is not None else {}
         record = {}
         if scraped.get('title'):
             record['title'] = scraped['title']
         if scraped.get('storyUrl'):
             record['storyUrl'] = scraped['storyUrl']
-        if scraped.get('status'):
+        if scraped.get('status') in ('Completed', 'In-Progress'):
             record['status'] = scraped['status']
+        for key in ('rating', 'warnings'):
+            if scraped.get(key):
+                record[key] = scraped[key]
         if scraped.get('chapters') is not None:
             n = _parse_int(scraped.get('chapters'))
             if n is not None:
@@ -220,9 +222,8 @@ def extract_fic_records(zf: ZipFile):
 
         _enrich_from_content_opf(zf, title_page_path, record)
 
-        if not record.get('numChapters') and group['chapter_paths']:
-            record['numChapters'] = len(group['chapter_paths'])
-
+        # Spine items can include notes/cover pages. Do not guess a chapter
+        # count from their number, especially when it will feed a total.
         records.append(record)
 
     return records
@@ -242,6 +243,9 @@ def format_summary(records):
 
     complete = sum(1 for r in records if r.get('status') == 'Completed')
     lines = ['%d/%d fics complete.' % (complete, len(records)), '']
+    unknown = sum(r.get('status') not in ('Completed', 'In-Progress') for r in records)
+    if unknown:
+        lines.insert(1, '%d fic(s) have unknown status.' % unknown)
 
     for i, record in enumerate(records, start=1):
         title = record.get('title') or 'Fic %d' % i
@@ -253,6 +257,16 @@ def format_summary(records):
             details.append('{:,} words'.format(record['numWords']))
         detail_str = ' (%s)' % ', '.join(details) if details else ''
         lines.append('%d. %s -- %s%s' % (i, title, status, detail_str))
+        if record.get('author'):
+            lines.append('   By: %s' % ', '.join(record['author']))
+        if record.get('storyUrl'):
+            lines.append('   %s' % record['storyUrl'])
+        dates = []
+        for key, label in (('datePublished', 'Published'), ('dateUpdated', 'Updated')):
+            if record.get(key):
+                dates.append('%s: %s' % (label, record[key].strftime('%Y-%m-%d')))
+        if dates:
+            lines.append('   ' + '; '.join(dates))
 
     return '\n'.join(lines)
 
@@ -263,20 +277,42 @@ class AnthologyResult:
     dialog can be reused unmodified for this second, independent action --
     it never assumes its results are BookResult instances."""
 
-    def __init__(self, book_id, title, records=None, summary='', existing_column_value=None, error=None):
+    def __init__(self, book_id, title, records=None, summary='', existing_column_value=None, error=None,
+                 overwrite=False):
         self.book_id = book_id
         self.title = title
         self.records = records or []
         self.summary = summary
         self.existing_column_value = existing_column_value
         self.error = error
+        self.overwrite = overwrite
+        self.write_errors = []
+        self.written_fields = []
+
+    @property
+    def has_writes(self):
+        return bool(self.summary and not self.error and
+                    (self.overwrite or not self.existing_column_value))
 
     def summary_lines(self):
         if self.error:
             return ['Error: %s' % self.error]
         lines = []
         if self.existing_column_value:
-            lines.append('(column already has a value)')
+            lines.append('(existing column value will be %s)' %
+                         ('replaced' if self.overwrite else 'kept; report skipped'))
             lines.append('')
         lines.extend(self.summary.split('\n'))
+        lines.extend(story_detail_lines(self.records))
         return lines
+
+
+def story_detail_lines(records):
+    """Long per-story facts belong in the preview, not the compact report."""
+    lines = []
+    for i, record in enumerate(records, 1):
+        details = [(k, record[k]) for k in ('rating', 'warnings', 'description') if record.get(k)]
+        if details:
+            lines.extend(['', 'Story %d: %s' % (i, record.get('title', 'Unknown title'))])
+            lines.extend('  %s: %s' % (k, v) for k, v in details)
+    return lines

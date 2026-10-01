@@ -1,5 +1,61 @@
 # Changelog
 
+## [Unreleased]
+
+## [1.0.0] - 2026-10-01
+
+### Added
+- Explicit support for AO3 EPUBs downloaded with ao3downloader, verified against five
+  real downloads, including coauthored and ongoing works, with Calibre writes and
+  FanFicFare Saved Metadata round trips.
+- A conservative labelled-header fallback for PDF-reflow EPUBs: title, rating, fandom,
+  pairing, warning text, exact word counts, and explicitly marked original LiveJournal
+  post URLs. Approximate counts and dates embedded in author notes are skipped.
+- Collection-aware metadata extraction for epubmerge anthologies and EPUBs with a primary
+  series URL, including safe outer metadata and explicitly available series facts.
+- Anthology totals use the ordinary Word Count mapping. Calculated totals require reliable
+  counts for every story; additional collection mappings cover work counts and series facts.
+- Per-story authors, URLs, dates, summaries, ratings, and warnings in anthology previews;
+  compact reports include authors, URLs, and dates.
+- Regression checks using the expanded real EPUB fixtures and a separate real-Calibre
+  scratch-library smoke check.
+
+### Changed
+- Requires Calibre 6.0 or newer; Calibre 5.x is no longer supported. Verified on 6.0 and 9.15.
+- Author ID and Author URL are recovered only from explicit metadata or links, rather than
+  derived from a bare author name. Some OPF-only books will no longer fill those mapped columns
+  or include those fields in Saved Metadata.
+- Saved Metadata is skipped when the URL FanFicFare will use is missing or unsupported;
+  standard metadata and custom-column updates remain available. An existing Calibre URL/URI
+  takes precedence over the URL recovered from the EPUB, matching FanFicFare's behavior.
+- Ordinary Calibre Comments are written as escaped HTML paragraphs with preserved line breaks.
+  Collection Comments retain their outer rich description.
+
+### Fixed
+- Series names come from AO3's series links without surrounding navigation text.
+- Anonymous and other bare author names no longer produce invented AO3 profile URLs.
+- OPF summaries preserve paragraph breaks and decode HTML entities; generated link markup
+  escapes names, titles, and attribute values.
+- Standard updates fill blank Calibre publication dates and Unknown authors without overwrite.
+- All-unknown anthology statuses no longer write a misleading completed count.
+- Conflicting Saved Metadata destinations cannot be selected in configuration; validation
+  occurs before closing on Calibre versions that support the hook.
+- Unsupported FanFicFare imports are explained in previews and zero-update confirmations.
+- FanFicFare support checks respect existing Calibre identifiers, including planned original
+  URL additions when a book has a Wayback URI.
+- The real-Calibre harness computes its counts, checks multiple FFF fields, exercises independent
+  overwrite flags and preview selection, and explicitly enables assertions under optimized Python.
+- AO3 download bylines preserve coauthors as separate names, IDs, and profile URLs,
+  including when conversion splits the byline into a second preface document.
+- EPUBs without a matching PDF header no longer fail while recording extraction sources.
+- Collections cannot be mistaken for their first story or written as FFF Saved Metadata.
+- Saved Metadata destinations cannot also receive custom mappings or anthology reports.
+- Previews show standard fields, custom columns, then raw metadata, explain kept values,
+  and disable writing when there are no eligible changes.
+- Confirmation counts actual changed books; per-book write failures retain and report
+  partial changes while allowing subsequent books to continue.
+- Space-grouped AO3 word counts are read in full. Ambiguous anthology counts are skipped.
+
 ## [0.3.0-beta] - 2026-09-25
 
 ### Added

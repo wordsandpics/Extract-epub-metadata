@@ -108,6 +108,7 @@ class ConfigWidget(QWidget):
 
         prefs = get_prefs()
         custom_columns = self.gui.library_view.model().custom_columns
+        self.custom_columns = custom_columns
 
         outer = QVBoxLayout(self)
         self.setLayout(outer)
@@ -116,6 +117,50 @@ class ConfigWidget(QWidget):
         tabs.addTab(self._build_extraction_tab(prefs, custom_columns), 'Extraction')
         tabs.addTab(self._build_anthology_tab(prefs, custom_columns), 'Anthology Status')
         outer.addWidget(tabs)
+        self.dest_column.currentIndexChanged.connect(self._refresh_report_columns)
+        self._refresh_saved_columns()
+        self._refresh_report_columns()
+
+    def _refresh_saved_columns(self):
+        # Prevent new conflicts even in Calibre versions whose configuration
+        # dialog does not support validate_before_accept.
+        current = self.dest_column.currentData()
+        self.dest_column.blockSignals(True)
+        self.dest_column.clear()
+        self.dest_column.addItem('', '')
+        for key, column in sorted(self.custom_columns.items()):
+            if column['datatype'] == 'comments' and key not in self.column_mapping:
+                self.dest_column.addItem(column['name'], key)
+        idx = self.dest_column.findData(current)
+        self.dest_column.setCurrentIndex(max(0, idx))
+        self.dest_column.blockSignals(False)
+        self.saved_column_note.setText(
+            'The previous Saved Metadata column is already mapped. Choose another column '
+            'or remove that custom mapping.' if current and idx < 0 else '')
+        self._refresh_report_columns()
+
+    def _refresh_report_columns(self, *_):
+        current = self.anthology_dest_column.currentData()
+        reserved = self.dest_column.currentData()
+        self.anthology_dest_column.clear()
+        self.anthology_dest_column.addItem('', '')
+        for key, column in sorted(self.custom_columns.items()):
+            if column['datatype'] == 'comments' and key != reserved:
+                self.anthology_dest_column.addItem(column['name'], key)
+        idx = self.anthology_dest_column.findData(current)
+        self.anthology_dest_column.setCurrentIndex(max(0, idx))
+
+    def validate(self):
+        reserved = self.dest_column.currentData()
+        if reserved and reserved in self.column_mapping:
+            from calibre.gui2 import error_dialog
+            error_dialog(self, 'Conflicting column settings',
+                         'The Saved Metadata column is also a custom mapping destination. '
+                         'Open Configure column mapping and choose a different destination.', show=True)
+            return False
+        return True
+
+    validate_before_accept = True
 
     def _build_extraction_tab(self, prefs, custom_columns):
         tab = QWidget(self)
@@ -177,9 +222,9 @@ class ConfigWidget(QWidget):
         label = QLabel('Destination Column:')
         tooltip = (
             'The custom column to write the per-fic status breakdown into. '
-            'Must be a Long Text column. Can be the same column as the '
-            'Saved Metadata Column on the Extraction tab, or a different '
-            'one.\n(Long Text columns only.)'
+            'Must be a Long Text column different from the Saved Metadata '
+            'column. The Saved Metadata column is reserved for raw single-story '
+            'metadata.\n(Long Text columns only.)'
         )
         label.setToolTip(tooltip)
         col_row.addWidget(label)
@@ -256,15 +301,17 @@ class ConfigWidget(QWidget):
         self.dest_column.setCurrentIndex(idx if idx >= 0 else 0)
         col_row.addWidget(self.dest_column)
 
-        self.overwrite = QCheckBox('Overwrite existing column value', self)
+        self.overwrite = QCheckBox('Overwrite existing Saved Metadata', self)
         self.overwrite.setToolTip(
             "If unchecked, books whose Saved Metadata column already has a "
             "value are skipped rather than overwritten.")
         self.overwrite.setChecked(prefs[KEY_OVERWRITE])
+        self.saved_column_note = _subtext_label('', self)
 
         inner = QVBoxLayout()
         inner.addWidget(subtext)
         inner.addLayout(col_row)
+        inner.addWidget(self.saved_column_note)
         inner.addWidget(self.overwrite)
         group.setLayout(inner)
         return group
@@ -283,10 +330,11 @@ class ConfigWidget(QWidget):
 
         subtext = _subtext_label('(Title, Author, Tags, Series, Comments...)', self)
 
-        self.mode2_overwrite = QCheckBox('Overwrite existing values', self)
+        self.mode2_overwrite = QCheckBox('Overwrite existing standard metadata', self)
         self.mode2_overwrite.setToolTip(
             "If unchecked, a field already populated in Calibre (e.g. an "
-            "existing Title or Tags) is left alone rather than overwritten.")
+            "existing Title or Tags) is left alone rather than overwritten. "
+            "Blank publication dates and Calibre's Unknown author are filled in.")
         self.mode2_overwrite.setChecked(prefs[KEY_MODE2_OVERWRITE])
 
         inner = QVBoxLayout()
@@ -323,10 +371,12 @@ class ConfigWidget(QWidget):
         return group
 
     def _open_column_mapping(self, custom_columns):
-        dialog = ColumnMappingDialog(self, custom_columns, self.column_mapping)
+        dialog = ColumnMappingDialog(self, custom_columns, self.column_mapping,
+                                     reserved_column=self.dest_column.currentData())
         if dialog.exec() == ColumnMappingDialog.DialogCode.Accepted:
             self.column_mapping = dialog.mapping()
             self._update_mode3_summary()
+            self._refresh_saved_columns()
 
     def _update_mode3_summary(self):
         n = len(self.column_mapping)

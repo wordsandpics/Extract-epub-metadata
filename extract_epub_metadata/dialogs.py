@@ -7,12 +7,16 @@ from qt.core import (
 from calibre_plugins.extract_epub_metadata.calibre_fields import (
     ALL_METADATA_KEYS, compatible_columns_for_key, field_help, field_label,
 )
+from calibre_plugins.extract_epub_metadata.anthology import format_summary, story_detail_lines
+from calibre_plugins.extract_epub_metadata.extractors._text import html_to_text
 
 
 def _format_field_dict(fields, sources=None):
     lines = []
     for key in sorted(fields):
         value = fields[key]
+        if key in ('description', 'comments') and isinstance(value, str):
+            value = html_to_text(value)
         if isinstance(value, list):
             value = '; '.join(str(v) for v in value)
         if sources is not None:
@@ -31,7 +35,8 @@ class BookResult:
     def __init__(self, book_id, title, fields, sources, blob,
                  identifier_url=None, identifier_already_set=False,
                  existing_column_value=None, standard_fields=None,
-                 custom_column_values=None, error=None):
+                 custom_column_values=None, error=None, standard_skipped=None,
+                 saved_write=None, notes=None, identifier_requested=True):
         self.book_id = book_id
         self.title = title
         self.fields = fields
@@ -43,35 +48,71 @@ class BookResult:
         self.standard_fields = standard_fields or {}
         self.custom_column_values = custom_column_values or {}
         self.error = error
+        self.standard_skipped = standard_skipped or {}
+        self.saved_write = bool(blob) if saved_write is None else saved_write
+        self.notes = notes or []
+        self.identifier_requested = identifier_requested
+        self.write_errors = []
+        self.written_fields = []
+
+    @property
+    def has_writes(self):
+        return bool(not self.error and (self.saved_write or self.standard_fields or
+                    self.custom_column_values or
+                    (self.identifier_url and not self.identifier_already_set)))
 
     def summary_lines(self):
         if self.error:
             return ['Error: %s' % self.error]
-        lines = []
+        lines = list(self.notes)
+        collection = self.fields.get('collectionType')
+        if collection:
+            lines.extend(['Collection: %s' % collection,
+                          'Collection URL: %s' % self.fields.get('collectionUrl', 'not recovered'),
+                          'Saved Metadata skipped: FanFicFare imports single stories, not collections.'])
         if self.identifier_url:
             note = ' (already set, not changed)' if self.identifier_already_set else ' (will be added)'
             lines.append('Story URL identifier: %s%s' % (self.identifier_url, note))
-        else:
+        elif not collection and self.identifier_requested:
             lines.append('Story URL identifier: not recovered -- FanFicFare '
                           'may not be able to pick an adapter for this book.')
 
-        if self.blob:
-            lines.append('')
-            lines.append('=== Saved Metadata Column ===')
-            if self.existing_column_value:
-                lines.append('(already has a value)')
-            lines.append('Recovered fields (source tier in brackets):')
-            lines.extend(_format_field_dict(self.fields, self.sources))
-
-        if self.standard_fields:
+        if self.standard_fields or self.standard_skipped:
             lines.append('')
             lines.append('=== Standard Calibre Fields ===')
             lines.extend(_format_field_dict(self.standard_fields))
+            if self.standard_skipped:
+                lines.append('Existing values kept; these fields will be skipped:')
+                lines.extend(_format_field_dict(self.standard_skipped))
 
         if self.custom_column_values:
             lines.append('')
             lines.append('=== Custom Column Mapping ===')
             lines.extend(_format_field_dict(self.custom_column_values))
+
+        if self.blob:
+            lines.extend(['', '=== Saved Metadata Column ===',
+                          'Will be written.' if self.saved_write else
+                          'Existing column value kept; Saved Metadata will be skipped.'])
+            lines.append('Recovered fields (source tier in brackets):')
+            lines.extend(_format_field_dict(self.fields, self.sources))
+
+        if collection:
+            lines.extend(['', '=== Recovered Collection Facts ==='])
+            lines.extend(_format_field_dict(
+                {k: v for k, v in self.fields.items()
+                 if k not in ('collectionRecords', 'collectionType')}, self.sources))
+            records = self.fields.get('collectionRecords', [])
+            if records:
+                lines.extend(['', '=== Individual Stories ===', format_summary(records)])
+                lines.extend(story_detail_lines(records))
+            else:
+                lines.append('Individual story metadata is not available in this EPUB.')
+        if not self.has_writes:
+            lines.extend(['', 'No changes will be written with the current settings.'])
+            if collection:
+                lines.append('Enable standard/custom-column updates, or use the anthology report '
+                             'action for embedded story details.')
 
         return lines
 
@@ -89,7 +130,9 @@ class PreviewDialog(QDialog):
 
         layout = QVBoxLayout(self)
 
-        intro = QLabel('Review extracted metadata. Uncheck any book to skip it.')
+        intro = QLabel('Review metadata found in the EPUB. Existing values are kept unless '
+                       'overwriting is enabled. Skipped fields are labelled below. '
+                       'Uncheck any book to skip it.')
         intro.setWordWrap(True)
         layout.addWidget(intro)
 
@@ -100,8 +143,10 @@ class PreviewDialog(QDialog):
         self.list_widget.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         for result in results:
             item = QListWidgetItem(result.title or ('Book %s' % result.book_id))
-            item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
-            item.setCheckState(Qt.CheckState.Unchecked if result.error else Qt.CheckState.Checked)
+            eligible = result.has_writes
+            if eligible:
+                item.setFlags(item.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+            item.setCheckState(Qt.CheckState.Checked if eligible else Qt.CheckState.Unchecked)
             item.setData(Qt.ItemDataRole.UserRole, result)
             if result.error:
                 item.setToolTip(result.error)
@@ -120,6 +165,9 @@ class PreviewDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+        self.write_button = buttons.button(QDialogButtonBox.StandardButton.Ok)
+        self.list_widget.itemChanged.connect(self._update_write_button)
+        self._update_write_button()
 
         if self.list_widget.count():
             self.list_widget.setCurrentRow(0)
@@ -131,12 +179,16 @@ class PreviewDialog(QDialog):
         result = current.data(Qt.ItemDataRole.UserRole)
         self.details.setPlainText('\n'.join(result.summary_lines()))
 
+    def _update_write_button(self, *_):
+        self.write_button.setEnabled(bool(self.selected_results()))
+
     def selected_results(self):
         selected = []
         for i in range(self.list_widget.count()):
             item = self.list_widget.item(i)
-            if item.checkState() == Qt.CheckState.Checked:
-                selected.append(item.data(Qt.ItemDataRole.UserRole))
+            result = item.data(Qt.ItemDataRole.UserRole)
+            if item.checkState() == Qt.CheckState.Checked and result.has_writes:
+                selected.append(result)
         return selected
 
 
@@ -147,7 +199,7 @@ class ColumnMappingDialog(QDialog):
     (calibre_fields.py::compatible_columns_for_key). Fields with no
     compatible column in this library aren't shown."""
 
-    def __init__(self, gui, custom_columns, current_mapping):
+    def __init__(self, gui, custom_columns, current_mapping, reserved_column=None):
         QDialog.__init__(self, gui)
         self.setWindowTitle('Extract Epub Metadata -- Custom Column Mapping')
         self.resize(600, 420)
@@ -161,7 +213,8 @@ class ColumnMappingDialog(QDialog):
 
         intro = QLabel(
             'Choose which column each extracted field should be written '
-            'to. Empty or not mapped fields will be skipped.')
+            'to. Empty or not mapped fields will be skipped. '
+            'The Saved Metadata column is reserved for raw metadata.')
         intro.setWordWrap(True)
         layout.addWidget(intro)
 
@@ -185,6 +238,7 @@ class ColumnMappingDialog(QDialog):
         form.addRow(header_field, header_column)
 
         self.rows = []
+        custom_columns = {k: v for k, v in custom_columns.items() if k != reserved_column}
         column_names = {key: col['name'] for key, col in custom_columns.items()}
         for metadata_key in sorted(ALL_METADATA_KEYS, key=field_label):
             column_keys = compatible_columns_for_key(metadata_key, custom_columns)
@@ -229,3 +283,13 @@ class ColumnMappingDialog(QDialog):
             if column_key:
                 result[column_key] = metadata_key
         return result
+
+    def accept(self):
+        selected = [combo.currentData() for _, combo in self.rows if combo.currentData()]
+        if len(selected) != len(set(selected)):
+            from calibre.gui2 import error_dialog
+            error_dialog(self, 'Conflicting mappings',
+                         'Each destination column can receive only one extracted field. '
+                         'Choose a different column for duplicate destinations.', show=True)
+            return
+        super().accept()
