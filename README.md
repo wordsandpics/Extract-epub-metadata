@@ -1,258 +1,100 @@
 # Extract EPUB Metadata
 
-Extract Epub Metadata recovers metadata already stored in **fanfiction EPUBs** in your
-Calibre library. It can save that data for FanFicFare, update standard Calibre fields,
-or fill custom columns. It does not download stories.
+Extract EPUB Metadata recovers metadata already stored in fanfiction EPUBs in your Calibre library. It can prepare metadata for FanFicFare, update standard Calibre fields, or fill custom columns. It does not download stories.
 
-It is useful when a story cannot be downloaded again, or when an EPUB came from outside
-your Calibre library without its metadata. What it can recover depends on what the EPUB
-contains.
+It’s useful when a story can’t be downloaded again or an EPUB is missing metadata in Calibre. What can be recovered depends on what the EPUB contains.
 
-> **Disclaimer:** this was shamelessly vibe-coded. It's provided as-is, and support is minimal —
-> issues and PRs are welcome, but don't expect a fast turnaround. Back up your library (or at
-> least test on a couple of books first) before relying on it.
+> Provided as-is, with limited support. Please back up your library or try a few books first. Issues and pull requests are welcome, but responses may be slow.
 
-This plugin is built and tested primarily around [Archive of Our Own](https://archiveofourown.org)
-downloads. AO3 EPUBs downloaded with
-[ao3downloader](https://github.com/nianeyna/ao3downloader) are explicitly supported, including
-coauthored works, completed works, and ongoing works with known or unknown chapter totals.
-fanfiction.net EPUBs from [fichub.net](https://fichub.net) or the
-[WebToEpub](https://github.com/dteviot/WebToEpub) browser extension are also explicitly supported,
-as are AO3 works saved from an [Internet Archive Wayback Machine](https://web.archive.org)
-snapshot, either with WebToEpub or with the
-[Save as eBook](https://chromewebstore.google.com/detail/save-as-ebook/haaplkpoiimngbppjihnegfmpejdnffj)
-browser extension (which saves the whole page). With Save as eBook, save the work's
-"Entire Work" snapshot (`?view_full_work=true`) — otherwise you only get the chapter on screen.
-AO3's own **PDF** downloads, converted to EPUB (e.g. in Calibre), are supported too.
-PDF-reflow EPUBs with a clearly labelled opening header can also supply rating, fandom,
-pairing, warning text, and exact word counts. Explicit original LiveJournal post links in
-archive notices are recovered. This limited fallback does not infer publication dates or
-completion status, and approximate counts such as `~3400` are skipped.
-Recovered LiveJournal metadata is intended for standard metadata and custom-column updates.
-An installed FanFicFare adapter registry is checked offline when staging Saved Metadata,
-using the existing Calibre URL/URI first, then the recovered EPUB URL. A Wayback URI is
-bypassed when the original URL will be added as a URL identifier. Unsupported URLs are
-skipped with an explanation. Without FanFicFare installed, support for
-other hosts is marked as unverified rather than assumed absent.
-Other sites and tools may work too — the extraction degrades gracefully rather than erroring out —
-but haven't been tested, so your mileage may vary.
+## Supported EPUBs
 
-It reads the EPUB and recovers as much metadata as possible (title, author, fandom, relationships,
-characters, tags, rating, warnings, word/chapter counts, dates, story URL, etc.), then does
-whichever of the following you've enabled:
+The plugin is built and tested primarily with Archive of Our Own (AO3) EPUBs, including downloads made with [ao3downloader](https://github.com/nianeyna/ao3downloader). It also supports:
 
-1. **Save all extracted metadata** (on by default) — stores the recovered metadata in a
-   Saved Metadata column using FanFicFare's native format. You then run FFF's existing
-   **"Update Calibre Metadata from Saved Metadata Column"** action to process it as if you were downloading it, using your
-   existing `personal.ini` replacements, custom-column mappings, and cover generation. This mode
-   deliberately does not re-implement any of FFF's metadata processing.
+- fanfiction.net EPUBs from [fichub.net](https://fichub.net) and the [WebToEpub browser extension](https://github.com/dteviot/WebToEpub)
+- AO3 works saved from a [Wayback Machine](https://web.archive.org) snapshot using WebToEpub or [Save as eBook](https://chromewebstore.google.com/detail/save-as-ebook/haaplkpoiimngbppjihnegfmpejdnffj)
+- AO3 PDF downloads converted to EPUB
+- EPUBs with a clearly labelled opening header from a PDF conversion, for a limited set of fields
 
-2. **Update standard Calibre metadata** (off by default) — writes directly to your library's
-   Title, Author, Tags, Series and Comments using FanFicFare's default AO3 metadata mapping. No
-   separate FFF update step is required. This is a simpler path intended for users who
-   don't rely on extensive `personal.ini` customisation.
+For Save as eBook, save the work’s **Entire Work** snapshot (`?view_full_work=true`); otherwise, the EPUB may contain only the chapter currently on screen.
 
-3. **Update custom columns** (off by default) — writes selected recovered metadata fields (such as
-   fandom, word count or rating) directly to custom columns you choose.
+Other sites and EPUB layouts may work, but haven’t been tested. The plugin skips metadata it can’t confidently recognize, so always review the preview before writing.
 
-The three options are independent and can be combined however you like. By default, only the
-Saved Metadata option is enabled because it modifies only a single custom column. The
-other two write more changes immediately to your metadata, so they're opt-in.
+## What it writes
 
-## What this plugin does *not* do
+The three write modes are independent and can be combined:
 
-It doesn't download stories or replace FanFicFare — extraction only works with metadata already
-present in the EPUB itself. And with only mode 1 enabled (the default), it never touches your
-library's Title/Tags/Comments/etc. directly; it just reconstructs FanFicFare's Saved Metadata
-column so FFF can do its thing. 
+1. **Save extracted metadata** (on by default) stores metadata in FanFicFare’s Saved Metadata format. You can then run FanFicFare’s **Update Calibre Metadata from Saved Metadata Column** action to apply your existing FanFicFare settings, including `personal.ini` replacements and custom-column mappings.
+2. **Update standard Calibre metadata** (off by default) writes fields such as Title, Author, Tags, Series, and Comments using FanFicFare’s default AO3 mapping.
+3. **Update custom columns** (off by default) writes selected recovered fields, such as fandom, word count, or rating, to columns you choose.
 
-## Known limitations
+The default mode only changes the Saved Metadata column. Standard fields and mapped columns are opt-in.
 
-Coverage uses real EPUBs from AO3, ao3downloader, fichub.net, WebToEpub, Wayback snapshots, converted AO3 PDFs,
-epubmerge anthologies, and files obtained from Reddit whose creation tools are unknown.
-The expanded checks do not cover every EPUB layout; review the preview before writing.
+The plugin only reads metadata already in the EPUB; it does not download stories or replace FanFicFare. When only Saved Metadata is enabled, it does not directly change Title, Tags, Comments, or other standard Calibre fields.
 
-- Crossover fics (multiple fandoms) downloaded from fanfiction.net via WebToEpub will only get
-  the *last* fandom in the site's breadcrumb — there's no fixture to verify multi-fandom handling
-  against yet, so rather than guess, only the single-fandom case is handled.
-- Other sites and layouts may have incomplete coverage. Extraction is designed to
-  degrade gracefully (skip a field rather than guess at it) when it doesn't recognize a page's
-  layout, but "graceful" can still mean a field silently isn't recovered rather than erroring
-  loudly — always check the preview before writing.
+## Install
 
-## How it works
+Requires **Calibre 6.0 or newer**. The plugin has been checked on Calibre 6.0 and 9.15 for macOS, with additional user testing in Calibre Zen.
 
-Metadata is extracted from multiple sources, preferring the most complete source first:
+Download `extract_epub_metadata-v1.0.0.zip` from the [Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases). In Calibre, choose **Preferences → Plugins → Load plugin from file** and select the downloaded ZIP.
 
-1. Standard EPUB/OPF metadata (title, authors, language, description, an explicit story-URL
-   identifier, `dc:source`).
-2. A title page, if the EPUB has one — either FanFicFare's own generated page, or a
-   fichub.net-style front-matter page (a similar but not identical layout).
-3. AO3's own native front-matter preface, if the EPUB was downloaded directly from
-   [Archive of Our Own](https://archiveofourown.org) — or AO3's work-page metadata block, as
-   saved by WebToEpub.
-4. AO3's preface page in an AO3 PDF download that was converted to EPUB (read from the text, since
-   the conversion keeps no structure).
-5. fanfiction.net's own native story-info page, as saved verbatim by the WebToEpub browser
-   extension.
-6. A generic scan for the first recognized fanfic-site link, as a last-resort way to recover the
-   story URL.
+Use the ZIP under the release’s **Assets**. GitHub’s automatic **Source code (zip)** archive is not installable by Calibre.
 
-Before the final link scan, a limited fallback reads consecutive labelled fields at the start
-of EPUB content explicitly marked as a PDF conversion. It stops at author notes or story text.
+## Configure
 
-Earlier sources take precedence; later sources only fill in missing values.
+Open **Preferences → Plugins → Extract EPUB Metadata → Customize plugin**.
 
-**Wayback Machine copies.** When the story URL is a `web.archive.org` snapshot, the plugin uses
-the original URL it wraps (e.g. `https://archiveofourown.org/works/…`) as the story URL, so site,
-story ID and author link are recovered and FanFicFare picks the right site adapter. The
-snapshot URL itself is kept in the Saved Metadata as `waybackUrl` (and is available to map to a
-custom column), since it may be the only way back to that exact copy. Stats (status, chapter and
-word counts) reflect the snapshot's date, not the live site. FanFicFare stores `waybackUrl` but only shows
-it to `personal.ini` templates if you add it to `extra_valid_entries`.
+- **Save extracted metadata:** Choose the Long Text custom column also configured as FanFicFare’s Saved Metadata column. Existing values are kept unless you enable overwrite.
+- **Update standard metadata:** Existing values are kept unless you enable overwrite. Blank publication dates and Calibre’s “Unknown” author are treated as empty.
+- **Update custom columns:** Map supported custom columns to compatible recovered fields. Unmapped columns are left alone.
+- **Add missing story-URL identifier:** On by default; adds a `url` identifier only when one is missing.
+- **Preview before writing:** On by default; lets you review the changes before anything is written.
+- **Show confirmation after writing:** On by default; summarizes the results.
 
-When a story URL is recovered, the plugin can also add it as a `url` identifier (if one doesn't
-already exist). FanFicFare uses this identifier to determine which site adapter to use when it
-later imports the Saved Metadata — relevant to mode 1's round trip, but harmless to leave on
-regardless of which modes you use.
+When FanFicFare is installed, the plugin checks its local adapter registry before staging Saved Metadata. It uses the Calibre URL or URI first, then the URL recovered from the EPUB. Unsupported URLs are skipped with an explanation. Without FanFicFare, support for other hosts is marked unverified.
 
-## Installing
+## Use
 
-Requires **Calibre 6.0 or newer**. The current code has been checked on official Calibre 6.0
-and 9.15 on macOS, plus user testing in Calibre Zen. Older Calibre versions are not supported.
+Select one or more books with an EPUB and choose **Extract Metadata** from the toolbar button. Review the preview and confirm the changes. If you used the Saved Metadata mode, run FanFicFare’s **Update Calibre Metadata from Saved Metadata Column** afterward.
 
-Download the latest `extract_epub_metadata-*.zip` from the
-[Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases), then in the Calibre
-GUI: Preferences → Plugins → Load plugin from file, and pick the zip you downloaded.
-
-> **Download the right file.** On the release page, use the zip listed under **Assets** named
-> `extract_epub_metadata-v1.0.0.zip` — *not* the "Source code (zip)" link GitHub adds
-> automatically. The source download nests the plugin inside a folder, and Calibre will reject it
-> with *"does not contain a top-level `__init__.py` file"*.
-
-If you're working from a clone of this repository instead:
-
-```sh
-# from this directory
-/Applications/calibre.app/Contents/MacOS/calibre-customize -b extract_epub_metadata
-```
-
-(On Linux/Windows, use whichever `calibre-customize` is on your `PATH`.)
-
-## Configuring
-
-In Preferences → Plugins → Extract EPUB Metadata → Customize plugin, each mode is its own
-checkable section:
-
-- **Save all extracted metadata** (default on)
-  - **Saved Metadata Column** — a Long Text ("comments") custom column. This should be the same
-    column configured as FanFicFare's Saved Metadata column.
-  - **Overwrite existing Saved Metadata** — off by default; books with an existing value are skipped.
-    Enabling it also refreshes the extraction timestamp, so an otherwise unchanged book can
-    still count as updated on a repeated run.
-- **Update standard Calibre metadata** (default off)
-  - **Overwrite existing standard metadata** — off by default; a field already populated in
-    Calibre (e.g. an existing Title or Tags) is left alone. Blank publication dates and Calibre's
-    localized “Unknown” author are treated as empty and filled in. Other existing authors,
-    including an imported site organization or combined coauthors, require overwrite to replace.
-- **Update custom columns** (default off)
-  - **Configure column mapping…** opens a dialog listing your custom columns (of a supported
-    datatype: text, comments, enumeration, series, bool, int, float, datetime), each with a
-    dropdown of recovered-metadata fields compatible with that column's type. Leave a column
-    "(not mapped)" to never touch it.
-
-Independent of all three modes:
-
-- **Add missing story-URL identifier** — on by default; only adds a `url` identifier when the
-  book doesn't already have one.
-- **Preview before writing** — on by default; review everything that would be written, across
-  whichever modes are enabled, before anything is written.
-- **Show confirmation after writing** — on by default; shows a small popup summarizing how many
-  books were updated. Turn off to skip it and return straight to Calibre.
-
-## Usage
-
-Select one or more books with an EPUB, click the toolbar button (or use the dropdown arrow next
-to it for the options below), review the preview, and confirm. If you're using mode 1 (Saved
-Metadata Column), follow up by running FanFicFare's **Update Calibre Metadata from Saved Metadata
-Column** action. If you're only using modes 2/3, your library fields are already updated — no
-further action needed.
-
-The toolbar dropdown has three options:
-- **Extract Metadata** — the main action described above.
-- **Extract story status from anthology** — see below.
-- **Configure…** — opens this plugin's settings directly, without needing to go through
-  Preferences → Plugins first.
+The toolbar menu also includes **Extract story status from anthology** and **Configure…**.
 
 ## Anthologies and series collections
 
-**Extract Metadata** recognizes epubmerge anthologies and EPUBs whose primary URL is a
-`/series/<id>` URL. A series link mentioned inside an ordinary story does not make it an anthology.
-Collection title, authors, language, tags, and description come from the outer EPUB metadata.
-An outer description may be a generated contents list rather than author-written notes.
+**Extract Metadata** recognizes epubmerge anthologies and EPUBs whose primary URL is a series URL. A story that merely links to a series is still treated as an ordinary story.
 
-Embedded epubmerge stories can supply individual authors, URLs, summaries, dates, statuses,
-and counts. The preview shows those details. WebToEpub series files may preserve only a saved
-series page; the plugin uses its explicit work count, word total, completion flag, and dates
-when available, without inventing individual story records.
+Collection title, authors, language, tags, and description come from the outer EPUB metadata. Embedded stories may provide individual authors, URLs, summaries, dates, statuses, and counts. WebToEpub series EPUBs may contain only a saved series page; in that case, the plugin uses explicit collection totals and dates when available rather than inventing individual story details.
 
-The ordinary **Word Count** mapping records the total for the whole anthology. A calculated
-total requires a reliable count for every embedded story; a saved series page can also supply
-an explicit total. Additional collection mappings cover story/work count, completed count,
-unknown statuses, total chapters, collection URL, and series dates.
-Completed-story counts mean known completed stories; unknown statuses are counted separately.
-If every story's status is unknown, the completed count is omitted.
+The ordinary **Word Count** mapping uses the total for the collection. A calculated total is written only when every embedded story has a reliable count. Additional collection fields include work count, completed count, unknown statuses, total chapters, collection URL, and series dates.
 
-FanFicFare's **Update Calibre Metadata from Saved Metadata Column** requires one story URL,
-so this plugin skips Saved Metadata for collections and explains why in the preview. Enable
-standard metadata or custom-column updates to write collection data. Existing anthology
-identifiers are preserved. Ratings, warnings, and story summaries stay attached to each story
-in the preview rather than becoming collection-wide values.
+FanFicFare’s Saved Metadata import expects one story URL, so Saved Metadata is skipped for collections. Use standard metadata or custom-column updates instead. Ratings, warnings, and summaries remain associated with individual stories rather than being combined into collection-wide values.
 
-The preview lists standard fields first, then custom columns, then Saved Metadata. It marks
-existing standard values that will be kept when overwrite is off. Books with nothing to write
-cannot be selected for writing. Confirmation counts books whose data actually changed;
-write errors identify the book and any fields already changed.
-
-The Saved Metadata column is reserved: custom mappings and the anthology report cannot use
-it as their destination.
+Existing anthology identifiers are preserved. Collection previews show which values will be written or kept; books with no eligible changes can’t be selected for writing.
 
 ### Anthology status report
 
-FanFicFare can bundle several separately-downloaded fics into one EPUB (via `epubmerge`) — e.g. every fic in an AO3 series. The bundle's own metadata only ever carries **one** completion status for the whole thing, manually set by the author,  with no way to tell if it's an unfinished anthology made up of completed works, or having incomplete works too. This action recovers each individual fic's own status instead, by reading each one's front-matter page inside the bundle (the same page FanFicFare itself generates per fic), and writes a per-fic breakdown into a column you choose:
+This separate action reads the status of individual stories inside epubmerge anthologies and writes a compact report to a column you choose. It has its own destination, overwrite, preview, and confirmation settings on the **Anthology Status** tab.
 
-```
-6/7 fics complete.
+The report includes completion counts and, when available, story authors, URLs, dates, chapter counts, and word counts. Long summaries, ratings, and warnings appear in the detailed preview. Unknown statuses are reported separately. Non-anthology books are skipped with an explanation.
 
-1. In Arduis Fidelis 1 -- Completed (12 ch, 17,673 words)
-...
-7. In Arduis Fidelis 7 -- In-Progress (110 ch, 300,469 words)
-```
+## Known limitations
 
-This is a separate, independent action from the main metadata extraction above — it has its own settings (its own destination column, overwrite, preview, and show-confirmation toggles) on the **Anthology Status** tab of this plugin's configuration. Running it on a book that isn't an epubmerge-bundled anthology just skips that book with an explanatory note rather than erroring, so you can select a mix of anthologies and regular books at once.
+- fanfiction.net crossover EPUBs made with WebToEpub currently recover only the last fandom in the site breadcrumb.
+- Other sites and EPUB layouts may yield incomplete metadata. A field may be skipped without an error if its format isn’t recognized.
+- The PDF-reflow fallback does not infer publication dates or completion status, and skips approximate counts such as `~3400`.
+- For Wayback snapshots, the plugin uses the original story URL as the story URL and retains the snapshot URL separately as `waybackUrl`. Status and counts reflect the snapshot date. FanFicFare exposes `waybackUrl` to `personal.ini` templates only if you add it to `extra_valid_entries`.
 
-The compact report also includes authors, story URLs, and dates when available. Long summaries,
-ratings, and warnings appear only in the detailed preview. Unknown completion statuses are
-reported separately.
+Always review the preview before writing.
 
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).
 
-## Development
+## Running tests
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for architecture, design rationale, and the FanFicFare
-internals research behind several of the trickier fixes.
+Run the standard-library test suite with:
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
 
-The test suite is stdlib-only (`unittest`, `xml.etree.ElementTree`) and runs without Calibre
-installed, using a minimal stub in `tests/calibre_stub/` so
-`extract_epub_metadata/__init__.py` can be imported outside a real Calibre environment. It
-runs against real fixtures in `tests/fixtures/`, including an actual AO3-downloaded EPUB and a
-real Saved Metadata column value.
-
-One test (`test_round_trips_through_fanficfare_load_html_metadata`) additionally verifies against
-FanFicFare's own installed `load_html_metadata()` when available, and skips cleanly otherwise.
+The suite runs without Calibre installed and uses EPUB fixtures in `tests/fixtures/`. An optional test also checks FanFicFare’s metadata loader when FanFicFare is installed.
