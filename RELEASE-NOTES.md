@@ -31,12 +31,12 @@ Calibre 6.0 were not rechecked for this release.
 ## Notes
 
 - EPUB remains preferred when a book has both EPUB and TXT.
-- Recovery depends on the saved file's layout and available fields; TXT support
+- Recovery depends on the saved file’s layout and available fields; TXT support
   does not cover every archive format. Missing URLs and ambiguous metadata are
   not guessed.
 - Enable **Update standard Calibre metadata** to write recovered author names to
   Authors. Existing values are kept unless standard overwrite is enabled.
 - Direct writes do not apply FanFicFare personal.ini transformations. Run
-  FanFicFare's Update from Saved action afterward if you use those rules.
+  FanFicFare’s Update from Saved action afterward if you use those rules.
 - The plugin does not download stories. The installable ZIP includes only plugin
-  files; the repository's public test examples are synthetic.
+  files; the repository’s public test examples are synthetic.
