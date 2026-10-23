@@ -59,6 +59,9 @@ All public fixtures contain invented metadata and short placeholder text. Their 
 
 ## Rebuild and check
 
+For format-specific behavior and isolated Calibre test instructions, see
+[Format notes and testing](DEVELOPMENT.md).
+
 ```sh
 python3 tests/build_fixtures.py
 python3 -m unittest discover -s tests -v
