@@ -1,16 +1,16 @@
 """
 Native fanfiction.net story-info HTML, scraped verbatim by WebToEpub
 (https://github.com/dteviot/WebToEpub) into its own "Information" page --
-confirmed against tests/fixtures/Isolation - Bex-chan.epub. Unlike
+confirmed against tests/fixtures/ffnet-webtoepub-profile.epub. Unlike
 fichub.net's own paraphrased front matter (see fff_titlepage.py's
 <p>Label: value</p> handling), this is fanfiction.net's actual website
 markup (a `<div id="profile_top">`), including its own long-standing
 "story stats" line:
 
-    Rated: Fiction M - English - Romance/Angst - Hermione G., Draco M. -
+    Rated: Fiction M - English - Romance/Angst - Test Character A, Test Character B -
     Chapters: 49 - Words: 284,050 - Reviews: 19,021 - Favs: 39,196 -
     Follows: 20,504 - Updated: 1/5/2020, 3:12:37 AM -
-    Published: 9/2/2010, 2:43:45 PM - Status: Complete - id: 6291747
+    Published: 9/2/2010, 2:43:45 PM - Status: Complete - id: 98000184
 
 Language/genre/characters have NO labels here -- they're three bare
 values in a fixed position, right after "Rated: <rating>" and before
@@ -22,9 +22,9 @@ unset in that case rather than risk a wrong assignment. Every other
 
 The fandom itself isn't in that stats line at all -- it's fanfiction.net's
 own breadcrumb, a sibling of `#profile_top` rather than inside it:
-`<div id="pre_story_links">...<a>Books</a> &gt; <a>Harry Potter</a></div>`.
+`<div id="pre_story_links">...<a>Books</a> &gt; <a>Synthetic Fandom</a></div>`.
 The last link's text is the fandom (confirmed against
-tests/fixtures/isolation.epub, a single-fandom story). For a crossover,
+tests/fixtures/ffnet-webtoepub-profile.epub, a single-fandom story). For a crossover,
 fanfiction.net's breadcrumb has more segments ("Books > A > Crossover >
 B") -- only the last is taken here since there's no fixture to verify
 crossover handling against; that's a known, deliberate limitation rather
@@ -162,7 +162,7 @@ def extract_ffnet_infopage(zf):
             # Tags category from 'category, fandoms' -- but fanfiction.net
             # has no such override, so FFF's global default just uses the
             # raw 'category' key directly for it (per its own
-            # defaults.ini comment: "Sometimes Harry Potter is a category
+            # defaults.ini comment: "Sometimes Synthetic Fandom is a category
             # and Fantasy a genre. (fanfiction.net)"). Without this, FFF's
             # own "Update Calibre Metadata from Saved Metadata Column"
             # action recomputes Tags without ever seeing the fandom at

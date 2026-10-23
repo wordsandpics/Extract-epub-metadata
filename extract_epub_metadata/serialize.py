@@ -30,9 +30,13 @@ Format, per key in self.metadata (sorted alphabetically), skipping keys
 starting with `calibre_` and `output_css`:
     <p><span class='label'>{label}</span>: <div class='{classes}' id='{key}'>{value}</div><p>
 - plain string  -> classes='metadata',          value verbatim (may itself be HTML)
-- datetime/date -> classes='metadata datetime',  value = v.isoformat()
+- datetime/date -> classes='metadata datetime',  value = ISO date/time
 - list          -> classes='metadata list',      value = <ul>\\n<li>a</li>\\n<li>b</li>\\n</ul>
 - int           -> classes='metadata int',       value = raw int (also used for True/False)
+
+Aware datetimes are normalized to UTC without an offset suffix because FFF's
+loader accepts only naive ISO values. A companion `<key>SourceTimestamp` text
+entry preserves the original timestamp including its offset.
 
 Read back by fanficfare.story.Story.load_html_metadata(): BeautifulSoup +
 html5lib, `soup.find_all('div', 'metadata')`, branching on the `class`
@@ -81,6 +85,9 @@ LABELS = {
     'datePublished': 'Published',
     'dateUpdated': 'Updated',
     'dateCreated': 'Packaged',
+    'datePublishedSourceTimestamp': 'Published source timestamp',
+    'dateUpdatedSourceTimestamp': 'Updated source timestamp',
+    'dateCreatedSourceTimestamp': 'Packaged source timestamp',
     'formatname': 'File Format',
     'formatext': 'File Extension',
 }
@@ -112,9 +119,17 @@ def serialize_saved_metadata(fields):
     """
     if fields.get('collectionType'):
         raise ValueError('FanFicFare Saved Metadata supports single stories, not collections.')
+    # FFF's loader accepts only dates or naive ISO datetimes. Preserve the
+    # original offset-bearing timestamp alongside a compatible UTC value;
+    # simply dropping tzinfo would change the instant for non-UTC offsets.
+    saved_fields = dict(fields)
+    for key, value in fields.items():
+        if isinstance(value, datetime.datetime) and value.utcoffset() is not None:
+            saved_fields.setdefault(key + 'SourceTimestamp', value.isoformat())
+            saved_fields[key] = value.astimezone(datetime.timezone.utc).replace(tzinfo=None)
     blocks = []
-    for key in sorted(fields.keys()):
-        value = fields[key]
+    for key in sorted(saved_fields.keys()):
+        value = saved_fields[key]
         if value in (None, '', [], ()):
             continue
         label = LABELS.get(key, _default_label(key))

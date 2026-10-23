@@ -130,7 +130,7 @@ class PreviewDialog(QDialog):
 
         layout = QVBoxLayout(self)
 
-        intro = QLabel('Review metadata found in the EPUB. Existing values are kept unless '
+        intro = QLabel('Review metadata found in the book. Existing values are kept unless '
                        'overwriting is enabled. Skipped fields are labelled below. '
                        'Uncheck any book to skip it.')
         intro.setWordWrap(True)

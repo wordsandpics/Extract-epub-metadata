@@ -1,20 +1,20 @@
 """
 Tier "3c": AO3's own *PDF* download, converted to EPUB (e.g. by Calibre) --
-confirmed against tests/fixtures/game_changer.epub. The PDF keeps AO3's
+confirmed against tests/fixtures/ao3-pdf-wrapped-preface.epub. The PDF keeps AO3's
 standard preface page, but conversion flattens it to one block element per
 printed line, with no structure left at all:
 
     <h2>Posted originally on the<a> Archive of Our Own</a> at</h2>
-    <p><a href="http://download.archiveofourown.org/works/8943052">http://...</a>.</p>
+    <p><a href="http://download.archiveofourown.org/works/98000260">http://...</a>.</p>
     <p>Rating:               <a>Mature</a></p>
-    <p>Character:            <a>Steve Rogers</a>, ... <a>George</a></p>
-    <p><a>Barnes (Marvel)</a></p>                        <- wrapped continuation
-    <p>Series:                Part 2 of<a href=".../series/611269"> Game Changer</a></p>
+    <p>Character:            <a>Test Character A</a>, ... <a>Test Character B</a></p>
+    <p><a>Synthetic Surname</a></p>                        <- wrapped continuation
+    <p>Series:                Part 2 of<a href=".../series/98000261"> Synthetic PDF Series</a></p>
     <p>Stats: <span>Published: 2016-12-21 Updated: 2017-10-10 Chapters: 3/? Words:</span></p>
     <p>15504</p>
     <p> </p>
-    <p><b>Game Changer: Overtime</b></p>
-    <p>by<a href=".../users/EloiseReed/pseuds/EloiseReed"> EloiseReed</a></p>
+    <p><b>Synthetic PDF Series: Overtime</b></p>
+    <p>by<a href=".../users/TestWriterPDF/pseuds/TestWriterPDF"> TestWriterPDF</a></p>
     <p>Summary</p>
     <p>...one <p> per printed line...</p>
 

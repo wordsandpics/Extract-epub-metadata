@@ -1,0 +1,2506 @@
+[
+  {
+    "name": "ao3-native-complete.epub",
+    "kind": "native",
+    "fields": {
+      "title": "Synthetic AO3 Native Complete",
+      "langcode": "en",
+      "description": "Synthetic ao3-native-complete summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000015",
+      "rating": "General Audiences",
+      "warnings": [
+        "Creator Chose Not To Use Archive Warnings"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom01"
+      ],
+      "ships": [
+        "TestPair01/TestPartner01",
+        "TestPair02 & TestPartner02"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter02",
+        "TestCharacter03"
+      ],
+      "freeformtags": [
+        "TestTag01",
+        "TestTag02",
+        "TestTag03",
+        "TestTag04",
+        "TestTag05",
+        "TestTag06",
+        "TestTag07",
+        "TestTag08",
+        "TestTag09"
+      ],
+      "language": "English",
+      "numWords": 1013,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2026-07-14T00:00:00",
+      "dateUpdated": "2026-07-14T00:00:00",
+      "author": [
+        "TestWriter01"
+      ],
+      "authorId": [
+        "TestWriter01"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter01/pseuds/TestWriter01"
+      ]
+    }
+  },
+  {
+    "name": "ao3-split-coauthors.epub",
+    "kind": "native",
+    "fields": {
+      "title": "Synthetic AO3 Split Coauthors",
+      "langcode": "en",
+      "description": "Synthetic ao3-split-coauthors summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000043",
+      "rating": "Explicit",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom02",
+        "TestFandom01"
+      ],
+      "ships": [
+        "TestPair03/TestPartner03"
+      ],
+      "characters": [
+        "TestCharacter04",
+        "TestCharacter05",
+        "TestCharacter06",
+        "TestCharacter07",
+        "TestCharacter08",
+        "TestCharacter09",
+        "TestCharacter10",
+        "TestCharacter02",
+        "TestCharacter11",
+        "TestCharacter12",
+        "TestCharacter01"
+      ],
+      "freeformtags": [
+        "TestTag10",
+        "TestTag11",
+        "TestTag12",
+        "TestTag13",
+        "TestTag14",
+        "TestTag15",
+        "TestTag16",
+        "TestTag17",
+        "TestTag18",
+        "TestTag19",
+        "TestTag20",
+        "TestTag21",
+        "TestGenre12"
+      ],
+      "language": "English",
+      "series": "TestSeries01 [4]",
+      "seriesUrl": "https://archiveofourown.org/series/98000044",
+      "numWords": 17674,
+      "chapterslashtotal": "5/10",
+      "numChapters": 5,
+      "numChaptersTotal": 10,
+      "status": "In-Progress",
+      "datePublished": "2026-09-17T00:00:00",
+      "dateUpdated": "2026-09-25T00:00:00",
+      "author": [
+        "TestWriter02",
+        "TestWriter03"
+      ],
+      "authorId": [
+        "TestWriter02",
+        "TestWriter03"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter02/pseuds/TestWriter02",
+        "https://archiveofourown.org/users/TestWriter03/pseuds/TestWriter03"
+      ]
+    }
+  },
+  {
+    "name": "ao3-anonymous-singular-tags.epub",
+    "kind": "native",
+    "fields": {
+      "title": "Synthetic AO3 Anonymous Singular Tags",
+      "author": [
+        "Anonymous"
+      ],
+      "langcode": "en",
+      "description": "Synthetic ao3-anonymous-singular-tags summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000101",
+      "rating": "Explicit",
+      "warnings": [
+        "Creator Chose Not To Use Archive Warnings"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom03"
+      ],
+      "ships": [
+        "TestPair04/TestPartner04"
+      ],
+      "freeformtags": [
+        "TestTag23",
+        "TestTag24",
+        "TestTag25",
+        "TestTag26",
+        "TestTag27",
+        "TestTag28",
+        "TestTag29",
+        "TestTag30",
+        "TestTag31",
+        "TestTag32",
+        "TestTag33",
+        "TestTag34",
+        "TestTag35",
+        "TestTag36",
+        "TestTag37",
+        "TestTag38",
+        "TestTag39",
+        "TestTag40",
+        "TestTag41",
+        "TestTag42",
+        "TestTag43",
+        "TestTag44",
+        "TestTag45",
+        "TestTag46",
+        "TestTag47",
+        "TestTag48",
+        "TestTag49",
+        "TestTag50",
+        "TestTag51",
+        "TestTag52",
+        "TestTag53",
+        "TestTag54",
+        "TestTag55",
+        "TestTag56",
+        "TestTag57",
+        "TestTag58",
+        "TestTag59",
+        "TestTag60",
+        "TestTag61",
+        "TestTag62",
+        "TestTag63",
+        "TestTag64",
+        "TestTag65",
+        "TestTag66",
+        "TestTag67",
+        "TestTag68",
+        "TestTag69",
+        "TestTag70",
+        "TestTag71",
+        "TestTag72",
+        "TestTag73",
+        "TestTag74",
+        "TestTag75",
+        "TestTag76"
+      ],
+      "language": "English",
+      "series": "TestSeries02 [1]",
+      "seriesUrl": "https://archiveofourown.org/series/98000102",
+      "numWords": 230038,
+      "chapterslashtotal": "13/?",
+      "numChapters": 13,
+      "status": "In-Progress",
+      "datePublished": "2026-04-16T00:00:00",
+      "dateUpdated": "2026-05-21T00:00:00"
+    }
+  },
+  {
+    "name": "fff-bold-packaged-date.epub",
+    "kind": "fff_bold",
+    "fields": {
+      "title": "Synthetic FFF Bold Packaged Date",
+      "author": [
+        "TestWriter04"
+      ],
+      "langcode": "en",
+      "description": "Synthetic fff-bold-packaged-date summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000107",
+      "category": [
+        "TestCategory01"
+      ],
+      "genre": [
+        "TestGenre01",
+        "M/M",
+        "TestGenre03",
+        "TestGenre04",
+        "TestGenre05"
+      ],
+      "characters": [
+        "TestCharacter13",
+        "TestCharacter14"
+      ],
+      "language": "English",
+      "status": "Completed",
+      "datePublished": "2019-06-09T00:00:00",
+      "dateUpdated": "2019-06-09T00:00:00",
+      "dateCreated": "2022-03-11T08:59:11",
+      "rating": "Teen And Up Audiences",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "numChapters": 1,
+      "numWords": 3419,
+      "ships": [
+        "TestPair05/TestPartner05"
+      ]
+    }
+  },
+  {
+    "name": "titlepage-paragraph-summary.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Paragraph Summary",
+      "author": [
+        "TestWriter05"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-paragraph-summary summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000113",
+      "fandoms": [
+        "TestFandom04"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2025-04-13T00:00:00",
+      "dateUpdated": "2025-04-13T00:00:00",
+      "numChapters": 1,
+      "chapterslashtotal": "1/1",
+      "numChaptersTotal": 1,
+      "numWords": 4066,
+      "ships": [
+        "TestPair06/TestPartner06"
+      ],
+      "freeformtags": [
+        "TestTag77",
+        "TestTag78"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "rating": "Mature",
+      "language": "en"
+    }
+  },
+  {
+    "name": "titlepage-unknown-total-41.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Unknown Total 41",
+      "author": [
+        "TestWriter06"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-unknown-total-41 summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000165",
+      "fandoms": [
+        "TestFandom05",
+        "TestFandom06"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2024-10-03T00:00:00",
+      "dateUpdated": "2026-05-13T00:00:00",
+      "numChapters": 41,
+      "chapterslashtotal": "41/?",
+      "numWords": 554172,
+      "ships": [
+        "TestPair07/TestPartner07",
+        "TestPair08/TestPartner08"
+      ],
+      "freeformtags": [
+        "TestTag79",
+        "TestTag80",
+        "TestTag81",
+        "TestTag82",
+        "TestTag83",
+        "TestTag15",
+        "TestTag84",
+        "TestTag85",
+        "TestTag86",
+        "TestTag87",
+        "TestTag88",
+        "TestTag89",
+        "TestTag90",
+        "TestGenre21",
+        "TestTag92",
+        "TestTag93",
+        "TestTag94",
+        "TestTag95",
+        "TestTag96",
+        "TestTag97",
+        "TestTag98",
+        "TestTag99",
+        "TestTag100",
+        "TestTag101",
+        "TestTag102",
+        "TestTag103",
+        "TestTag104",
+        "TestTag105",
+        "TestTag106",
+        "TestTag107",
+        "TestTag108",
+        "TestTag109",
+        "TestTag110",
+        "TestTag111",
+        "TestTag112",
+        "TestTag113",
+        "TestTag114",
+        "TestTag115",
+        "TestTag116",
+        "TestTag117",
+        "TestTag118",
+        "TestTag119",
+        "TestTag120",
+        "TestTag121",
+        "TestTag122",
+        "TestTag123",
+        "TestTag124",
+        "TestTag125"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "rating": "Explicit",
+      "language": "en"
+    }
+  },
+  {
+    "name": "titlepage-unknown-total-16.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Unknown Total 16",
+      "author": [
+        "TestWriter07"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-unknown-total-16 summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000176",
+      "fandoms": [
+        "TestFandom03"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2026-01-11T00:00:00",
+      "dateUpdated": "2026-05-26T00:00:00",
+      "numChapters": 16,
+      "chapterslashtotal": "16/?",
+      "numWords": 70281,
+      "ships": [
+        "TestPair04/TestPartner04"
+      ],
+      "freeformtags": [
+        "TestTag126",
+        "TestTag127",
+        "TestTag128",
+        "TestTag129",
+        "TestTag130",
+        "TestTag28",
+        "TestTag29",
+        "TestTag131",
+        "TestTag132",
+        "TestTag133"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "rating": "Teen And Up Audiences",
+      "language": "en"
+    }
+  },
+  {
+    "name": "fichub-ffnet-composite.epub",
+    "kind": "intro",
+    "fields": {
+      "title": "Synthetic Fichub FF.net Composite",
+      "author": [
+        "TestWriter08"
+      ],
+      "langcode": "en",
+      "description": "Synthetic fichub-ffnet-composite summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "status": "Completed",
+      "datePublished": "2010-03-30T00:00:00",
+      "dateUpdated": "2010-08-29T00:00:00",
+      "numWords": 191497,
+      "numChapters": 36,
+      "rating": "Fiction M",
+      "language": "English",
+      "genre": [
+        "TestGenre06"
+      ],
+      "characters": [
+        "TestCharacter15",
+        "TestCharacter16"
+      ],
+      "storyUrl": "https://www.fanfiction.net/s/98000181/1/Synthetic-Case"
+    }
+  },
+  {
+    "name": "ffnet-webtoepub-profile.epub",
+    "kind": "ffnet",
+    "fields": {
+      "title": "Synthetic FF.net Webtoepub Profile",
+      "author": [
+        "TestWriter08"
+      ],
+      "langcode": "en",
+      "storyUrl": "https://www.fanfiction.net/s/98000184/1/Synthetic-Case",
+      "fandoms": [
+        "TestFandom07"
+      ],
+      "category": [
+        "TestFandom07"
+      ],
+      "authorId": [
+        "98000185"
+      ],
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000185/Test-Writer"
+      ],
+      "rating": "Fiction M",
+      "numChapters": 49,
+      "numWords": 284050,
+      "dateUpdated": "2020-01-05T03:12:37",
+      "datePublished": "2010-09-02T14:43:45",
+      "status": "Completed",
+      "language": "English",
+      "genre": [
+        "TestGenre07"
+      ],
+      "characters": [
+        "TestCharacter16",
+        "TestCharacter15"
+      ],
+      "description": "Synthetic ffnet-webtoepub-profile summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  },
+  {
+    "name": "fff-cover-before-title.epub",
+    "kind": "fff_bold",
+    "fields": {
+      "title": "Synthetic FFF Cover Before Title",
+      "author": [
+        "TestWriter09"
+      ],
+      "langcode": "en",
+      "description": "Synthetic fff-cover-before-title summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://forums.spacebattles.com/threads/synthetic-cover-before-title.98000600/",
+      "category": [
+        "TestCategory02",
+        "TestCategory03",
+        "TestCategory04"
+      ],
+      "genre": [
+        "TestCategory02",
+        "TestGenre08",
+        "TestGenre09"
+      ],
+      "status": "In-Progress",
+      "dateCreated": "2026-03-09T16:37:08",
+      "numChapters": 139,
+      "numWords": 823304,
+      "language": "en"
+    }
+  },
+  {
+    "name": "ao3-wayback-information.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Wayback Information",
+      "author": [
+        "TestWriter10"
+      ],
+      "langcode": "en-US",
+      "storyUrl": "https://archiveofourown.org/works/98000216",
+      "rating": "Explicit",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom08"
+      ],
+      "ships": [
+        "TestPair09/TestPartner09",
+        "TestPair10/TestPartner10"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter17"
+      ],
+      "freeformtags": [
+        "TestTag134",
+        "TestTag135",
+        "TestTag136",
+        "TestTag137",
+        "TestTag138",
+        "TestTag139",
+        "TestTag140",
+        "TestTag141",
+        "TestTag142",
+        "TestTag143",
+        "TestTag144",
+        "Synthetic Wrapped Tag",
+        "TestTag146",
+        "TestTag147",
+        "TestTag148",
+        "TestTag149",
+        "TestTag150",
+        "TestTag78",
+        "TestTag151",
+        "TestTag152",
+        "TestTag153",
+        "TestTag154",
+        "TestTag155",
+        "TestTag156",
+        "TestTag157"
+      ],
+      "language": "English",
+      "numWords": 4674,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2016-03-06T00:00:00",
+      "dateUpdated": "2016-03-06T00:00:00",
+      "description": "Synthetic information summary starts here.\nSynthetic line one\nSynthetic line two\nabout\n\nSynthetic summary ends here.",
+      "waybackUrl": "https://web.archive.org/web/20171212114900/https://archiveofourown.org/works/98000216"
+    },
+    "identifier_scheme": "uri"
+  },
+  {
+    "name": "ao3-wayback-whole-page.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Wayback Whole Page",
+      "langcode": "en",
+      "storyUrl": "https://archiveofourown.org/works/98000236",
+      "author": [
+        "TestWriter11"
+      ],
+      "authorId": [
+        "TestWriter04"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestUser01/pseuds/TestWriter04"
+      ],
+      "rating": "Explicit",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom08",
+        "TestFandom02"
+      ],
+      "ships": [
+        "TestPair01/TestPartner01"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter02"
+      ],
+      "freeformtags": [
+        "TestTag158",
+        "TestTag95",
+        "TestTag159",
+        "TestTag160",
+        "TestTag161",
+        "TestTag162",
+        "TestTag163",
+        "TestTag164",
+        "TestTag165",
+        "TestTag166",
+        "TestTag167",
+        "TestTag168",
+        "TestTag141",
+        "TestTag169",
+        "TestTag170",
+        "TestTag171",
+        "TestTag172",
+        "TestTag173",
+        "TestTag174"
+      ],
+      "language": "English",
+      "numWords": 10722,
+      "chapterslashtotal": "3/3",
+      "numChapters": 3,
+      "numChaptersTotal": 3,
+      "status": "Completed",
+      "datePublished": "2018-05-17T00:00:00",
+      "dateUpdated": "2018-06-06T00:00:00",
+      "description": "Synthetic whole-page summary begins here.\n\nSynthetic whole-page summary ends here.",
+      "waybackUrl": "https://web.archive.org/web/20190411192321/https://archiveofourown.org/works/98000236?view_full_work=true"
+    }
+  },
+  {
+    "name": "ao3-pdf-wrapped-preface.epub",
+    "kind": "pdf",
+    "fields": {
+      "title": "Synthetic AO3 PDF Wrapped Preface",
+      "langcode": "en",
+      "storyUrl": "https://archiveofourown.org/works/98000260",
+      "rating": "Mature",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom09",
+        "TestFandom10"
+      ],
+      "ships": [
+        "TestPair11/TestPartner11"
+      ],
+      "characters": [
+        "TestCharacter18",
+        "TestCharacter19",
+        "TestCharacter20",
+        "Test Character Four (Synthetic)"
+      ],
+      "freeformtags": [
+        "TestGenre08",
+        "TestTag176",
+        "TestTag177",
+        "TestTag178",
+        "TestTag179",
+        "TestTag180",
+        "TestTag07",
+        "TestTag181",
+        "TestTag182",
+        "TestTag183",
+        "TestTag184",
+        "TestTag185",
+        "TestTag186",
+        "TestTag187"
+      ],
+      "series": "TestSeries03 [2]",
+      "seriesUrl": "https://archiveofourown.org/series/98000261",
+      "numWords": 15504,
+      "chapterslashtotal": "3/?",
+      "numChapters": 3,
+      "status": "In-Progress",
+      "datePublished": "2016-12-21T00:00:00",
+      "dateUpdated": "2017-10-10T00:00:00",
+      "author": [
+        "TestWriter12"
+      ],
+      "authorId": [
+        "TestWriter12"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter12/pseuds/TestWriter12"
+      ],
+      "description": "Synthetic ao3-pdf-wrapped-preface summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "language": "en"
+    }
+  },
+  {
+    "name": "opf-only-no-markers.epub",
+    "kind": "opf",
+    "fields": {
+      "title": "Synthetic OPF Only No Markers",
+      "author": [
+        "Test OPF Writer"
+      ],
+      "langcode": "en",
+      "description": "Synthetic OPF-only summary with no site markers.",
+      "language": "en"
+    }
+  },
+  {
+    "name": "anthology-multiple-authors.epub",
+    "kind": "anthology",
+    "fields": {
+      "title": "Synthetic Anthology Multiple Authors",
+      "author": [
+        "TestWriter14",
+        "TestWriter15"
+      ],
+      "langcode": "en",
+      "description": "Synthetic anthology-multiple-authors summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "collectionTags": [
+        "Synthetic Collection Tag 01",
+        "Synthetic Collection Tag 02",
+        "Synthetic Collection Tag 03",
+        "Synthetic Collection Tag 04",
+        "Synthetic Collection Tag 05",
+        "Synthetic Collection Tag 06",
+        "Synthetic Collection Tag 07",
+        "Synthetic Collection Tag 08",
+        "Synthetic Collection Tag 09",
+        "Synthetic Collection Tag 10",
+        "Synthetic Collection Tag 11",
+        "Synthetic Collection Tag 12",
+        "Synthetic Collection Tag 13",
+        "Synthetic Collection Tag 14",
+        "Synthetic Collection Tag 15",
+        "Synthetic Collection Tag 16",
+        "Synthetic Collection Tag 17",
+        "Synthetic Collection Tag 18",
+        "Synthetic Collection Tag 19",
+        "Synthetic Collection Tag 20",
+        "Synthetic Collection Tag 21",
+        "Synthetic Collection Tag 22",
+        "Synthetic Collection Tag 23",
+        "Synthetic Collection Tag 24",
+        "Synthetic Collection Tag 25",
+        "Synthetic Collection Tag 26",
+        "Synthetic Collection Tag 27",
+        "Synthetic Collection Tag 28",
+        "Synthetic Collection Tag 29",
+        "Synthetic Collection Tag 30",
+        "Synthetic Collection Tag 31",
+        "Synthetic Collection Tag 32",
+        "Synthetic Collection Tag 33",
+        "Synthetic Collection Tag 34",
+        "Synthetic Collection Tag 35",
+        "Synthetic Collection Tag 36",
+        "Synthetic Collection Tag 37",
+        "Synthetic Collection Tag 38",
+        "Synthetic Collection Tag 39",
+        "Synthetic Collection Tag 40",
+        "Synthetic Collection Tag 41",
+        "Synthetic Collection Tag 42",
+        "Synthetic Collection Tag 43",
+        "Synthetic Collection Tag 44",
+        "Synthetic Collection Tag 45",
+        "Synthetic Collection Tag 46",
+        "Synthetic Collection Tag 47",
+        "Synthetic Collection Tag 48",
+        "Synthetic Collection Tag 49",
+        "Synthetic Collection Tag 50",
+        "Synthetic Collection Tag 51",
+        "Synthetic Collection Tag 52",
+        "Synthetic Collection Tag 53",
+        "Synthetic Collection Tag 54",
+        "Synthetic Collection Tag 55",
+        "Synthetic Collection Tag 56",
+        "Synthetic Collection Tag 57",
+        "Synthetic Collection Tag 58",
+        "Synthetic Collection Tag 59",
+        "Synthetic Collection Tag 60",
+        "Synthetic Collection Tag 61",
+        "Synthetic Collection Tag 62",
+        "Synthetic Collection Tag 63",
+        "Synthetic Collection Tag 64",
+        "Synthetic Collection Tag 65",
+        "Synthetic Collection Tag 66",
+        "Synthetic Collection Tag 67",
+        "Synthetic Collection Tag 68",
+        "Synthetic Collection Tag 69",
+        "Synthetic Collection Tag 70",
+        "Synthetic Collection Tag 71",
+        "Synthetic Collection Tag 72",
+        "Synthetic Collection Tag 73",
+        "Synthetic Collection Tag 74",
+        "Synthetic Collection Tag 75",
+        "Synthetic Collection Tag 76",
+        "Synthetic Collection Tag 77",
+        "Synthetic Collection Tag 78",
+        "Synthetic Collection Tag 79",
+        "Synthetic Collection Tag 80",
+        "Synthetic Collection Tag 81",
+        "Synthetic Collection Tag 82",
+        "Synthetic Collection Tag 83",
+        "Synthetic Collection Tag 84",
+        "Synthetic Collection Tag 85",
+        "Synthetic Collection Tag 86",
+        "Synthetic Collection Tag 87",
+        "Synthetic Collection Tag 88",
+        "Synthetic Collection Tag 89",
+        "Synthetic Collection Tag 90",
+        "Synthetic Collection Tag 91",
+        "Synthetic Collection Tag 92",
+        "Synthetic Collection Tag 93",
+        "Synthetic Collection Tag 94",
+        "Synthetic Collection Tag 95",
+        "Synthetic Collection Tag 96",
+        "Synthetic Collection Tag 97",
+        "In-Progress",
+        "Synthetic Collection Tag 99"
+      ],
+      "collectionUrl": "https://archiveofourown.org/series/98000267",
+      "collectionRecords": [
+        {
+          "title": "Synthetic anthology-multiple-authors Story 1",
+          "storyUrl": "https://archiveofourown.org/works/98000268",
+          "status": "Completed",
+          "rating": "Teen And Up Audiences",
+          "warnings": "Creator Chose Not To Use Archive Warnings",
+          "numChapters": 1,
+          "numWords": 572,
+          "datePublished": "2022-03-01T00:00:00",
+          "dateUpdated": "2022-03-01T00:00:00",
+          "author": [
+            "TestWriter14"
+          ],
+          "description": "Synthetic embedded-story summary 1."
+        },
+        {
+          "title": "Synthetic anthology-multiple-authors Story 2",
+          "storyUrl": "https://archiveofourown.org/works/98000269",
+          "status": "Completed",
+          "rating": "Mature",
+          "warnings": "Graphic Depictions Of Violence",
+          "numChapters": 16,
+          "numWords": 16975,
+          "datePublished": "2022-03-02T00:00:00",
+          "dateUpdated": "2022-03-19T00:00:00",
+          "author": [
+            "TestWriter14"
+          ],
+          "description": "Synthetic embedded-story summary 2."
+        },
+        {
+          "title": "Synthetic anthology-multiple-authors Story 3",
+          "storyUrl": "https://archiveofourown.org/works/98000270",
+          "status": "Completed",
+          "rating": "Mature",
+          "warnings": "Creator Chose Not To Use Archive Warnings, Rape/Non-Con",
+          "numChapters": 12,
+          "numWords": 17688,
+          "datePublished": "2022-03-20T00:00:00",
+          "dateUpdated": "2022-04-05T00:00:00",
+          "author": [
+            "TestWriter14",
+            "TestWriter15"
+          ],
+          "description": "Synthetic embedded-story summary 3."
+        },
+        {
+          "title": "Synthetic anthology-multiple-authors Story 4",
+          "storyUrl": "https://archiveofourown.org/works/98000271",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Creator Chose Not To Use Archive Warnings",
+          "numChapters": 19,
+          "numWords": 27498,
+          "datePublished": "2022-04-06T00:00:00",
+          "dateUpdated": "2022-04-25T00:00:00",
+          "author": [
+            "TestWriter14",
+            "TestWriter15"
+          ],
+          "description": "Synthetic embedded-story summary 4."
+        },
+        {
+          "title": "Synthetic anthology-multiple-authors Story 5",
+          "storyUrl": "https://archiveofourown.org/works/98000272",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Creator Chose Not To Use Archive Warnings",
+          "numChapters": 18,
+          "numWords": 30416,
+          "datePublished": "2022-04-26T00:00:00",
+          "dateUpdated": "2022-07-08T00:00:00",
+          "author": [
+            "TestWriter14",
+            "TestWriter15"
+          ],
+          "description": "Synthetic embedded-story summary 5."
+        }
+      ],
+      "numWords": 93149
+    }
+  },
+  {
+    "name": "anthology-mixed-status.epub",
+    "kind": "anthology",
+    "fields": {
+      "title": "Synthetic Anthology Mixed Status",
+      "author": [
+        "TestWriter16"
+      ],
+      "langcode": "en",
+      "description": "Synthetic anthology-mixed-status summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "collectionTags": [
+        "Synthetic Collection Tag 01",
+        "Synthetic Collection Tag 02",
+        "Synthetic Collection Tag 03",
+        "Synthetic Collection Tag 04",
+        "Synthetic Collection Tag 05",
+        "Synthetic Collection Tag 06",
+        "Synthetic Collection Tag 07",
+        "Synthetic Collection Tag 08",
+        "Synthetic Collection Tag 09",
+        "Synthetic Collection Tag 10",
+        "Synthetic Collection Tag 11",
+        "Synthetic Collection Tag 12",
+        "Synthetic Collection Tag 13",
+        "Synthetic Collection Tag 14",
+        "Synthetic Collection Tag 15",
+        "Synthetic Collection Tag 16",
+        "Synthetic Collection Tag 17",
+        "Synthetic Collection Tag 18",
+        "Synthetic Collection Tag 19",
+        "Synthetic Collection Tag 20",
+        "Synthetic Collection Tag 21",
+        "Synthetic Collection Tag 22",
+        "Synthetic Collection Tag 23",
+        "Synthetic Collection Tag 24",
+        "Synthetic Collection Tag 25",
+        "Synthetic Collection Tag 26",
+        "Synthetic Collection Tag 27",
+        "Synthetic Collection Tag 28",
+        "Synthetic Collection Tag 29",
+        "Synthetic Collection Tag 30",
+        "Synthetic Collection Tag 31",
+        "Synthetic Collection Tag 32",
+        "Synthetic Collection Tag 33",
+        "Synthetic Collection Tag 34",
+        "Synthetic Collection Tag 35",
+        "Synthetic Collection Tag 36",
+        "Synthetic Collection Tag 37",
+        "Synthetic Collection Tag 38",
+        "Synthetic Collection Tag 39",
+        "Synthetic Collection Tag 40",
+        "Synthetic Collection Tag 41",
+        "Synthetic Collection Tag 42",
+        "Synthetic Collection Tag 43",
+        "Synthetic Collection Tag 44",
+        "Synthetic Collection Tag 45",
+        "Synthetic Collection Tag 46",
+        "Synthetic Collection Tag 47",
+        "Synthetic Collection Tag 48",
+        "Synthetic Collection Tag 49",
+        "Synthetic Collection Tag 50",
+        "Synthetic Collection Tag 51",
+        "Synthetic Collection Tag 52",
+        "Synthetic Collection Tag 53",
+        "Synthetic Collection Tag 54",
+        "Synthetic Collection Tag 55",
+        "Synthetic Collection Tag 56",
+        "Synthetic Collection Tag 57",
+        "Synthetic Collection Tag 58",
+        "Synthetic Collection Tag 59",
+        "Synthetic Collection Tag 60",
+        "Synthetic Collection Tag 61",
+        "Synthetic Collection Tag 62",
+        "Synthetic Collection Tag 63",
+        "Synthetic Collection Tag 64",
+        "Synthetic Collection Tag 65",
+        "Synthetic Collection Tag 66",
+        "Synthetic Collection Tag 67",
+        "Synthetic Collection Tag 68",
+        "Synthetic Collection Tag 69",
+        "Synthetic Collection Tag 70",
+        "Synthetic Collection Tag 71",
+        "Synthetic Collection Tag 72",
+        "Synthetic Collection Tag 73",
+        "Synthetic Collection Tag 74",
+        "Synthetic Collection Tag 75",
+        "Synthetic Collection Tag 76",
+        "Synthetic Collection Tag 77",
+        "Synthetic Collection Tag 78",
+        "Synthetic Collection Tag 79",
+        "Synthetic Collection Tag 80",
+        "Synthetic Collection Tag 81",
+        "Synthetic Collection Tag 82",
+        "Synthetic Collection Tag 83",
+        "Synthetic Collection Tag 84",
+        "Synthetic Collection Tag 85",
+        "Synthetic Collection Tag 86",
+        "Synthetic Collection Tag 87",
+        "Synthetic Collection Tag 88",
+        "Synthetic Collection Tag 89",
+        "Synthetic Collection Tag 90",
+        "Synthetic Collection Tag 91",
+        "Synthetic Collection Tag 92",
+        "Synthetic Collection Tag 93",
+        "Synthetic Collection Tag 94",
+        "Synthetic Collection Tag 95",
+        "Synthetic Collection Tag 96",
+        "In-Progress",
+        "Synthetic Collection Tag 98"
+      ],
+      "collectionUrl": "https://archiveofourown.org/series/98000275",
+      "collectionRecords": [
+        {
+          "title": "Synthetic anthology-mixed-status Story 1",
+          "storyUrl": "https://archiveofourown.org/works/98000276",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Rape/Non-Con, Underage Sex",
+          "numChapters": 12,
+          "numWords": 17673,
+          "datePublished": "2016-03-08T00:00:00",
+          "dateUpdated": "2016-03-12T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 1."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 2",
+          "storyUrl": "https://archiveofourown.org/works/98000277",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Rape/Non-Con",
+          "numChapters": 18,
+          "numWords": 15328,
+          "datePublished": "2016-03-12T00:00:00",
+          "dateUpdated": "2016-03-19T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 2."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 3",
+          "storyUrl": "https://archiveofourown.org/works/98000278",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Major Character Death, Rape/Non-Con",
+          "numChapters": 18,
+          "numWords": 18988,
+          "datePublished": "2016-03-20T00:00:00",
+          "dateUpdated": "2016-03-30T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 3."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 4",
+          "storyUrl": "https://archiveofourown.org/works/98000279",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Rape/Non-Con",
+          "numChapters": 37,
+          "numWords": 51870,
+          "datePublished": "2016-06-26T00:00:00",
+          "dateUpdated": "2016-06-26T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 4."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 5",
+          "storyUrl": "https://archiveofourown.org/works/98000280",
+          "status": "Completed",
+          "rating": "Explicit",
+          "numChapters": 56,
+          "numWords": 124736,
+          "datePublished": "2016-06-27T00:00:00",
+          "dateUpdated": "2017-01-25T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 5."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 6",
+          "storyUrl": "https://archiveofourown.org/works/98000281",
+          "status": "Completed",
+          "rating": "Explicit",
+          "warnings": "Rape/Non-Con",
+          "numChapters": 93,
+          "numWords": 300428,
+          "datePublished": "2017-02-02T00:00:00",
+          "dateUpdated": "2018-11-09T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 6."
+        },
+        {
+          "title": "Synthetic anthology-mixed-status Story 7",
+          "storyUrl": "https://archiveofourown.org/works/98000282",
+          "status": "In-Progress",
+          "numChapters": 110,
+          "numWords": 300469,
+          "dateUpdated": "2026-07-16T00:00:00",
+          "author": [
+            "TestWriter16"
+          ],
+          "description": "Synthetic embedded-story summary 7."
+        }
+      ],
+      "numWords": 829492
+    }
+  },
+  {
+    "name": "txt-compact-complete.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Complete",
+      "author": [
+        "TestWriter17"
+      ],
+      "category": [
+        "TestFandom11"
+      ],
+      "genre": [
+        "TestGenre10",
+        "TestGenre11"
+      ],
+      "language": "English",
+      "status": "Completed",
+      "datePublished": "2013-02-18T00:00:00",
+      "dateUpdated": "2013-02-18T00:00:00",
+      "dateCreated": "2013-08-31T15:04:34",
+      "rating": "K",
+      "numChapters": 1,
+      "numWords": 459,
+      "storyUrl": "http://www.fanfiction.net/s/98000286/1/",
+      "authorUrl": [
+        "http://www.fanfiction.net/u/98000287/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-complete summary.",
+      "fandoms": [
+        "TestFandom11"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-compact-packaged-date.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Packaged Date",
+      "author": [
+        "TestWriter18"
+      ],
+      "category": [
+        "TestFandom12"
+      ],
+      "genre": [
+        "TestGenre12",
+        "TestGenre13"
+      ],
+      "language": "English",
+      "status": "In-Progress",
+      "datePublished": "2014-06-08T00:00:00",
+      "dateUpdated": "2014-07-05T00:00:00",
+      "dateCreated": "2014-09-11T18:06:26",
+      "rating": "M",
+      "numChapters": 16,
+      "numWords": 66818,
+      "storyUrl": "https://www.fanfiction.net/s/98000291/1/",
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000292/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-packaged-date summary.",
+      "fandoms": [
+        "TestFandom12"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-compact-missing-url.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Missing URL",
+      "author": [
+        "TestWriter19"
+      ],
+      "category": [
+        "TestFandom12"
+      ],
+      "genre": [
+        "TestGenre12",
+        "TestGenre13"
+      ],
+      "language": "English",
+      "characters": [
+        "TestCharacter22",
+        "TestCharacter23"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2013-04-04T07:11:27",
+      "dateUpdated": "2013-08-02T00:12:07",
+      "dateCreated": "2016-04-26T14:49:04",
+      "rating": "T",
+      "numChapters": 7,
+      "numWords": 26036,
+      "description": "Synthetic txt-compact-missing-url summary.",
+      "fandoms": [
+        "TestFandom12"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-compact-spanish-ongoing.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Spanish Ongoing",
+      "author": [
+        "TestWriter20"
+      ],
+      "category": [
+        "TestFandom11"
+      ],
+      "genre": [
+        "TestGenre14",
+        "TestGenre15"
+      ],
+      "language": "Spanish",
+      "status": "In-Progress",
+      "datePublished": "2013-04-17T00:00:00",
+      "dateUpdated": "2013-06-18T00:00:00",
+      "dateCreated": "2013-09-24T17:53:16",
+      "rating": "T",
+      "numChapters": 1,
+      "numWords": 2196,
+      "storyUrl": "http://www.fanfiction.net/s/98000299/1/",
+      "authorUrl": [
+        "http://www.fanfiction.net/u/98000300/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-spanish-ongoing summary.",
+      "fandoms": [
+        "TestFandom11"
+      ],
+      "langcode": "es"
+    }
+  },
+  {
+    "name": "txt-compact-spanish-complete.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Spanish Complete — Café",
+      "author": [
+        "TestWriter20"
+      ],
+      "category": [
+        "TestFandom11"
+      ],
+      "genre": [
+        "TestGenre16",
+        "TestGenre11"
+      ],
+      "language": "Spanish",
+      "status": "Completed",
+      "datePublished": "2012-12-10T00:00:00",
+      "dateUpdated": "2012-12-31T00:00:00",
+      "dateCreated": "2013-08-09T12:44:15",
+      "rating": "T",
+      "numChapters": 8,
+      "numWords": 3740,
+      "storyUrl": "http://www.fanfiction.net/s/98000302/1/",
+      "authorUrl": [
+        "http://www.fanfiction.net/u/98000300/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-spanish-complete summary.",
+      "fandoms": [
+        "TestFandom11"
+      ],
+      "langcode": "es"
+    }
+  },
+  {
+    "name": "txt-compact-author-digits.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Author Digits",
+      "author": [
+        "TestWriter21"
+      ],
+      "category": [
+        "TestFandom11"
+      ],
+      "genre": [
+        "TestGenre11"
+      ],
+      "language": "English",
+      "status": "Completed",
+      "datePublished": "2009-07-13T00:00:00",
+      "dateUpdated": "2009-07-13T00:00:00",
+      "dateCreated": "2013-09-10T20:26:56",
+      "rating": "K+",
+      "numChapters": 1,
+      "numWords": 1025,
+      "storyUrl": "http://www.fanfiction.net/s/98000305/1/",
+      "authorUrl": [
+        "http://www.fanfiction.net/u/98000306/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-author-digits summary.",
+      "fandoms": [
+        "TestFandom11"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-compact-title-punctuation.txt",
+    "kind": "compact",
+    "fields": {
+      "title": "Synthetic TXT Compact Title Punctuation: A & B?",
+      "author": [
+        "TestWriter22"
+      ],
+      "category": [
+        "TestFandom11"
+      ],
+      "genre": [
+        "TestGenre15",
+        "TestGenre11"
+      ],
+      "language": "English",
+      "status": "Completed",
+      "datePublished": "2012-12-11T00:00:00",
+      "dateUpdated": "2012-12-11T00:00:00",
+      "dateCreated": "2013-08-09T16:32:16",
+      "rating": "T",
+      "numChapters": 1,
+      "numWords": 893,
+      "storyUrl": "http://www.fanfiction.net/s/98000309/1/",
+      "authorUrl": [
+        "http://www.fanfiction.net/u/98000310/Test-Writer"
+      ],
+      "description": "Synthetic txt-compact-title-punctuation summary.",
+      "fandoms": [
+        "TestFandom11"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-spaced-missing-url.txt",
+    "kind": "spaced",
+    "fields": {
+      "title": "Synthetic TXT Spaced Missing URL",
+      "category": [
+        "TestFandom13"
+      ],
+      "genre": [
+        "TestGenre17"
+      ],
+      "language": "English",
+      "characters": [
+        "TestCharacter24",
+        "TestCharacter25"
+      ],
+      "ships": [
+        "TestPair12 & TestPartner12",
+        "TestPair13/TestPartner13"
+      ],
+      "status": "Completed",
+      "datePublished": "2018-02-25T00:00:00",
+      "dateUpdated": "2018-02-25T00:00:00",
+      "dateCreated": "2022-04-21T15:14:10",
+      "rating": "General Audiences",
+      "warnings": [
+        "Creator Chose Not To Use Archive Warnings"
+      ],
+      "numChapters": 1,
+      "numWords": 373,
+      "author": [
+        "TestWriter23"
+      ],
+      "description": "Synthetic txt-spaced-missing-url summary.",
+      "fandoms": [
+        "TestFandom13"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-spaced-wrapped-tags.txt",
+    "kind": "spaced",
+    "fields": {
+      "title": "Synthetic TXT Spaced Wrapped Tags",
+      "category": [
+        "TestFandom13"
+      ],
+      "genre": [
+        "TestGenre18",
+        "TestGenre19",
+        "Test Genre: Colon Case 20",
+        "TestGenre21",
+        "TestGenre22",
+        "TestGenre23",
+        "M/M",
+        "TestGenre24",
+        "TestGenre25",
+        "TestGenre26",
+        "TestGenre27",
+        "TestGenre28",
+        "TestGenre29",
+        "TestGenre30"
+      ],
+      "language": "English",
+      "characters": [
+        "TestCharacter26",
+        "TestCharacter27"
+      ],
+      "ships": [
+        "TestPair14 & TestPartner14",
+        "TestPair15/TestPartner15"
+      ],
+      "status": "Completed",
+      "datePublished": "2021-03-26T00:00:00",
+      "dateUpdated": "2021-03-26T00:00:00",
+      "dateCreated": "2022-04-01T02:10:37",
+      "rating": "Mature",
+      "warnings": [
+        "Creator Chose Not To Use Archive Warnings"
+      ],
+      "numChapters": 1,
+      "numWords": 799,
+      "author": [
+        "TestWriter24"
+      ],
+      "description": "Synthetic txt-spaced-wrapped-tags summary.",
+      "fandoms": [
+        "TestFandom13"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-spaced-multiple-fandoms.txt",
+    "kind": "spaced",
+    "fields": {
+      "title": "Synthetic TXT Spaced Multiple Fandoms",
+      "category": [
+        "TestFandom14",
+        "TestFandom13"
+      ],
+      "genre": [
+        "TestGenre17"
+      ],
+      "language": "English",
+      "characters": [
+        "TestCharacter28",
+        "TestCharacter27"
+      ],
+      "status": "Completed",
+      "datePublished": "2018-02-25T00:00:00",
+      "dateUpdated": "2018-02-25T00:00:00",
+      "dateCreated": "2022-04-21T15:14:29",
+      "rating": "General Audiences",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "numChapters": 1,
+      "numWords": 565,
+      "author": [
+        "TestWriter25"
+      ],
+      "description": "Synthetic txt-spaced-multiple-fandoms summary.",
+      "fandoms": [
+        "TestFandom14",
+        "TestFandom13"
+      ],
+      "langcode": "en"
+    }
+  },
+  {
+    "name": "txt-pdf-squidgeworld.txt",
+    "kind": "txt_pdf",
+    "fields": {
+      "title": "Synthetic TXT PDF Squidgeworld",
+      "rating": "Explicit",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom15"
+      ],
+      "ships": [
+        "TestPair16/TestPartner16"
+      ],
+      "characters": [
+        "TestCharacter29",
+        "TestCharacter30"
+      ],
+      "freeformtags": [
+        "Synthetic Wrapped Tag",
+        "TestTag188",
+        "TestTag189",
+        "TestTag190",
+        "TestTag191",
+        "TestTag192",
+        "TestTag193",
+        "TestTag194",
+        "TestTag195",
+        "TestTag196",
+        "TestTag197",
+        "TestTag198",
+        "TestTag199",
+        "TestTag200",
+        "TestTag201",
+        "TestTag202"
+      ],
+      "series": "TestSeries04 [18]",
+      "datePublished": "2021-05-28T00:00:00",
+      "numWords": 1422,
+      "storyUrl": "http://squidgeworld.org/works/98000345",
+      "author": [
+        "TestWriter26"
+      ],
+      "description": "Synthetic txt-pdf-squidgeworld summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  },
+  {
+    "name": "txt-pdf-detached-partial.txt",
+    "kind": "partial",
+    "fields": {
+      "title": "Synthetic TXT PDF Detached Partial",
+      "datePublished": "2022-01-10T00:00:00",
+      "numWords": 857,
+      "numChapters": 1,
+      "chapterslashtotal": "1/1",
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "storyUrl": "https://archiveofourown.org/works/98000347",
+      "description": "Synthetic OCR —jTest?\n\nSynthetic second paragraph.\n\nSynthetic third paragraph."
+    }
+  },
+  {
+    "name": "txt-unsupported-notices.txt",
+    "kind": "unsupported",
+    "fields": {
+      "title": "Synthetic TXT Unsupported Notices",
+      "description": "Synthetic txt-unsupported-notices summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  },
+  {
+    "name": "ficlab-multichapter-count-priority.epub",
+    "kind": "ficlab",
+    "fields": {
+      "title": "Synthetic FicLab Multichapter Count Priority",
+      "author": [
+        "TestWriter27"
+      ],
+      "langcode": "eng",
+      "description": "Synthetic ficlab-multichapter-count-priority summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://www.fanfiction.net/s/98000357/",
+      "rating": "Fiction M",
+      "status": "Completed",
+      "numChapters": 23,
+      "numWords": 101933,
+      "extratags": [
+        "TestGenre14",
+        "Complete",
+        "TestTag204",
+        "TestTag205",
+        "TestGenre11",
+        "TestTag207",
+        "TestTag208",
+        "TestTag209"
+      ],
+      "datePublished": "2012-02-01T05:34:56+00:00",
+      "dateUpdated": "2012-07-05T21:00:07+00:00",
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000358/Test-Writer"
+      ],
+      "authorId": [
+        "98000358"
+      ],
+      "language": "eng"
+    }
+  },
+  {
+    "name": "ficlab-timestamp-day-boundary.epub",
+    "kind": "ficlab",
+    "fields": {
+      "title": "Synthetic FicLab Timestamp Day Boundary",
+      "author": [
+        "TestWriter28"
+      ],
+      "langcode": "eng",
+      "description": "Synthetic ficlab-timestamp-day-boundary summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://www.fanfiction.net/s/98000362/",
+      "rating": "Fiction T",
+      "status": "Completed",
+      "numChapters": 1,
+      "numWords": 4054,
+      "extratags": [
+        "Complete",
+        "TestTag204",
+        "TestGenre15",
+        "TestTag210",
+        "TestGenre11",
+        "TestTag207",
+        "TestTag208",
+        "TestTag209"
+      ],
+      "datePublished": "2012-12-29T23:59:29+00:00",
+      "dateUpdated": "2012-12-29T23:59:29+00:00",
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000363/Test-Writer"
+      ],
+      "authorId": [
+        "98000363"
+      ],
+      "language": "eng"
+    }
+  },
+  {
+    "name": "ficlab-rating-k-plus.epub",
+    "kind": "ficlab",
+    "fields": {
+      "title": "Synthetic FicLab Rating K Plus",
+      "author": [
+        "TestWriter29"
+      ],
+      "langcode": "eng",
+      "description": "Synthetic ficlab-rating-k-plus summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://www.fanfiction.net/s/98000367/",
+      "rating": "Fiction K+",
+      "status": "Completed",
+      "numChapters": 1,
+      "numWords": 5661,
+      "extratags": [
+        "TestGenre16",
+        "Complete",
+        "TestTag204",
+        "TestTag210",
+        "TestGenre11",
+        "TestTag207",
+        "TestTag208",
+        "TestTag209"
+      ],
+      "datePublished": "2012-01-01T05:30:09+00:00",
+      "dateUpdated": "2012-01-01T05:30:09+00:00",
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000368/Test-Writer"
+      ],
+      "authorId": [
+        "98000368"
+      ],
+      "language": "eng"
+    }
+  },
+  {
+    "name": "ficlab-mixed-tags.epub",
+    "kind": "ficlab",
+    "fields": {
+      "title": "Synthetic FicLab Mixed Tags",
+      "author": [
+        "TestWriter30"
+      ],
+      "langcode": "eng",
+      "description": "Synthetic ficlab-mixed-tags summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://www.fanfiction.net/s/98000372/",
+      "rating": "Fiction K+",
+      "status": "Completed",
+      "numChapters": 1,
+      "numWords": 2944,
+      "extratags": [
+        "Comfort",
+        "Complete",
+        "TestTag204",
+        "TestGenre10",
+        "Hurt",
+        "TestTag210",
+        "TestTag207",
+        "TestTag208",
+        "TestTag209"
+      ],
+      "datePublished": "2010-08-17T15:51:19+00:00",
+      "dateUpdated": "2010-08-17T15:51:19+00:00",
+      "authorUrl": [
+        "https://www.fanfiction.net/u/98000373/Test-Writer"
+      ],
+      "authorId": [
+        "98000373"
+      ],
+      "language": "eng"
+    }
+  },
+  {
+    "name": "ao3-information-thin-space.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Information Thin Space",
+      "author": [
+        "TestWriter31"
+      ],
+      "langcode": "en-US",
+      "description": "Synthetic ao3-information-thin-space summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000408",
+      "rating": "Mature",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "F/M"
+      ],
+      "fandoms": [
+        "TestFandom01",
+        "TestFandom16"
+      ],
+      "ships": [
+        "TestPair17/TestPartner17"
+      ],
+      "characters": [
+        "TestCharacter11",
+        "TestCharacter01",
+        "TestCharacter02",
+        "TestCharacter31",
+        "TestCharacter32",
+        "TestCharacter33",
+        "TestCharacter34",
+        "TestCharacter35",
+        "TestCharacter36"
+      ],
+      "freeformtags": [
+        "TestTag126",
+        "TestTag213",
+        "TestTag214",
+        "TestTag215",
+        "TestTag216",
+        "TestTag217",
+        "TestTag218",
+        "TestTag219",
+        "TestGenre120",
+        "TestGenre121",
+        "TestGenre122",
+        "TestGenre123",
+        "TestGenre124",
+        "TestGenre125",
+        "TestGenre126",
+        "TestGenre127",
+        "TestGenre128",
+        "TestGenre129",
+        "TestTag230",
+        "TestTag231",
+        "TestTag232",
+        "TestTag233",
+        "TestTag234",
+        "TestTag235",
+        "TestTag236"
+      ],
+      "language": "English",
+      "series": "TestSeries05 [2]",
+      "numWords": 111536,
+      "chapterslashtotal": "24/?",
+      "numChapters": 24,
+      "status": "In-Progress",
+      "datePublished": "2026-09-06T00:00:00",
+      "dateUpdated": "2026-09-26T00:00:00"
+    }
+  },
+  {
+    "name": "ao3-series-collection.epub",
+    "kind": "series",
+    "fields": {
+      "title": "Synthetic AO3 Series Collection",
+      "author": [
+        "TestWriter32"
+      ],
+      "langcode": "en-US",
+      "collectionUrl": "https://archiveofourown.org/series/98000411",
+      "numWords": 11822,
+      "description": "Synthetic ao3-series-collection summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  },
+  {
+    "name": "ao3-information-ongoing.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Information Ongoing",
+      "author": [
+        "TestWriter33"
+      ],
+      "langcode": "en-US",
+      "description": "Synthetic ao3-information-ongoing summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000417",
+      "rating": "General Audiences",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "TestGenre17"
+      ],
+      "fandoms": [
+        "TestFandom08"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter02",
+        "TestCharacter11"
+      ],
+      "freeformtags": [
+        "TestGenre15",
+        "TestTag237",
+        "TestTag238",
+        "TestTag239"
+      ],
+      "language": "English",
+      "numWords": 3678,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2011-05-16T00:00:00",
+      "dateUpdated": "2011-05-16T00:00:00",
+      "waybackUrl": "https://web.archive.org/web/20260515170158/https://archiveofourown.org/works/98000417"
+    },
+    "identifier_scheme": "uri"
+  },
+  {
+    "name": "anthology-outer-status-tag.epub",
+    "kind": "anthology",
+    "fields": {
+      "title": "Synthetic Anthology Outer Status Tag",
+      "author": [
+        "TestWriter34"
+      ],
+      "langcode": "en",
+      "description": "Synthetic anthology-outer-status-tag summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "collectionTags": [
+        "Synthetic Collection Tag 01",
+        "Synthetic Collection Tag 02",
+        "Synthetic Collection Tag 03",
+        "Synthetic Collection Tag 04",
+        "Synthetic Collection Tag 05",
+        "Synthetic Collection Tag 06",
+        "Synthetic Collection Tag 07",
+        "Synthetic Collection Tag 08",
+        "Synthetic Collection Tag 09",
+        "Synthetic Collection Tag 10",
+        "Synthetic Collection Tag 11",
+        "Synthetic Collection Tag 12",
+        "Synthetic Collection Tag 13",
+        "Synthetic Collection Tag 14",
+        "Synthetic Collection Tag 15",
+        "Synthetic Collection Tag 16",
+        "Synthetic Collection Tag 17",
+        "Synthetic Collection Tag 18",
+        "Synthetic Collection Tag 19",
+        "Synthetic Collection Tag 20",
+        "Synthetic Collection Tag 21",
+        "Synthetic Collection Tag 22",
+        "Synthetic Collection Tag 23",
+        "Synthetic Collection Tag 24",
+        "Synthetic Collection Tag 25",
+        "Synthetic Collection Tag 26",
+        "Synthetic Collection Tag 27",
+        "Synthetic Collection Tag 28",
+        "Synthetic Collection Tag 29",
+        "Synthetic Collection Tag 30",
+        "Synthetic Collection Tag 31",
+        "Synthetic Collection Tag 32",
+        "Synthetic Collection Tag 33",
+        "Synthetic Collection Tag 34",
+        "Synthetic Collection Tag 35",
+        "Synthetic Collection Tag 36",
+        "Synthetic Collection Tag 37",
+        "Synthetic Collection Tag 38",
+        "Synthetic Collection Tag 39",
+        "Synthetic Collection Tag 40",
+        "In-Progress",
+        "Synthetic Collection Tag 42"
+      ],
+      "collectionUrl": "https://archiveofourown.org/series/98000420",
+      "collectionRecords": [
+        {
+          "title": "Synthetic anthology-outer-status-tag Story 1",
+          "storyUrl": "https://archiveofourown.org/works/98000421",
+          "status": "Completed",
+          "numChapters": 9,
+          "numWords": 209048,
+          "dateUpdated": "2026-09-19T00:00:00",
+          "author": [
+            "TestWriter34"
+          ],
+          "description": "Synthetic embedded-story summary 1."
+        },
+        {
+          "title": "Synthetic anthology-outer-status-tag Story 2",
+          "storyUrl": "https://archiveofourown.org/works/98000422",
+          "status": "Completed",
+          "numChapters": 1,
+          "numWords": 1249,
+          "dateUpdated": "2026-09-26T00:00:00",
+          "author": [
+            "TestWriter34"
+          ],
+          "description": "Synthetic embedded-story summary 2."
+        }
+      ],
+      "numWords": 210297
+    }
+  },
+  {
+    "name": "anthology-complete.epub",
+    "kind": "anthology",
+    "fields": {
+      "title": "Synthetic Anthology Complete",
+      "author": [
+        "TestWriter32",
+        "TestWriter35"
+      ],
+      "langcode": "en",
+      "description": "Synthetic anthology-complete summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "collectionTags": [
+        "Synthetic Collection Tag 01",
+        "Synthetic Collection Tag 02",
+        "Synthetic Collection Tag 03",
+        "Synthetic Collection Tag 04",
+        "Synthetic Collection Tag 05",
+        "Synthetic Collection Tag 06",
+        "Synthetic Collection Tag 07",
+        "Synthetic Collection Tag 08",
+        "Synthetic Collection Tag 09",
+        "Synthetic Collection Tag 10",
+        "Synthetic Collection Tag 11",
+        "Synthetic Collection Tag 12",
+        "Synthetic Collection Tag 13",
+        "Synthetic Collection Tag 14",
+        "Synthetic Collection Tag 15",
+        "Synthetic Collection Tag 16",
+        "Synthetic Collection Tag 17",
+        "Synthetic Collection Tag 18",
+        "Synthetic Collection Tag 19",
+        "Synthetic Collection Tag 20",
+        "Synthetic Collection Tag 21",
+        "Synthetic Collection Tag 22",
+        "Synthetic Collection Tag 23",
+        "Synthetic Collection Tag 24",
+        "Synthetic Collection Tag 25",
+        "Synthetic Collection Tag 26",
+        "Synthetic Collection Tag 27",
+        "Synthetic Collection Tag 28",
+        "Synthetic Collection Tag 29",
+        "Synthetic Collection Tag 30",
+        "Synthetic Collection Tag 31",
+        "Synthetic Collection Tag 32",
+        "Synthetic Collection Tag 33",
+        "Synthetic Collection Tag 34",
+        "Synthetic Collection Tag 35",
+        "Synthetic Collection Tag 36",
+        "Synthetic Collection Tag 37",
+        "Synthetic Collection Tag 38",
+        "Synthetic Collection Tag 39",
+        "Synthetic Collection Tag 40",
+        "Synthetic Collection Tag 41",
+        "Synthetic Collection Tag 42",
+        "Synthetic Collection Tag 43",
+        "Synthetic Collection Tag 44",
+        "Synthetic Collection Tag 45",
+        "Synthetic Collection Tag 46",
+        "Synthetic Collection Tag 47",
+        "Synthetic Collection Tag 48",
+        "Synthetic Collection Tag 49",
+        "Synthetic Collection Tag 50",
+        "Synthetic Collection Tag 51",
+        "Synthetic Collection Tag 52",
+        "Synthetic Collection Tag 53",
+        "Synthetic Collection Tag 54",
+        "Synthetic Collection Tag 55",
+        "Synthetic Collection Tag 56",
+        "Synthetic Collection Tag 57",
+        "Synthetic Collection Tag 58",
+        "Synthetic Collection Tag 59",
+        "Synthetic Collection Tag 60",
+        "Synthetic Collection Tag 61",
+        "Synthetic Collection Tag 62",
+        "Synthetic Collection Tag 63",
+        "Synthetic Collection Tag 64",
+        "Synthetic Collection Tag 65",
+        "Synthetic Collection Tag 66",
+        "Synthetic Collection Tag 67",
+        "Synthetic Collection Tag 68",
+        "Completed",
+        "Synthetic Collection Tag 70"
+      ],
+      "collectionUrl": "https://archiveofourown.org/series/98000425",
+      "collectionRecords": [
+        {
+          "title": "Synthetic anthology-complete Story 1",
+          "storyUrl": "https://archiveofourown.org/works/98000426",
+          "status": "Completed",
+          "numChapters": 16,
+          "numWords": 69475,
+          "dateUpdated": "2018-07-09T00:00:00",
+          "author": [
+            "TestWriter32",
+            "TestWriter35"
+          ],
+          "description": "Synthetic embedded-story summary 1."
+        },
+        {
+          "title": "Synthetic anthology-complete Story 2",
+          "storyUrl": "https://archiveofourown.org/works/98000427",
+          "status": "Completed",
+          "numChapters": 21,
+          "numWords": 105284,
+          "dateUpdated": "2018-10-29T00:00:00",
+          "author": [
+            "TestWriter32",
+            "TestWriter35"
+          ],
+          "description": "Synthetic embedded-story summary 2."
+        },
+        {
+          "title": "Synthetic anthology-complete Story 3",
+          "storyUrl": "https://archiveofourown.org/works/98000428",
+          "status": "Completed",
+          "numChapters": 24,
+          "numWords": 118264,
+          "dateUpdated": "2019-01-18T00:00:00",
+          "author": [
+            "TestWriter32",
+            "TestWriter35"
+          ],
+          "description": "Synthetic embedded-story summary 3."
+        },
+        {
+          "title": "Synthetic anthology-complete Story 4",
+          "storyUrl": "https://archiveofourown.org/works/98000429",
+          "status": "Completed",
+          "numChapters": 20,
+          "numWords": 96080,
+          "dateUpdated": "2019-12-25T00:00:00",
+          "author": [
+            "TestWriter32",
+            "TestWriter35"
+          ],
+          "description": "Synthetic embedded-story summary 4."
+        }
+      ],
+      "numWords": 389103
+    }
+  },
+  {
+    "name": "ao3-series-navigation.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Series Navigation",
+      "langcode": "en",
+      "storyUrl": "https://archiveofourown.org/works/98000435",
+      "author": [
+        "TestWriter36"
+      ],
+      "authorId": [
+        "TestWriter36"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter36/pseuds/TestWriter36"
+      ],
+      "rating": "General Audiences",
+      "warnings": [
+        "Creator Chose Not To Use Archive Warnings",
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "TestGenre17"
+      ],
+      "fandoms": [
+        "TestFandom08"
+      ],
+      "ships": [
+        "TestPair01/TestPartner01"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter02"
+      ],
+      "freeformtags": [
+        "TestTag238",
+        "TestTag240",
+        "TestTag241"
+      ],
+      "language": "English",
+      "series": "TestSeries06 [1]",
+      "seriesUrl": "https://archiveofourown.org/series/98000436",
+      "numWords": 1720,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2013-10-14T00:00:00",
+      "dateUpdated": "2013-10-14T00:00:00",
+      "description": "Synthetic ao3-series-navigation summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "waybackUrl": "https://web.archive.org/web/20210118045457/https://archiveofourown.org/works/98000435"
+    },
+    "identifier_scheme": "source"
+  },
+  {
+    "name": "fichub-ao3-summary-entities.epub",
+    "kind": "intro",
+    "fields": {
+      "title": "Synthetic Fichub AO3 Summary Entities",
+      "author": [
+        "TestWriter37"
+      ],
+      "langcode": "en",
+      "description": "Synthetic entity’s summary.\n\nSynthetic second paragraph.",
+      "status": "In-Progress",
+      "datePublished": "2025-12-05T00:00:00",
+      "dateUpdated": "2026-04-27T00:00:00",
+      "numWords": 180137,
+      "numChapters": 14,
+      "storyUrl": "https://archiveofourown.org/works/98000439",
+      "language": "en"
+    }
+  },
+  {
+    "name": "ao3-browser-space-counts.epub",
+    "kind": "work",
+    "fields": {
+      "title": "Synthetic AO3 Browser Space Counts",
+      "langcode": "en",
+      "storyUrl": "https://archiveofourown.org/works/98000455",
+      "author": [
+        "TestWriter38"
+      ],
+      "authorId": [
+        "TestWriter38"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter38/pseuds/TestWriter38"
+      ],
+      "rating": "Mature",
+      "warnings": [
+        "Graphic Depictions Of Violence"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom01",
+        "TestFandom02"
+      ],
+      "ships": [
+        "TestPair01/TestPartner01",
+        "TestPair18 & TestPartner18"
+      ],
+      "characters": [
+        "TestCharacter01",
+        "TestCharacter02",
+        "TestCharacter11"
+      ],
+      "freeformtags": [
+        "TestTag115",
+        "TestTag242",
+        "TestTag243",
+        "TestTag244",
+        "TestTag245",
+        "TestTag246",
+        "TestTag247",
+        "TestTag248",
+        "TestTag249",
+        "TestTag250",
+        "TestTag251",
+        "TestTag252",
+        "TestTag253",
+        "TestTag254"
+      ],
+      "language": "English",
+      "numWords": 3334,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2026-09-26T00:00:00",
+      "dateUpdated": "2026-09-26T00:00:00",
+      "description": "Synthetic ao3-browser-space-counts summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  },
+  {
+    "name": "titlepage-paragraph-ffnet.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Paragraph Ffnet",
+      "author": [
+        "TestWriter39"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-paragraph-ffnet summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "category": [
+        "TestCategory05"
+      ],
+      "status": "In-Progress",
+      "rating": "Fiction  T",
+      "characters": [
+        "TestCharacter37",
+        "TestCharacter38"
+      ],
+      "numChapters": 9,
+      "storyUrl": "https://www.fanfiction.net/s/98000460/1/",
+      "language": "en"
+    }
+  },
+  {
+    "name": "titlepage-unicode.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Unicode — 測試",
+      "author": [
+        "TestWriter40"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-unicode summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000464",
+      "fandoms": [
+        "TestFandom17"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2025-11-24T00:00:00",
+      "dateUpdated": "2025-11-24T00:00:00",
+      "numChapters": 1,
+      "chapterslashtotal": "1/1",
+      "numChaptersTotal": 1,
+      "numWords": 2147,
+      "ships": [
+        "TestPair19/TestPartner19",
+        "TestPair20/TestPartner20",
+        "TestPair21/TestPartner21"
+      ],
+      "ao3categories": [
+        "F/M"
+      ],
+      "rating": "General Audiences",
+      "language": "en"
+    }
+  },
+  {
+    "name": "titlepage-ongoing.epub",
+    "kind": "fff_para",
+    "fields": {
+      "title": "Synthetic Titlepage Ongoing",
+      "author": [
+        "TestWriter41"
+      ],
+      "langcode": "en",
+      "description": "Synthetic titlepage-ongoing summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000524",
+      "fandoms": [
+        "TestFandom18"
+      ],
+      "status": "In-Progress",
+      "datePublished": "2023-05-27T00:00:00",
+      "dateUpdated": "2023-05-27T00:00:00",
+      "numChapters": 1,
+      "chapterslashtotal": "1/1",
+      "numChaptersTotal": 1,
+      "numWords": 58756,
+      "ships": [
+        "TestPair22/TestPartner22",
+        "TestPair23 & TestPartner23"
+      ],
+      "freeformtags": [
+        "TestTag255",
+        "TestTag256",
+        "TestTag257",
+        "TestTag258",
+        "TestTag259",
+        "TestTag260",
+        "TestTag261",
+        "TestTag262",
+        "TestTag263",
+        "TestTag264",
+        "TestTag265",
+        "TestTag266",
+        "TestTag267",
+        "TestTag268",
+        "TestTag269",
+        "TestTag270",
+        "TestTag271",
+        "TestTag272",
+        "TestTag273",
+        "TestTag78",
+        "TestTag274",
+        "TestTag275",
+        "TestTag276",
+        "TestTag93",
+        "TestTag277",
+        "TestTag278",
+        "TestTag279",
+        "TestTag280",
+        "TestTag141",
+        "TestTag281",
+        "TestTag282",
+        "TestTag194",
+        "TestTag191",
+        "TestTag104",
+        "TestTag283",
+        "TestTag284",
+        "TestTag285",
+        "TestTag286",
+        "TestTag287",
+        "TestTag288",
+        "TestTag289",
+        "TestTag290",
+        "TestTag291",
+        "TestTag292",
+        "TestTag293",
+        "TestTag294",
+        "TestTag295",
+        "TestTag296",
+        "TestTag297",
+        "TestTag190",
+        "TestTag298",
+        "TestTag299",
+        "TestTag300",
+        "TestTag301",
+        "TestTag302",
+        "TestTag303",
+        "TestTag304",
+        "TestTag305",
+        "TestTag306",
+        "TestTag307",
+        "TestTag308",
+        "TestTag309",
+        "TestTag310"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "rating": "Explicit",
+      "language": "en"
+    }
+  },
+  {
+    "name": "fichub-ao3-introduction.epub",
+    "kind": "intro",
+    "fields": {
+      "title": "Synthetic Fichub AO3 Introduction",
+      "author": [
+        "TestWriter42"
+      ],
+      "langcode": "en",
+      "description": "Synthetic fichub-ao3-introduction summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "status": "In-Progress",
+      "datePublished": "2023-05-08T00:00:00",
+      "numWords": 13158,
+      "storyUrl": "https://archiveofourown.org/works/98000527",
+      "language": "en"
+    }
+  },
+  {
+    "name": "fichub-ao3-completed.epub",
+    "kind": "intro",
+    "fields": {
+      "title": "Synthetic Fichub AO3 Completed",
+      "author": [
+        "TestWriter43"
+      ],
+      "langcode": "en",
+      "description": "Synthetic fichub-ao3-completed summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "status": "Completed",
+      "datePublished": "2026-03-05T00:00:00",
+      "numWords": 30050,
+      "rating": "Fiction K+",
+      "language": "English",
+      "genre": [
+        "TestGenre31"
+      ],
+      "characters": [
+        "TestCharacter39",
+        "TestCharacter40",
+        "TestCharacter41",
+        "TestCharacter42"
+      ],
+      "storyUrl": "https://www.fanfiction.net/s/98000534/1/Synthetic-Case"
+    }
+  },
+  {
+    "name": "ao3-native-ongoing.epub",
+    "kind": "native",
+    "fields": {
+      "title": "Synthetic AO3 Native Ongoing",
+      "langcode": "en",
+      "description": "Synthetic ao3-native-ongoing summary paragraph one.\n\nSynthetic paragraph two ends here.",
+      "storyUrl": "https://archiveofourown.org/works/98000551",
+      "rating": "Explicit",
+      "warnings": [
+        "No Archive Warnings Apply"
+      ],
+      "ao3categories": [
+        "M/M"
+      ],
+      "fandoms": [
+        "TestFandom08"
+      ],
+      "ships": [
+        "TestPair24/TestPartner24"
+      ],
+      "characters": [
+        "TestCharacter11",
+        "TestCharacter03"
+      ],
+      "freeformtags": [
+        "TestTag311",
+        "TestTag312",
+        "TestTag313",
+        "TestTag314",
+        "TestTag219",
+        "TestTag78",
+        "TestTag315",
+        "TestTag316",
+        "TestTag317",
+        "TestTag318",
+        "TestTag319",
+        "TestTag320",
+        "TestTag321",
+        "TestTag322",
+        "TestTag323",
+        "TestTag324",
+        "TestTag325"
+      ],
+      "language": "English",
+      "numWords": 5518,
+      "chapterslashtotal": "1/1",
+      "numChapters": 1,
+      "numChaptersTotal": 1,
+      "status": "Completed",
+      "datePublished": "2020-10-13T00:00:00",
+      "dateUpdated": "2020-10-13T00:00:00",
+      "author": [
+        "TestWriter35"
+      ],
+      "authorId": [
+        "TestWriter35"
+      ],
+      "authorUrl": [
+        "https://archiveofourown.org/users/TestWriter35/pseuds/TestWriter35"
+      ]
+    }
+  },
+  {
+    "name": "pdf-labelled-header.epub",
+    "kind": "pdf_header",
+    "fields": {
+      "title": "Synthetic PDF Labelled Header",
+      "author": [
+        "TestWriter44"
+      ],
+      "langcode": "en",
+      "rating": "PG15",
+      "fandoms": [
+        "TestFandom19"
+      ],
+      "ships": [
+        "TestPair25/TestPartner25"
+      ],
+      "warnings": [
+        "Synthetic freehand warning, retained as one value"
+      ],
+      "storyUrl": "http://fixture-writer.livejournal.com/98000601.html",
+      "language": "en",
+      "description": "Synthetic pdf-labelled-header summary paragraph one.\n\nSynthetic paragraph two ends here."
+    }
+  }
+]

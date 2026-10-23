@@ -3,3 +3,4 @@ __pycache__/
 *.pyo
 *.zip
 /ao3downloader-testing/
+/tests/private-fixtures/

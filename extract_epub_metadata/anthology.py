@@ -234,9 +234,9 @@ def format_summary(records):
     Human-readable per-fic breakdown, e.g.:
         6/7 fics complete.
 
-        1. In Arduis Fidelis 1 -- Completed (12 ch, 17,673 words)
+        1. Synthetic Anthology Story 1 -- Completed (12 ch, 17,673 words)
         ...
-        7. In Arduis Fidelis 7 -- In-Progress (110 ch)
+        7. Synthetic Anthology Story 7 -- In-Progress (110 ch)
     """
     if not records:
         return ''

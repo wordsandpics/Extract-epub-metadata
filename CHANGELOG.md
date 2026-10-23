@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+### Fixed
+- Refresh the book list, selected Book Details and tag browser after metadata
+  writes, so counts and chapters appear without running another plugin. The same
+  refresh follows anthology-report writes; books with no changes are not refreshed.
+
+### Added
+- FicLab EPUB extraction from marked front matter: labeled counts, status, rating,
+  explicit matching author profiles, and uncategorized tags. Summary word counts
+  take precedence over EPUB extent; date offsets are preserved. Checked against
+  four fanfiction.net exports from FicLab 1.0.111 and 1.0.113.
+- Separate TXT readers for spaced/wrapped archive headers and AO3/SquidgeWorld
+  PDF-style prefaces. PDF pairing categories remain separate from fandoms.
+- Partial recovery from detached PDF columns: retain explicit facts, omit uncertain
+  author/tag assignments, and explain the omissions in the preview.
+- Direct TXT archive-header extraction, checked against five distinct fanfiction.net
+  stories. Supports optional fields, label aliases, English/Spanish text, dated
+  timestamps, and grouped counts through the existing preview and write modes.
+- TXT is used for books without EPUB. Opening headers are bounded, chapter notes
+  are excluded, missing URLs are not guessed, and unrecognized headers are explained.
+
 ## [1.0.0] - 2026-10-01
 
 ### Added

@@ -27,8 +27,10 @@ from .extractors.ao3_pdf_preface import extract_ao3_pdf_preface
 from .extractors.fallback_link_scan import extract_story_url_fallback
 from .extractors.ffnet_infopage import extract_ffnet_infopage
 from .extractors.fff_titlepage import extract_fff_titlepage
+from .extractors.ficlab import extract_ficlab
 from .extractors.opf import extract_opf
 from .extractors.pdf_header import extract_pdf_header
+from .extractors.txt_header import extract_txt_header
 from .extractors._urls import canonical_ao3_url, unwrap_wayback_url
 
 # key -> (siteabbrev, )  -- 'site' itself already holds the domain, which is
@@ -69,14 +71,14 @@ TITLEPAGE_LABEL_TO_KEY = {
     'summary': 'description',
     # AO3's own raw (pre-composite) vocabulary -- some title-page variants
     # use these separate labels instead of FFF's composite "Category"/
-    # "Genre" lines (confirmed against tests/fixtures/sigh_no_more.epub,
+    # "Genre" lines (confirmed against tests/fixtures/titlepage-paragraph-summary.epub,
     # which has none of category/genre but does have these).
     'fandom': 'fandoms',
     'fandoms': 'fandoms',
     'additional tags': 'freeformtags',
     'categories': 'ao3categories',
     # fanfiction.net's own label for the same concept as AO3/FFF's
-    # "Rating" (confirmed against tests/fixtures/hunted.epub, via
+    # "Rating" (confirmed against tests/fixtures/fichub-ffnet-composite.epub, via
     # fichub.net's "Rated: Fiction M - Language: ... - ..." composite
     # line -- see _split_composite_label_value below).
     'rated': 'rating',
@@ -100,18 +102,18 @@ LIST_KEYS = {
 
 _WORKS_URL_RE = re.compile(r'/works/(\d+)')
 _AO3_PAGE_TITLE_SUFFIX = '[Archive of Our Own]'
-# fanfiction.net's own story-URL shape, e.g. ".../s/5853767/1/Hunted"
-# (confirmed against tests/fixtures/hunted.epub).
+# fanfiction.net's own story-URL shape, e.g. ".../s/98000181/1/Synthetic Story"
+# (confirmed against tests/fixtures/fichub-ffnet-composite.epub).
 _FFNET_STORY_ID_RE = re.compile(r'/s/(\d+)')
 # "Label: value" for one segment of a composite line, e.g. fanfiction.net's
 # own "Rated: Fiction M - Language: English - Genre: ... - Reviews: ..."
-# (confirmed against tests/fixtures/hunted.epub). Deliberately the same
+# (confirmed against tests/fixtures/fichub-ffnet-composite.epub). Deliberately the same
 # shape as _PARA_LABEL_RE in fff_titlepage.py, just applied per-segment
 # here rather than per-<p>.
 _COMPOSITE_SEGMENT_RE = re.compile(r'^([A-Za-z][\w \-/]{0,30}):\s*(.+)$')
 # Total is often "?" for an ongoing fic whose final chapter count isn't
-# known yet (confirmed against tests/fixtures/crimson supernova -
-# serenadewave.epub's "Chapters: 41/?") -- status can't be derived from
+# known yet (covered by tests/fixtures/titlepage-unknown-total-41.epub's
+# "Chapters: 41/?") -- status can't be derived from
 # that, but the current chapter count is still perfectly recoverable.
 _CHAPTERS_SLASH_RE = re.compile(r'^\s*(\d+)\s*/\s*(\d+|\?)\s*$')
 # FFF's own default per-key date formats differ: dateCreated ("Packaged")
@@ -122,8 +124,7 @@ _CHAPTERS_SLASH_RE = re.compile(r'^\s*(\d+)\s*/\s*(\d+|\?)\s*$')
 _DATE_FORMATS = (
     '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d',
     # fanfiction.net's own native date rendering, as scraped verbatim by
-    # WebToEpub (confirmed against tests/fixtures/Isolation - Bex-
-    # chan.epub's "Updated: 1/5/2020, 3:12:37 AM").
+    # WebToEpub (confirmed against tests/fixtures/ffnet-webtoepub-profile.epub's "Updated: 1/5/2020, 3:12:37 AM").
     '%m/%d/%Y, %I:%M:%S %p',
 )
 _TZ_SUFFIX_RE = re.compile(r'([+-]\d{2}:\d{2}|Z)$')
@@ -160,7 +161,7 @@ def _split_composite_label_value(value):
     Some sites pack several 'Label: value' pairs into one line, separated
     by ' - ' -- e.g. fanfiction.net's own (via fichub.net) "Rated: Fiction
     M - Language: English - Genre: Romance/Mystery - Reviews: 3,176"
-    (confirmed against tests/fixtures/hunted.epub). Splits that into the
+    (confirmed against tests/fixtures/fichub-ffnet-composite.epub). Splits that into the
     first label's own direct value plus a dict of the embedded sub-labels.
 
     Only activates when at least one segment after splitting on ' - '
@@ -169,7 +170,7 @@ def _split_composite_label_value(value):
     what keeps it from misfiring on something like a freeform-tags blob
     that happens to contain ' - ' inside one tag's own text (e.g.
     "Alternate Universe - No Powers, ..."), confirmed safe against
-    tests/fixtures/crimson_supernova.epub.
+    tests/fixtures/titlepage-unknown-total-41.epub.
     """
     segments = [s.strip() for s in value.split(' - ') if s.strip()]
     if not segments:
@@ -209,7 +210,7 @@ def _map_titlepage(titlepage):
             continue
         # "Chapters: 1/1" (some title-page variants use AO3's n/total
         # notation instead of FFF's own plain current-chapter-count) --
-        # confirmed against tests/fixtures/sigh_no_more.epub. Recover
+        # confirmed against tests/fixtures/titlepage-paragraph-summary.epub. Recover
         # numChapters from the numerator and derive status as a fallback,
         # the same way ao3_frontmatter.py's _parse_stats() already does
         # for AO3's own preface -- an explicit "Status:" line elsewhere on
@@ -234,7 +235,7 @@ def _map_titlepage(titlepage):
         if key == 'status':
             # Sites/tools spell this differently (fichub's own
             # fanfiction.net template uses lowercase "complete" --
-            # confirmed against tests/fixtures/hunted.epub), but it's
+            # confirmed against tests/fixtures/fichub-ffnet-composite.epub), but it's
             # only ever one of two states, so a two-way classification
             # covers every variant without guessing at exact spellings
             # for the "not complete" case.
@@ -257,6 +258,37 @@ def _merge(*tiers):
     return merged
 
 
+def extract_txt_fields(txt_stream):
+    """TXT archive header through the same field finalizers as EPUB extraction."""
+    fields = extract_txt_header(txt_stream)
+    if not fields:
+        return {}, {}
+    source = fields.pop('_txt_source', 'txt_header')
+    for key in list(fields):
+        fields[key] = _coerce_for_key(key, fields[key])
+    # In this archive header, Category names the fandom. Preserve FFF's
+    # category field too, while making the ordinary fandom mapping available.
+    if fields.get('category'):
+        fields.setdefault('fandoms', list(fields['category']))
+    if 'status' in fields:
+        status = fields['status'].strip().lower()
+        normalized = {
+            'complete': 'Completed', 'completed': 'Completed',
+            'in-progress': 'In-Progress', 'in progress': 'In-Progress',
+            'incomplete': 'In-Progress', 'ongoing': 'In-Progress',
+        }.get(status)
+        if normalized:
+            fields['status'] = normalized
+        else:
+            del fields['status']
+    sources = {key: source for key in fields}
+    fields.update(formatname='txt', formatext='.txt')
+    _derive_fields(fields)
+    _finalize_dates(fields)
+    _finalize_numerics(fields)
+    return fields, {key: source for key, source in sources.items() if key in fields}
+
+
 def extract_fields(epub_stream):
     """
     epub_stream: path or file-like object openable as a zip.
@@ -271,6 +303,7 @@ def extract_fields(epub_stream):
         if collection is not None:
             return collection
         titlepage = extract_fff_titlepage(zf)
+        ficlab_fields, ficlab_sources = extract_ficlab(zf)
         ao3 = extract_ao3_frontmatter(zf)
         ao3_pdf = extract_ao3_pdf_preface(zf)
         ffnet_info = extract_ffnet_infopage(zf)
@@ -287,7 +320,7 @@ def extract_fields(epub_stream):
     if opf.get('title'):
         opf_fields['title'] = opf['title']
     # "Unknown" is Calibre's own placeholder for a book with no author (e.g.
-    # a PDF converted to EPUB -- tests/fixtures/game_changer.epub), not
+    # a PDF converted to EPUB -- tests/fixtures/ao3-pdf-wrapped-preface.epub), not
     # data: dropped, so a real author from a later tier can fill in, and
     # nothing gets derived from it (it used to yield an AO3 profile URL
     # for a user literally named "Unknown").
@@ -306,8 +339,8 @@ def extract_fields(epub_stream):
     if opf.get('description'):
         opf_fields['description'] = _strip_html(opf['description'])
     # An explicit url/uri-scheme identifier is preferred over dc:source --
-    # some tools (WebToEpub, confirmed against tests/fixtures/Isolation -
-    # Bex-chan.epub) write one <dc:source> per chapter *plus* one for the
+    # some tools (covered by tests/fixtures/ffnet-webtoepub-profile.epub)
+    # write one <dc:source> per chapter *plus* one for the
     # cover image, in which case the first one (what dc:source used to
     # fall back to unconditionally) can easily be the cover image URL,
     # not the story. Confirmed harmless for every other fixture: FFF's
@@ -326,7 +359,7 @@ def extract_fields(epub_stream):
     # the browser-tab title ("Title - pseud (user) - Fandom [Archive of Our
     # Own]"), AO3's own <meta> author ("Organization for Transformative
     # Works") and site tagline as the description (confirmed against
-    # tests/fixtures/enough_is_enough.epub). The page body has the real
+    # tests/fixtures/ao3-wayback-whole-page.epub). The page body has the real
     # values, so demote those three to fill-only-if-missing, last.
     opf_weak_fields = {}
     if str(opf_fields.get('title') or '').rstrip().endswith(_AO3_PAGE_TITLE_SUFFIX):
@@ -334,7 +367,7 @@ def extract_fields(epub_stream):
             if key in opf_fields:
                 opf_weak_fields[key] = opf_fields.pop(key)
 
-    fields = _merge(opf_fields, titlepage_mapped, ao3_fields, ao3_pdf_fields, ffnet_fields,
+    fields = _merge(opf_fields, titlepage_mapped, ficlab_fields, ao3_fields, ao3_pdf_fields, ffnet_fields,
                     pdf_header_fields,
                     fallback_fields,
                     opf_weak_fields)
@@ -351,6 +384,10 @@ def extract_fields(epub_stream):
             if fields.get(key) == tier_fields[key]:
                 source_tiers.setdefault(key, tier_name)
 
+    for key, value in ficlab_fields.items():
+        if fields.get(key) == value:
+            source_tiers.setdefault(key, ficlab_sources[key])
+
     _derive_fields(fields)
     _finalize_dates(fields)
     _finalize_numerics(fields)
@@ -361,7 +398,7 @@ def extract_fields(epub_stream):
 def _derive_fields(fields):
     story_url = fields.get('storyUrl')
     # A Wayback Machine snapshot URL (every URL in a WebToEpub-from-
-    # web.archive.org EPUB is one -- tests/fixtures/putting_up_shelves.epub)
+    # web.archive.org EPUB is one -- tests/fixtures/ao3-wayback-information.epub)
     # is swapped for the original it wraps, so site/storyId/authorUrl and
     # FanFicFare's adapter lookup all see the real site. The snapshot URL
     # itself is kept in its own key: it's the only way back to this exact
@@ -371,7 +408,7 @@ def _derive_fields(fields):
         fields.setdefault('waybackUrl', story_url)
         story_url = fields['storyUrl'] = original_url
     # download.archiveofourown.org / http:// / chapter-page variants of a
-    # live AO3 URL (tests/fixtures/game_changer.epub) -> the canonical form.
+    # live AO3 URL (tests/fixtures/ao3-pdf-wrapped-preface.epub) -> the canonical form.
     canonical_url = canonical_ao3_url(story_url)
     if canonical_url:
         story_url = fields['storyUrl'] = canonical_url
@@ -409,7 +446,7 @@ def _derive_fields(fields):
         else:
             # No recovered author URL (common for non-AO3 sites, e.g.
             # fanfiction.net via fichub.net -- confirmed against
-            # tests/fixtures/hunted.epub) -- plain name rather than a
+            # tests/fixtures/fichub-ffnet-composite.epub) -- plain name rather than a
             # broken <a href=''> link.
             fields.setdefault('authorHTML', escape(author_name))
 

@@ -3,7 +3,7 @@ Story/series URL normalization shared across tiers.
 
 Internet Archive Wayback Machine snapshots -- for fics recovered from an
 archived snapshot rather than the live site (e.g. WebToEpub run against
-web.archive.org -- confirmed against tests/fixtures/putting_up_shelves.epub,
+web.archive.org -- confirmed against tests/fixtures/ao3-wayback-information.epub,
 whose OPF identifier, every dc:source, and the NCX uid are all the
 snapshot URL, never the original AO3 one). A snapshot URL embeds the
 original verbatim after a 14-digit timestamp and an optional two-letter
@@ -15,7 +15,7 @@ Wayback also sometimes collapses the embedded scheme's '//' to a single
 
 AO3 host variants -- AO3's own older downloads (PDF especially) link to
 http://download.archiveofourown.org/works/<id> (confirmed against
-tests/fixtures/game_changer.epub), and old snapshots are often http:// or a
+tests/fixtures/ao3-pdf-wrapped-preface.epub), and old snapshots are often http:// or a
 /chapters/... or ?view_full_work sub-page. All are canonicalized to
 https://archiveofourown.org/works/<id> (series: /series/<id>) -- the same
 shape AO3's current downloads carry, so FanFicFare's AO3 adapter and every

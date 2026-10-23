@@ -12,7 +12,7 @@ class ExtractEpubMetadataBase(InterfaceActionBase):
 
     name = 'Extract Epub Metadata'
     description = (
-        'Recover metadata from fanfiction EPUBs already in Calibre; save it '
+        'Recover metadata from fanfiction EPUBs or TXT archive headers already in Calibre; save it '
         'for FanFicFare or write standard and custom fields.'
     )
     supported_platforms = ['windows', 'osx', 'linux']

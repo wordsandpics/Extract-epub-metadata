@@ -20,7 +20,7 @@ from calibre_plugins.extract_epub_metadata.config import (
 )
 from calibre_plugins.extract_epub_metadata.dialogs import BookResult, PreviewDialog
 from calibre_plugins.extract_epub_metadata.extractors._urls import is_wayback_url
-from calibre_plugins.extract_epub_metadata.mapping import extract_fields
+from calibre_plugins.extract_epub_metadata.mapping import extract_fields, extract_txt_fields
 from calibre_plugins.extract_epub_metadata.fff_support import fff_import_support, fff_support_url
 from calibre_plugins.extract_epub_metadata.serialize import serialize_saved_metadata
 
@@ -29,7 +29,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
     name = 'Extract Epub Metadata'
     action_spec = (
         'Extract Metadata', None,
-        'Extract metadata from selected EPUBs into Saved Metadata and/or standard/custom Calibre fields',
+        'Extract metadata from selected EPUBs or TXT archive headers into Saved Metadata and/or standard/custom Calibre fields',
         (),
     )
     action_type = 'current'
@@ -73,6 +73,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
         else:
             selected = [r for r in results if not r.error and r.has_writes]
         written = self._write_results(db, dest_column, selected, mode1_on, mode2_on, mode3_on)
+        self._refresh_library(selected)
         self._show_outcome(results, written, len(book_ids), prefs[KEY_SHOW_CONFIRMATION],
                            include_extraction_errors=not prefs[KEY_PREVIEW])
 
@@ -81,15 +82,26 @@ class ExtractEpubMetadataAction(InterfaceAction):
         title = 'Book %s' % book_id
         try:
             title = db.get_metadata(book_id).title or title
-            if not db.has_format(book_id, 'EPUB'):
-                raise ValueError('No EPUB format available for this book.')
-            with db.format(book_id, 'EPUB', as_file=True) as stream:
-                fields, sources = extract_fields(stream)
+            if db.has_format(book_id, 'EPUB'):
+                book_format, extractor = 'EPUB', extract_fields
+            elif db.has_format(book_id, 'TXT'):
+                book_format, extractor = 'TXT', extract_txt_fields
+            else:
+                raise ValueError('No EPUB or TXT format available for this book.')
+            with db.format(book_id, book_format, as_file=True) as stream:
+                fields, sources = extractor(stream)
             if not fields:
+                if book_format == 'TXT':
+                    raise ValueError('No recognizable opening metadata header found in this TXT. '
+                                     'Expected a supported archive header or PDF-style preface.')
                 raise ValueError('No recoverable metadata found in this EPUB.')
             collection = bool(fields.get('collectionType'))
             identifiers = db.field_for('identifiers', book_id, default_value={}) or {}
             notes = []
+            if 'txt_pdf_partial' in sources.values():
+                notes.append('Partial TXT recovery: metadata labels are separated from their values. '
+                             'Author, language, rating and tags were omitted because this damaged layout '
+                             'cannot be assigned reliably. Explicit URL, dates and counts are retained.')
             support_url = fff_support_url(identifiers, fields.get('storyUrl'), prefs[KEY_ADD_IDENTIFIER])
             support = fff_import_support(support_url) if mode1_on and not collection else None
             save_enabled = mode1_on and not collection and support is not False
@@ -166,6 +178,14 @@ class ExtractEpubMetadataAction(InterfaceAction):
                 written += 1
         return written
 
+    def _refresh_library(self, results):
+        """Database writes do not repaint the library or update its book details."""
+        book_ids = [result.book_id for result in results if result.written_fields]
+        if book_ids:
+            view = self.gui.library_view
+            view.model().refresh_ids(book_ids, view.currentIndex().row())
+            self.gui.tags_view.recount()
+
     def _show_outcome(self, results, written, total, show_confirmation, include_extraction_errors=False):
         summary = 'Updated %d of %d selected book(s).' % (written, total)
         failures = []
@@ -218,6 +238,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
         else:
             selected = [r for r in results if not r.error and r.has_writes]
         written = self._write_anthology_results(db, dest_column, selected, prefs[KEY_ANTHOLOGY_OVERWRITE])
+        self._refresh_library(selected)
         self._show_outcome(results, written, len(book_ids), prefs[KEY_ANTHOLOGY_SHOW_CONFIRMATION],
                            include_extraction_errors=not prefs[KEY_ANTHOLOGY_PREVIEW])
 

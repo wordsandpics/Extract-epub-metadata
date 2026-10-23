@@ -17,20 +17,20 @@ out of scope for v1.
 
 Also handles a plainer variant seen in the wild (no `<b>` tags at all,
 one `<p>Label: value</p>` per line instead) -- confirmed against a real
-fixture (tests/fixtures/sigh_no_more.epub) where every single field past
+fixture (tests/fixtures/titlepage-paragraph-summary.epub) where every single field past
 title/author/storyUrl was silently dropped because this shape wasn't
 recognized as a title page at all (filename has no underscore) and,
 even once detected, has zero `<b>` tags for the existing scan to find.
 
 Also recognizes fichub.net's own front-matter filename
 (OEBPS/introduction.xhtml, no <h3>/<b> at all -- confirmed against
-tests/fixtures/hunted.epub, a fanfiction.net story downloaded via
+tests/fixtures/fichub-ffnet-composite.epub, a fanfiction.net story downloaded via
 fichub.net) -- same <p>Label: value</p> shape, scraped the same way.
 
 The filename check is broad enough to also match Calibre's own
 auto-inserted cover page (often literally named "titlepage.xhtml"), which
 can sit earlier in the spine than the real title page -- confirmed
-against tests/fixtures/Purple Days - baurus.epub, a real FanFicFare/
+against tests/fixtures/fff-cover-before-title.epub, a real FanFicFare/
 spacebattles.com download whose actual title_page.xhtml was never even
 reached because of this. A candidate that matches the filename/class
 check but has no actual title-page content doesn't stop the search --
@@ -112,7 +112,7 @@ def extract_fff_titlepage(zf):
         # auto-inserted cover page is often literally named
         # "titlepage.xhtml" and can sit earlier in the spine than the
         # real "title_page.xhtml" (confirmed against tests/fixtures/
-        # Purple Days - baurus.epub). Keep scanning rather than giving up
+        # fff-cover-before-title.epub). Keep scanning rather than giving up
         # on the first filename match, regardless of whether it panned out.
 
     return None

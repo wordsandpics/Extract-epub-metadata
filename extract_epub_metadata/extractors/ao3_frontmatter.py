@@ -1,6 +1,6 @@
 """
 Tier 3: AO3's own native "preface" front matter, verified directly against
-a real AO3-downloaded EPUB (see tests/fixtures/johnlock_a_random_day.epub):
+a real AO3-downloaded EPUB (see tests/fixtures/ao3-native-complete.epub):
 
     <div id="preface">
       <p class="message">
@@ -30,7 +30,7 @@ unmodified.
 
 Also handles a second, related shape: AO3's live *work page* metadata
 block, copied verbatim into an "Information" page by WebToEpub (confirmed
-against tests/fixtures/putting_up_shelves.epub, a WebToEpub download of an
+against tests/fixtures/ao3-wayback-information.epub, a WebToEpub download of an
 AO3 work via its Wayback Machine snapshot):
 
     <dl class="work meta group">
@@ -48,7 +48,7 @@ both shapes share one dt/dd loop below.
 
 A third variant is the same work page saved whole by a generic "save page
 as EPUB" browser extension (confirmed against tests/fixtures/
-enough_is_enough.epub, also a Wayback snapshot) -- which strips every
+ao3-wayback-whole-page.epub, also a Wayback snapshot) -- which strips every
 `class` attribute, so none of the above is detectable by class. Everything
 past the preface is therefore found by AO3's own visible text labels
 ("Rating:", "Summary:") and the element ids that do survive (`workskin`),
@@ -68,7 +68,7 @@ from ._epubxml import (
 # AO3 singularizes/pluralizes several of these dt labels depending on how
 # many tags are in that category (e.g. "Relationship:" for exactly one
 # pairing, "Relationships:" for more than one) -- confirmed against
-# tests/fixtures/We_Could_Be_Something.epub, a single-pairing work whose
+# tests/fixtures/ao3-anonymous-singular-tags.epub, a single-pairing work whose
 # "Relationship:" label was previously unrecognized (only the plural form
 # was registered), silently dropping ships entirely. Both forms are
 # registered for every category known to vary this way.
@@ -94,7 +94,7 @@ _WORDS_RE = re.compile(r'Words:\s*([0-9][0-9, \u00a0\u2007\u2009\u202f]*)')
 # no whitespace between entries once flattened ("Chapters:1/1Comments:41"),
 # and \S+ swallowed the rest of the line into the total, which then never
 # equalled the numerator (real bug: a finished 1/1 work came out
-# In-Progress with no total -- tests/fixtures/putting_up_shelves.epub).
+# In-Progress with no total -- tests/fixtures/ao3-wayback-information.epub).
 _CHAPTERS_RE = re.compile(r'Chapters:\s*(\d+|\?)\s*/\s*(\d+|\?)')
 _PUBLISHED_RE = re.compile(r'Published:\s*([\d-]+)')
 _UPDATED_RE = re.compile(r'Updated:\s*([\d-]+)')
@@ -129,8 +129,8 @@ def _find_work_meta(root):
 def _text_with_breaks(elem):
     """Whitespace-normalized text, with <br/> kept as a line break --
     text_content() alone drops it, gluing the words either side together
-    (a summary's "...in Fall 2015<br/><a>Putting Up Shelves</a><br/>about"
-    came out as "Fall 2015Putting Up Shelvesabout")."""
+    (a summary's "...in Synthetic line one<br/><a>Synthetic Information Page</a><br/>about"
+    came out as "Synthetic line oneSynthetic Information Pageabout")."""
     def walk(e):
         parts = [e.text or '']
         for child in e:
@@ -232,7 +232,7 @@ def parse_series(elems):
     """[(name, index, url-or-None), ...] from AO3's "Part N of <a
     href=.../series/ID>Name</a>[, Part M of <a>Other</a>]" -- the same
     shape in AO3's own download preface, its work page, and its PDF
-    preface (tests/fixtures/game_changer.epub). Like FanFicFare's own AO3
+    preface (tests/fixtures/ao3-pdf-wrapped-preface.epub). Like FanFicFare's own AO3
     adapter, each /series/ link is paired with the "Part N of" text
     immediately before it; with no usable links (a PDF conversion can
     lose or misplace them), falls back to reading the plain text. `elems`
