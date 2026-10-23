@@ -1,6 +1,6 @@
 from calibre.customize import InterfaceActionBase
 
-__version__ = (1, 0, 0)
+__version__ = (1, 1, 0)
 
 
 class ExtractEpubMetadataBase(InterfaceActionBase):

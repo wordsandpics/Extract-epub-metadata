@@ -131,9 +131,9 @@ The plugin only reads metadata already in the book file; it does not download st
 
 ## Install
 
-Requires **Calibre 6.0 or newer**. The plugin has been checked on Calibre 6.0 and 9.15 for macOS, with additional user testing in Calibre Zen.
+Requires **Calibre 6.0 or newer**. Version 1.1.0 is checked on Calibre 9.15 for macOS, with additional preview testing in Calibre Zen. The earlier 1.0.0 release was also checked on Calibre 6.0. Windows and Linux have not been checked.
 
-Download `extract_epub_metadata-v1.0.0.zip` from the [Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases). In Calibre, choose **Preferences → Plugins → Load plugin from file** and select the downloaded ZIP.
+Download `extract_epub_metadata-v1.1.0.zip` from the [Releases page](https://github.com/wordsandpics/Extract-epub-metadata/releases). In Calibre, choose **Preferences → Plugins → Load plugin from file** and select the downloaded ZIP.
 
 Use the ZIP under the release’s **Assets**. GitHub’s automatic **Source code (zip)** archive is not installable by Calibre.
 

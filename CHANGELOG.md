@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.1.0] - 2026-10-23
 
 ### Fixed
 - Refresh the book list, selected Book Details and tag browser after metadata
@@ -21,6 +21,11 @@
   timestamps, and grouped counts through the existing preview and write modes.
 - TXT is used for books without EPUB. Opening headers are bounded, chapter notes
   are excluded, missing URLs are not guessed, and unrecognized headers are explained.
+
+### Development
+- Public regression tests now use synthetic EPUB/TXT examples with descriptive
+  filenames and titles. Original source stories are retained privately and are
+  excluded from the repository and release packages.
 
 ## [1.0.0] - 2026-10-01
 
