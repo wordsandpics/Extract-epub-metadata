@@ -69,4 +69,4 @@ python3 -m unittest discover -s tests -v
 
 The generator uses only the standard library and public scenario data. It does not read private examples or call the extractor to obtain expected values. Rebuilding produces identical EPUB bytes. To rebuild separately for comparison, use `python3 tests/build_fixtures.py --output /tmp/synthetic-fixture-comparison`. It writes only its named outputs; it does not clean unrelated files from the destination.
 
-For the isolated Calibre workflow, follow the README. It imports only the synthetic fixtures.
+For the isolated Calibre workflow, follow [Format notes and testing](DEVELOPMENT.md). It imports only the synthetic fixtures.

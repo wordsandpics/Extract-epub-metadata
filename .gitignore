@@ -4,3 +4,6 @@ __pycache__/
 *.zip
 /ao3downloader-testing/
 /tests/private-fixtures/
+/AGENTS.md
+/DECISIONS.md
+/TODO.md

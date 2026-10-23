@@ -146,7 +146,7 @@ python3 -m unittest discover -s tests -v
 
 The suite runs without Calibre installed and uses only synthetic EPUB and TXT examples in `tests/fixtures/`. Their filenames and titles identify the test cases. No original stories or private files are required. An optional test also checks FanFicFare’s metadata loader when FanFicFare is installed.
 
-See the [fixture catalogue](FIXTURE-INVENTORY.md). Recreate the examples with `python3 tests/build_fixtures.py`; this uses only the standard library and invented scenario data. Optional local checks against privately retained originals are described in the catalogue.
+See the [fixture catalogue](FIXTURE-INVENTORY.md). Recreate the examples with `python3 tests/build_fixtures.py`; this uses only the standard library and invented scenario data.
 
 
 For a real Calibre check, set `CALIBRE_CONFIG_DIRECTORY` to a configuration in a
