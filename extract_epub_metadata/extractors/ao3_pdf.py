@@ -7,6 +7,7 @@ import re
 from copy import deepcopy
 import shutil
 import subprocess
+import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -175,9 +176,10 @@ def parse_pdf_xml(data):
 
 
 def extract_pdf_header(stream):
-    # Lazy imports keep the parser testable without Calibre. Calibre supplies
-    # the platform-specific binary path and Windows subprocess flags.
-    from calibre.ebooks.pdf.pdftohtml import PDFTOHTML, creationflags
+    # Lazy import keeps the parser testable without Calibre, which supplies
+    # the platform-specific binary path. Older Calibre has no shared flags value.
+    from calibre.ebooks.pdf.pdftohtml import PDFTOHTML
+    creationflags = subprocess.DETACHED_PROCESS if sys.platform == 'win32' else 0
     with tempfile.TemporaryDirectory(prefix='extract-ao3-pdf-') as folder:
         path = Path(folder) / 'input.pdf'
         with path.open('wb') as dest:

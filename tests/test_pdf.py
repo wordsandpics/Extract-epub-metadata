@@ -1,11 +1,15 @@
 """PDF header recognition, ambiguity and boundaries, without requiring Calibre."""
+import subprocess
 import sys
 import tempfile
+import types
 import unittest
+from unittest import mock
 from pathlib import Path
 from xml.sax.saxutils import escape
 HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'calibre_stub'),str(HERE.parent)]
+from extract_epub_metadata.extractors import ao3_pdf
 from extract_epub_metadata.extractors.ao3_pdf import parse_pdf_xml, MAX_XML_BYTES
 from build_pdf_fixtures import build_all, NAMES
 
@@ -71,3 +75,15 @@ class PdfTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             build_all(folder)
             for name in NAMES:self.assertEqual((Path(folder)/name).read_bytes(),(HERE/'fixtures'/name).read_bytes())
+
+    def test_reads_pdf_when_calibre_has_no_creationflags(self):
+        # Calibre before 8.6 provides PDFTOHTML but no module-level creationflags.
+        old_tool=types.ModuleType('calibre.ebooks.pdf.pdftohtml');old_tool.PDFTOHTML='pdftohtml'
+        modules={'calibre.ebooks':types.ModuleType('calibre.ebooks'),
+                 'calibre.ebooks.pdf':types.ModuleType('calibre.ebooks.pdf'),
+                 'calibre.ebooks.pdf.pdftohtml':old_tool}
+        done=subprocess.CompletedProcess([],0,stdout=xml(header()),stderr=b'')
+        with mock.patch.dict(sys.modules,modules),mock.patch.object(ao3_pdf.subprocess,'run',return_value=done):
+            with (HERE/'fixtures'/'pdf-ao3-table.pdf').open('rb') as stream:
+                fields,_=ao3_pdf.extract_pdf_header(stream)
+        self.assertEqual(fields['author'],['TestWriterPDF'])
