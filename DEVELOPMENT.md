@@ -69,8 +69,9 @@ loading and source preference in a temporary library.
 Calibre imports HTML as ZIP. Convert that book to EPUB before running extraction.
 The AO3 reader handles split/older download headers, summaries, plural Categories,
 and saved-page bylines. Explicit story headers replace browser-style title metadata;
-a clean edited OPF title keeps its priority. Relative story links are accepted only
-when the recognized header identifies one work. Unrelated author credits are not
+a clean edited OPF title keeps its priority. A page's story URL needs its own controls
+(chapter, bookmark or comment links, or the share box) to identify exactly one work;
+links in summaries, notes and story text are ignored. Unrelated author credits are not
 bylines. Direct HTML/ZIP input and LiveJournal headers are not supported.
 
 ## Supported TXT archives

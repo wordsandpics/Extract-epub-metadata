@@ -396,6 +396,40 @@ def _extract_existing_frontmatter(zf):
     return download_result or None
 
 
+# A work page links to itself with extra parts (bookmarks, chapters, comments).
+# A bare /works/<id> is how people usually cite a different work.
+_OWN_PAGE_LINK_RE = re.compile(r'/works/\d+[/?#]')
+
+
+def _page_links(elem):
+    """Page links, leaving out summaries, notes and story text."""
+    for child in elem:
+        if local_name(child.tag) == 'blockquote' or 'userstuff' in (child.get('class') or '').split():
+            continue
+        if local_name(child.tag) == 'a':
+            yield child
+        yield from _page_links(child)
+
+
+def _page_story_url(roots):
+    """{'storyUrl': url} when the page's own controls identify exactly one work."""
+    works, own = set(), False
+    for root in roots:
+        for a in _page_links(root):
+            raw = a.get('href') or ''
+            href = unwrap_wayback_url(raw) or raw
+            match = _WORKS_URL_RE.search(href)
+            if match and (href.startswith(('/', '../')) or canonical_ao3_url(href)):
+                works.add('https://archiveofourown.org/works/' + match[1])
+                own = own or bool(_OWN_PAGE_LINK_RE.search(raw))
+        # Some older saves put the absolute permalink in their share box.
+        for box in find_all(root, 'textarea'):
+            for url in re.findall(r'https?://(?:www\.|download\.)?archiveofourown\.org/works/\d+', text_content(box)):
+                works.add(canonical_ao3_url(url))
+                own = True
+    return {'storyUrl': works.pop()} if own and len(works) == 1 else {}
+
+
 def extract_ao3_frontmatter(zf):
     """Supplement native layouts with explicit headers split by conversion.
 
@@ -447,17 +481,7 @@ def extract_ao3_frontmatter(zf):
                 result['description'] = summary
                 break
     if not result.get('storyUrl'):
-        candidates = set()
-        for root in header_roots:
-            for a in find_all(root, 'a'):
-                href = unwrap_wayback_url(a.get('href') or '') or a.get('href') or ''
-                match = _WORKS_URL_RE.search(href)
-                if match and (href.startswith(('/', '../')) or canonical_ao3_url(href)):
-                    candidates.add('https://archiveofourown.org/works/' + match[1])
-            # Some older saves put the absolute permalink in their share box.
-            for box in find_all(root, 'textarea'):
-                for url in re.findall(r'https?://(?:www\.|download\.)?archiveofourown\.org/works/\d+', text_content(box)):
-                    candidates.add(canonical_ao3_url(url))
-        if len(candidates) == 1:
-            result['storyUrl'] = candidates.pop()
+        first_recognized = next(i for i, root in enumerate(roots)
+                                if _find_preface(root) is not None or _find_work_meta(root) is not None)
+        result.update(_page_story_url(roots[:max(first_recognized + 1, len(header_roots) if identity else 0)]))
     return result or None

@@ -7,6 +7,8 @@ HERE=Path(__file__).resolve().parent
 sys.path[:0]=[str(HERE/'calibre_stub'),str(HERE.parent)]
 from build_fixtures import write_epub, page, metadata
 from extract_epub_metadata.mapping import extract_fields
+from extract_epub_metadata.extractors.ao3_frontmatter import extract_ao3_frontmatter
+from zipfile import ZipFile
 
 F={'title':'Synthetic Converted Header','author':['Wrong imported author'],
    'langcode':'en'}
@@ -49,3 +51,30 @@ class ConvertedHtmlTests(unittest.TestCase):
     def test_clean_opf_title_is_preserved(self):
         f=self.extract({'header.xhtml':TAGS,'byline.xhtml':BYLINE},'My edited library title')
         self.assertEqual(f['title'],'My edited library title')
+
+    def header_url(self,docs):
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'example.epub'
+            write_epub(path,F,{k:page(v) for k,v in docs.items()})
+            with ZipFile(path) as zf:
+                return (extract_ao3_frontmatter(zf) or {}).get('storyUrl')
+
+    def test_links_to_other_works_are_not_the_story_url(self):
+        summary=lambda href:BYLINE.replace('First summary paragraph.','Sequel to <a href="%s">my earlier story</a>.'%href)
+        for label,docs in (
+                ('relative summary link',{'page.xhtml':TAGS+summary('/works/555')}),
+                ('summary chapter link',{'page.xhtml':TAGS+summary('/works/555/chapters/7')}),
+                ('absolute summary link',{'page.xhtml':TAGS+summary('https://archiveofourown.org/works/555')}),
+                ('next work link only',{'page.xhtml':TAGS+BYLINE+'<a href="/works/555">Next Work</a>'}),
+                ('story text class',{'page.xhtml':TAGS+BYLINE+'<div class="userstuff"><a href="/works/555/chapters/7">Part one</a></div>'}),
+                ('later story document',{'page.xhtml':TAGS,'chapter.xhtml':'<p><a href="/works/555/chapters/7">Part one</a></p>'})):
+            self.assertIsNone(self.header_url(docs),label)
+
+    def test_own_page_controls_identify_the_work(self):
+        wayback='https://web.archive.org/web/2019/https://archiveofourown.org/works/98000950/bookmarks'
+        share='<textarea>&lt;a href="http://archiveofourown.org/works/98000950"&gt;Title&lt;/a&gt;</textarea>'
+        for label,extra in (('bookmarks','<a href="/works/98000950/bookmarks">Bookmarks</a>'),
+                            ('comments','<a href="/works/98000950?show_comments=true#comments">Comments</a>'),
+                            ('wayback control','<a href="%s">Bookmarks</a>'%wayback),
+                            ('share box',share)):
+            self.assertEqual(self.header_url({'page.xhtml':TAGS+BYLINE+extra}),URL,label)
