@@ -19,5 +19,5 @@ Existing plugin settings are preserved.
 - For HTML, import into Calibre and convert to EPUB before running extraction.
 - Recovery depends on the metadata present. Review the preview before writing;
   ambiguous fields may be omitted with an explanation.
-- Requires Calibre 6.0 or newer. Checked on Calibre 9.15 for macOS, with additional
-  PDF testing in Calibre Zen. Calibre 6, Windows and Linux were not rechecked.
+- Requires Calibre 6.0 or newer. Checked on Calibre 6.0 and 9.15 for macOS, with additional
+  PDF testing in Calibre Zen. Windows and Linux were not rechecked.
