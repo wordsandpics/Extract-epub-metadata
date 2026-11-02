@@ -1,14 +1,16 @@
 # Extract EPUB Metadata
 
-Recover metadata already stored in your fanfiction EPUBs and TXT archives and add it to Calibre. Useful for saved stories that are missing metadata or can no longer be downloaded.
+Recover metadata already stored in your fanfiction EPUBs, TXT archives and AO3-generated PDFs and add it to Calibre. Useful for saved stories that are missing metadata or can no longer be downloaded.
 
-You can recover fields such as author, fandom, tags, summary, word count and chapters, depending on what the file contains. The plugin does not download stories.
+You can recover fields such as author, fandom, tags, summary, story URL, word count and chapters, depending on what the file contains. The plugin does not download stories.
 
 ## Supported files
 
 Supports common AO3 and fanfiction.net EPUB layouts, including FanFicFare, ao3downloader, Fichub, WebToEpub and FicLab exports, plus some saved web pages and PDF-to-EPUB conversions.
 
-TXT archives with recognizable metadata at the beginning can be read directly—no EPUB conversion needed. If a book has both formats, EPUB takes priority.
+TXT archives with recognizable opening metadata and AO3-generated PDFs can be read directly. EPUB takes priority, followed by TXT, then PDF; scanned PDFs and browser printouts are not supported.
+
+For HTML files, import them into Calibre and convert to EPUB before running the plugin.
 
 ## Install
 

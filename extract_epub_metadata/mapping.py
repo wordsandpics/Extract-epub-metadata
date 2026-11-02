@@ -289,6 +289,20 @@ def extract_txt_fields(txt_stream):
     return fields, {key: source for key, source in sources.items() if key in fields}
 
 
+def extract_pdf_fields(pdf_stream):
+    from .extractors.ao3_pdf import extract_pdf_header as read_pdf
+    fields, partial = read_pdf(pdf_stream)
+    if not fields:
+        return {}, {}
+    source = 'pdf_ao3_partial' if partial else 'pdf_ao3'
+    sources = {key: source for key in fields}
+    fields.update(formatname='pdf', formatext='.pdf')
+    _derive_fields(fields)
+    _finalize_dates(fields)
+    _finalize_numerics(fields)
+    return fields, sources
+
+
 def extract_fields(epub_stream):
     """
     epub_stream: path or file-like object openable as a zip.
@@ -362,7 +376,10 @@ def extract_fields(epub_stream):
     # tests/fixtures/ao3-wayback-whole-page.epub). The page body has the real
     # values, so demote those three to fill-only-if-missing, last.
     opf_weak_fields = {}
-    if str(opf_fields.get('title') or '').rstrip().endswith(_AO3_PAGE_TITLE_SUFFIX):
+    browser_title = str(opf_fields.get('title') or '').rstrip()
+    body_title = ao3_fields.get('title')
+    if (browser_title.endswith(_AO3_PAGE_TITLE_SUFFIX)
+            or (body_title and browser_title.startswith(body_title + ' - '))):
         for key in ('title', 'author', 'description'):
             if key in opf_fields:
                 opf_weak_fields[key] = opf_fields.pop(key)

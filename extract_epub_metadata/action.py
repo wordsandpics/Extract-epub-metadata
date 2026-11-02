@@ -20,7 +20,7 @@ from calibre_plugins.extract_epub_metadata.config import (
 )
 from calibre_plugins.extract_epub_metadata.dialogs import BookResult, PreviewDialog
 from calibre_plugins.extract_epub_metadata.extractors._urls import is_wayback_url
-from calibre_plugins.extract_epub_metadata.mapping import extract_fields, extract_txt_fields
+from calibre_plugins.extract_epub_metadata.mapping import extract_fields, extract_txt_fields, extract_pdf_fields
 from calibre_plugins.extract_epub_metadata.fff_support import fff_import_support, fff_support_url
 from calibre_plugins.extract_epub_metadata.serialize import serialize_saved_metadata
 
@@ -29,7 +29,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
     name = 'Extract Epub Metadata'
     action_spec = (
         'Extract Metadata', None,
-        'Extract metadata from selected EPUBs or TXT archive headers into Saved Metadata and/or standard/custom Calibre fields',
+        'Extract metadata from selected EPUBs, TXT archive headers or AO3 PDFs into Saved Metadata and/or standard/custom Calibre fields',
         (),
     )
     action_type = 'current'
@@ -86,14 +86,19 @@ class ExtractEpubMetadataAction(InterfaceAction):
                 book_format, extractor = 'EPUB', extract_fields
             elif db.has_format(book_id, 'TXT'):
                 book_format, extractor = 'TXT', extract_txt_fields
+            elif db.has_format(book_id, 'PDF'):
+                book_format, extractor = 'PDF', extract_pdf_fields
             else:
-                raise ValueError('No EPUB or TXT format available for this book.')
+                raise ValueError('No EPUB, TXT or PDF format available for this book.')
             with db.format(book_id, book_format, as_file=True) as stream:
                 fields, sources = extractor(stream)
             if not fields:
                 if book_format == 'TXT':
                     raise ValueError('No recognizable opening metadata header found in this TXT. '
                                      'Expected a supported archive header or PDF-style preface.')
+                if book_format == 'PDF':
+                    raise ValueError('No recognizable AO3 download header found in the opening PDF pages. '
+                                     'Browser printouts and scanned PDFs are not supported.')
                 raise ValueError('No recoverable metadata found in this EPUB.')
             collection = bool(fields.get('collectionType'))
             identifiers = db.field_for('identifiers', book_id, default_value={}) or {}
@@ -102,6 +107,9 @@ class ExtractEpubMetadataAction(InterfaceAction):
                 notes.append('Partial TXT recovery: metadata labels are separated from their values. '
                              'Author, language, rating and tags were omitted because this damaged layout '
                              'cannot be assigned reliably. Explicit URL, dates and counts are retained.')
+            if 'pdf_ao3_partial' in sources.values():
+                notes.append('Partial PDF recovery: some opening metadata could not be read reliably '
+                             'within the page limit. Ambiguous fields were omitted; review the preview.')
             support_url = fff_support_url(identifiers, fields.get('storyUrl'), prefs[KEY_ADD_IDENTIFIER])
             support = fff_import_support(support_url) if mode1_on and not collection else None
             save_enabled = mode1_on and not collection and support is not False

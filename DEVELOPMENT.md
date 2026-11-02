@@ -42,6 +42,37 @@ the full timestamps.
 Other FicLab source sites, ongoing works, and altered layouts have not yet been
 checked with real samples.
 
+## Direct AO3 PDF input
+
+For books without EPUB or TXT, the reader uses Calibre's bundled `pdftohtml` to
+inspect at most five opening pages (30-second timeout; 2 MiB XML limit). No OCR,
+online requests or full-book conversion is performed. A recognizable AO3 download
+notice, labeled header, title and byline are required. Browser printouts and
+image-only pages are rejected with an explanation.
+
+Printed positions rejoin table labels and wrapped text. Explicit fields supply
+names, counts, dates and tags; profile URLs must match the byline. Separate series
+entries are preserved. A summary needs a clear section/heading boundary; ambiguous
+or unbounded values are omitted with a partial-recovery note. PDF generation dates
+are not story dates. Source order is EPUB, TXT, PDF; a damaged preferred format
+never silently triggers fallback.
+
+Build the invented PDF examples with `python3 tests/build_pdf_fixtures.py`.
+`tests/test_pdf.py` checks recognition and ambiguity without Calibre. In an explicit
+temporary Calibre configuration with the plugin and FanFicFare installed, run
+`calibre-debug -e tests/calibre_pdf_smoke.py` with `QT_QPA_PLATFORM=offscreen`.
+It checks actual PDF extraction, preview, independent write modes, Saved Metadata
+loading and source preference in a temporary library.
+
+## HTML converted to EPUB
+
+Calibre imports HTML as ZIP. Convert that book to EPUB before running extraction.
+The AO3 reader handles split/older download headers, summaries, plural Categories,
+and saved-page bylines. Explicit story headers replace browser-style title metadata;
+a clean edited OPF title keeps its priority. Relative story links are accepted only
+when the recognized header identifies one work. Unrelated author credits are not
+bylines. Direct HTML/ZIP input and LiveJournal headers are not supported.
+
 ## Supported TXT archives
 
 TXT files with this opening header structure are supported directly; conversion

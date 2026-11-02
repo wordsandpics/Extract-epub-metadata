@@ -77,6 +77,7 @@ _DT_TO_KEY = {
     'archive warning': 'warnings',
     'archive warnings': 'warnings',
     'category': 'ao3categories',
+    'categories': 'ao3categories',
     'fandom': 'fandoms',
     'fandoms': 'fandoms',
     'relationship': 'ships',
@@ -340,7 +341,7 @@ def _parse_stats(text, result):
         result['dateUpdated'] = m.group(1).strip()
 
 
-def extract_ao3_frontmatter(zf):
+def _extract_existing_frontmatter(zf):
     opf_root, opf_path = parse_opf(zf)
     if opf_root is None:
         return None
@@ -393,3 +394,70 @@ def extract_ao3_frontmatter(zf):
             download_result.setdefault(key, value)
 
     return download_result or None
+
+
+def extract_ao3_frontmatter(zf):
+    """Supplement native layouts with explicit headers split by conversion.
+
+    Only a recognized AO3 tag block enables this path. A byline must be
+    structural (byline div or linked h3), never an inspired-by credit.
+    """
+    result = dict(_extract_existing_frontmatter(zf) or {})
+    opf, opf_path = parse_opf(zf)
+    roots = []
+    for path in spine_item_paths(zf, opf, opf_path)[:12]:
+        root = parse_xhtml(zf, path)
+        if root is not None:
+            roots.append(root)
+    recognized = any(_find_preface(root) is not None or _find_work_meta(root) is not None for root in roots)
+    if not recognized:
+        return result or None
+    title = None
+    header_roots = []
+    identity = False
+    for root in roots:
+        header_roots.append(root)
+        for elem in root.iter():
+            tag = local_name(elem.tag)
+            if tag == 'h1' or (tag == 'h2' and 'title' in (elem.get('class') or '').split()):
+                title = ' '.join(text_content(elem).split())
+            byline = (tag == 'div' and 'byline' in (elem.get('class') or '').split()) or tag == 'h3'
+            links = [a for a in find_all(elem, 'a') if _PSEUD_URL_RE.search(a.get('href') or '')
+                     and (tag == 'div' or 'author' in (a.get('rel') or '').split())] if byline else []
+            if links:
+                # Reuse the native byline semantics, limiting its scope to
+                # this element so references to other authors stay excluded.
+                names, ids, urls = [], [], []
+                for a in links:
+                    match = _PSEUD_URL_RE.search(a.get('href') or '')
+                    names.append(' '.join(text_content(a).split()))
+                    ids.append(match[2])
+                    urls.append('https://archiveofourown.org/users/%s/pseuds/%s' % (match[1], match[2]))
+                result.update(author=names, authorId=ids, authorUrl=urls, byline=', '.join(names))
+                if title:
+                    result['title'] = title
+                identity = True
+                break
+        if identity:
+            break
+    if identity:
+        for root in header_roots:
+            summary = _find_work_summary(root)
+            if summary:
+                result['description'] = summary
+                break
+    if not result.get('storyUrl'):
+        candidates = set()
+        for root in header_roots:
+            for a in find_all(root, 'a'):
+                href = unwrap_wayback_url(a.get('href') or '') or a.get('href') or ''
+                match = _WORKS_URL_RE.search(href)
+                if match and (href.startswith(('/', '../')) or canonical_ao3_url(href)):
+                    candidates.add('https://archiveofourown.org/works/' + match[1])
+            # Some older saves put the absolute permalink in their share box.
+            for box in find_all(root, 'textarea'):
+                for url in re.findall(r'https?://(?:www\.|download\.)?archiveofourown\.org/works/\d+', text_content(box)):
+                    candidates.add(canonical_ao3_url(url))
+        if len(candidates) == 1:
+            result['storyUrl'] = candidates.pop()
+    return result or None

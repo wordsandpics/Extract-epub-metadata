@@ -4,7 +4,7 @@ All public fixtures contain invented metadata and short placeholder text. Their 
 
 ## Layouts and variations
 
-`tests/build_fixtures.py` shares builders across formats; `tests/fixture_cases.json` declares the scenarios. There are 48 generated EPUB/TXT examples plus one synthetic Saved Metadata HTML reference. Named variations retain existing regression coverage for dates, missing URLs, multiple authors, collections, wrapped fields and source priorities.
+`tests/build_fixtures.py` shares builders across formats; `tests/fixture_cases.json` declares the scenarios. There are 48 generated EPUB/TXT examples plus one synthetic Saved Metadata HTML reference. Six additional synthetic PDFs are built by `tests/build_pdf_fixtures.py`. Named variations retain existing regression coverage for dates, missing URLs, multiple authors, collections, wrapped fields and source priorities.
 
 | Fixture | Layout |
 |---|---|
@@ -57,6 +57,17 @@ All public fixtures contain invented metadata and short placeholder text. Their 
 | `ao3-native-ongoing.epub` | native |
 | `pdf-labelled-header.epub` | pdf header |
 
+## Direct PDF examples
+
+| Fixture | Layout |
+|---|---|
+| `pdf-ao3-table.pdf` | Labeled AO3 table, wrapped notice and explicit profile |
+| `pdf-ao3-stacked.pdf` | Labels above values |
+| `pdf-ao3-older-notice.pdf` | Opening notice without an initial title |
+| `pdf-ao3-two-series.pdf` | Two series, including a comma in one name |
+| `pdf-browser-unsupported.pdf` | Browser-style page with unrelated work link; rejected |
+| `pdf-no-text.pdf` | Empty page; rejected without OCR |
+
 ## Rebuild and check
 
 For format-specific behavior and isolated Calibre test instructions, see
@@ -64,6 +75,7 @@ For format-specific behavior and isolated Calibre test instructions, see
 
 ```sh
 python3 tests/build_fixtures.py
+python3 tests/build_pdf_fixtures.py
 python3 -m unittest discover -s tests -v
 ```
 

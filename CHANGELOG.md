@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0] - 2026-11-01
+
+- Read recognizable AO3-generated PDF headers directly through the existing preview
+  and write modes. EPUB and TXT remain preferred; unsupported PDF layouts are explained.
+- Recover clean titles, bylines, summaries, plural Categories and explicit story
+  links from more AO3 HTML-to-EPUB conversions.
+- Add synthetic PDF fixtures and isolated Calibre PDF checks.
+
 ## [1.1.0] - 2026-10-23
 
 ### Fixed

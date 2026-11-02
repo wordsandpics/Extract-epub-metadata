@@ -377,7 +377,7 @@ with plugin:
         assert 'txt_header' not in preferred.sources.values()
         missing = db.create_book_entry(Metadata('No supported format'))
         missing_result = action._process_book(api, missing, '#saved', txt_prefs, True, False, False, {}, columns)
-        assert 'No EPUB or TXT format' in missing_result.error and (not missing_result.has_writes)
+        assert 'No EPUB, TXT or PDF format' in missing_result.error and (not missing_result.has_writes)
         db.add_format(missing, 'TXT', io.BytesIO(b'Ordinary story text without metadata'), index_is_id=True)
         missing_result = action._process_book(api, missing, '#saved', txt_prefs, True, False, False, {}, columns)
         assert 'No recognizable opening metadata header' in missing_result.error and (not missing_result.has_writes)

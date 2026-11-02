@@ -6,6 +6,7 @@ See [the fixture catalogue](../../FIXTURE-INVENTORY.md) for each scenario. Rebui
 
 ```sh
 python3 tests/build_fixtures.py
+python3 tests/build_pdf_fixtures.py
 ```
 
 No private files or network connection are required. The generator writes deterministic EPUBs with no images. It keeps format markers needed by the parsers. URL shapes refer to supported sites solely to test recognition; no downloads occur.
