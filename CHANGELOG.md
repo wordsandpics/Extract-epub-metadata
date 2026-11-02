@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.2.0] - 2026-11-01
+## [1.2.0] - 2026-11-02
 
 - Read recognizable AO3-generated PDF headers directly through the existing preview
   and write modes. EPUB and TXT remain preferred; unsupported PDF layouts are explained.
