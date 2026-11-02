@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from .ao3_frontmatter import _DT_TO_KEY, _SCALAR_KEYS, _parse_stats, parse_series, series_fields
+from .ao3_pdf_preface import _STATS_CONTINUATION_RE
 from ._urls import canonical_ao3_url
 
 MAX_PAGES = 5
@@ -20,6 +21,8 @@ MAX_XML_BYTES = 2 * 1024 * 1024
 _LABEL = re.compile(r'^([A-Za-z][A-Za-z ]{1,25}):\s*(.*)$')
 _LABELS = set(_DT_TO_KEY) | {'stats', 'series', 'collections', 'collection'}
 _NOTICE = re.compile(r'^Posted originally on the Archive of Our Own at\s+(https?://(?:www\.|download\.)?archiveofourown\.org/works/\d+)\s*\.?$', re.I)
+_STATS_ROW = re.compile(_STATS_CONTINUATION_RE.pattern + r'|^\d{4}-\d{2}-\d{2}$')
+_MAX_BYLINE_ROWS = 5
 _PROFILE = re.compile(r'(?:https?://(?:www\.|download\.)?archiveofourown\.org)?(/users/([^/?#]+)/pseuds/([^/?#]+))$')
 
 
@@ -56,6 +59,44 @@ def _rows(root):
     return rows
 
 
+def _join_wrapped(lines):
+    """Rejoin printed lines; only a word like "Self-" continues without a space.
+
+    Separators such as "-or-" and "----" also end in a hyphen but stand alone.
+    """
+    out = ''
+    for line in lines:
+        out += line if not out or re.search(r'(?:^|\s)\w(?:\S*\w)?-$', out) else ' ' + line
+    return out
+
+
+def _title_start(rows, first, byline_index):
+    """Without a repeated opening title, the title is what follows Stats.
+
+    The line above the byline is always part of the title, so a number-only
+    title cannot be read as a wrapped count.
+    """
+    last = byline_index - 1
+    labels = [i for i in range(first, last) if (m := _LABEL.fullmatch(rows[i][0])) and m[1].lower() in _LABELS]
+    if not labels or _LABEL.fullmatch(rows[labels[-1]][0])[1].lower() != 'stats':
+        return last
+    start = labels[-1] + 1
+    while start < last and _STATS_ROW.search(rows[start][0]):
+        start += 1
+    return start
+
+
+def _byline_end(rows, start):
+    """A trailing comma or an open "pseud (username" continues on the next line."""
+    end = start + 1
+    while end < min(len(rows), start + _MAX_BYLINE_ROWS):
+        text = ' '.join(row[0] for row in rows[start:end])
+        if not text.endswith(',') and text.count('(') <= text.count(')'):
+            break
+        end += 1
+    return end
+
+
 def parse_pdf_xml(data):
     """Pure parser for bounded pdftohtml XML; returns (fields, partial)."""
     if len(data) > MAX_XML_BYTES:
@@ -75,7 +116,7 @@ def parse_pdf_xml(data):
             break
     if notice_end is None:
         return {}, False
-    title_before = ' '.join(row[0] for row in rows[:notice_start])
+    title_before = _join_wrapped([row[0] for row in rows[:notice_start]])
     byline_index = next((i for i in range(notice_end, len(rows)) if re.match(r'^by\s+\S', rows[i][0])), None)
     if byline_index is None or byline_index <= notice_end:
         return {}, False
@@ -84,10 +125,13 @@ def parse_pdf_xml(data):
     if title_before and title != title_before:
         # A wrapped repeated title can occupy more than one printed line.
         match = next((i for i in range(max(notice_end, byline_index - 3), byline_index)
-                      if ' '.join(r[0] for r in rows[i:byline_index]) == title_before), None)
+                      if _join_wrapped([r[0] for r in rows[i:byline_index]]) == title_before), None)
         if match is None:
             return {}, False
         title_index, title = match, title_before
+    elif not title_before:
+        title_index = _title_start(rows, notice_end, byline_index)
+        title = _join_wrapped([r[0] for r in rows[title_index:byline_index]])
     header = rows[notice_end:title_index]
     blocks, current = [], None
     for value, elem, _page in header:
@@ -102,7 +146,7 @@ def parse_pdf_xml(data):
     partial, seen = False, set()
     stat_values = {}
     for label, texts, elems in blocks:
-        value = ' '.join(t for t in texts if t)
+        value = _join_wrapped([t for t in texts if t])
         key = _DT_TO_KEY.get(label)
         if label == 'stats':
             parsed = {}; _parse_stats(value, parsed)
@@ -147,13 +191,15 @@ def parse_pdf_xml(data):
         for key in chapter_keys:
             fields.pop(key, None)
         partial = True
-    byline, elem, _ = rows[byline_index]
+    byline_end = _byline_end(rows, byline_index)
+    byline = ' '.join(row[0] for row in rows[byline_index:byline_end])
     fields['author'] = [s.strip() for s in byline[3:].split(',') if s.strip()]
     linked_names = {}
-    for a in elem.iter('a'):
-        match = _PROFILE.fullmatch(a.get('href', ''))
-        if match and _text(a):
-            linked_names.setdefault((match[1], match[3]), []).append(_text(a))
+    for _value, elem, _page in rows[byline_index:byline_end]:
+        for a in elem.iter('a'):
+            match = _PROFILE.fullmatch(a.get('href', ''))
+            if match and _text(a):
+                linked_names.setdefault((match[1], match[3]), []).append(_text(a))
     profiles = [(re.sub(r'^by\s+', '', ' '.join(parts)).strip(' ,'), path, pseud)
                 for (path, pseud), parts in linked_names.items()]
     # Names come from the byline. Profile URLs must agree with those names;
@@ -161,7 +207,7 @@ def parse_pdf_xml(data):
     if [p[0] for p in profiles] == fields['author']:
         fields['authorUrl'] = ['https://archiveofourown.org' + p[1] for p in profiles]
         fields['authorId'] = [p[2] for p in profiles]
-    summary = byline_index + 1
+    summary = byline_end
     if summary < len(rows) and rows[summary][0].rstrip(':').lower() == 'summary':
         end = next((i for i in range(summary + 1, len(rows))
                     if rows[i][0].rstrip(':').lower() in ('notes', 'chapter notes', 'work text')
@@ -169,7 +215,7 @@ def parse_pdf_xml(data):
                     or (rows[i][2] > rows[i - 1][2] and len(rows[i][0]) < 150
                         and any(True for _ in rows[i][1].iter('b')))), None)
         if end is not None:
-            fields['description'] = ' '.join(r[0] for r in rows[summary + 1:end]).strip()
+            fields['description'] = _join_wrapped([r[0] for r in rows[summary + 1:end]]).strip()
         else:
             partial = True
     return fields, partial

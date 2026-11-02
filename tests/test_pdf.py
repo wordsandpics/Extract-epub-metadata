@@ -87,3 +87,55 @@ class PdfTests(unittest.TestCase):
             with (HERE/'fixtures'/'pdf-ao3-table.pdf').open('rb') as stream:
                 fields,_=ao3_pdf.extract_pdf_header(stream)
         self.assertEqual(fields['author'],['TestWriterPDF'])
+
+
+class PdfWrappedTextTests(unittest.TestCase):
+    NOTICE=['Posted originally on the Archive of Our Own at','https://archiveofourown.org/works/98000901.',
+            'Rating: General Audiences','Fandom: Test Fandom']
+    STATS='Stats: Published: 2024-01-02 Words: 123 Chapters: 1/1'
+    TAIL=['by TestWriterPDF','Summary','Synthetic description.','Notes','Ignore this note.']
+
+    def test_wrapped_title_without_opening_title(self):
+        f,partial=parse_pdf_xml(xml(self.NOTICE+[self.STATS,'A Very Long Title That','Wraps Onto Two Lines']+self.TAIL))
+        self.assertEqual(f['title'],'A Very Long Title That Wraps Onto Two Lines')
+        self.assertEqual(f['numWords'],'123')
+        self.assertFalse(partial)
+
+    def test_wrapped_stats_stay_out_of_the_title(self):
+        f,_=parse_pdf_xml(xml(self.NOTICE+['Stats: Published: 2024-01-02 Chapters: 1/1 Words:','15504','Plain Title']+self.TAIL))
+        self.assertEqual(f['title'],'Plain Title')
+        self.assertEqual(f['numWords'],'15504')
+
+    def test_numeric_title_is_not_read_as_stats(self):
+        f,_=parse_pdf_xml(xml(self.NOTICE+[self.STATS,'1984']+self.TAIL))
+        self.assertEqual(f['title'],'1984')
+        self.assertEqual(f['numWords'],'123')
+
+    def test_hyphen_at_line_end_joins_without_a_space(self):
+        lines=self.NOTICE+['Additional Tags: Hurt/Comfort, Self-','Harm, Alternate Universe -','Canon Divergence',
+                           self.STATS,'Self-','Made','by TestWriterPDF','Summary','A well-','known story.','Notes','n']
+        f,_=parse_pdf_xml(xml(lines))
+        self.assertEqual(f['freeformtags'],['Hurt/Comfort','Self-Harm','Alternate Universe - Canon Divergence'])
+        self.assertEqual(f['title'],'Self-Made')
+        self.assertEqual(f['description'],'A well-known story.')
+
+    def test_separator_lines_keep_their_space(self):
+        lines=self.NOTICE+[self.STATS,'Title','by TestWriterPDF','Summary','First part.','-or-','Second part.','----','Third part.','Notes','n']
+        f,_=parse_pdf_xml(xml(lines))
+        self.assertEqual(f['description'],'First part. -or- Second part. ---- Third part.')
+
+    def test_wrapped_byline_keeps_every_author_and_the_summary(self):
+        lines=self.NOTICE+[self.STATS,'Title','by AuthorOne, AuthorTwo,','AuthorThree','Summary','Kept.','Notes','n']
+        f,partial=parse_pdf_xml(xml(lines))
+        self.assertEqual(f['author'],['AuthorOne','AuthorTwo','AuthorThree'])
+        self.assertEqual(f['description'],'Kept.')
+        self.assertFalse(partial)
+
+    def test_wrapped_byline_links_stay_aligned(self):
+        link='<a href="/users/%s/pseuds/%s">%s</a>'
+        rows=[escape(line) for line in self.NOTICE+[self.STATS,'Title']]
+        rows+=['by '+link%('A','A','A')+', '+link%('B','B','B')+',',link%('C','C','C'),'Summary','Kept.','Notes','n']
+        text=''.join('<text top="%s" left="50" width="500" height="15">%s</text>'%(30+i*20,r) for i,r in enumerate(rows))
+        f,_=parse_pdf_xml(('<pdf2xml><page number="1">'+text+'</page></pdf2xml>').encode())
+        self.assertEqual(f['author'],['A','B','C'])
+        self.assertEqual(f['authorUrl'],['https://archiveofourown.org/users/%s/pseuds/%s'%(n,n) for n in 'ABC'])
