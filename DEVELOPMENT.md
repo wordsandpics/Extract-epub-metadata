@@ -18,6 +18,12 @@ For Save as eBook, save the work’s **Entire Work** snapshot (`?view_full_work=
 
 Other sites and EPUB layouts may work, but haven’t been tested. The plugin skips metadata it can’t confidently recognize, so always review the preview before writing.
 
+### FanFicFare title pages
+
+A FanFicFare title page has no Fandom line. For AO3 and fanfiction.net its
+Category holds the fandoms, so it fills Fandom(s) when no other source gives one.
+Other sites use Category for their own labels, so it stays Category only.
+
 ### FicLab metadata
 
 FicLab's labeled summary table supplies story word/chapter counts, completion

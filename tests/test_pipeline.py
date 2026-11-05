@@ -103,6 +103,13 @@ class DateFieldTypingTest(unittest.TestCase):
             if key in fields:
                 self.assertIsInstance(fields[key], (datetime.date, datetime.datetime), '%r was left as %r instead of being parsed into a datetime (or dropped) -- this is what crashes FFF downstream' % (key, fields[key]))
 
+    def test_ao3_titlepage_category_supplies_fandoms(self):
+        # FFF's AO3 title page has no Fandom line; its Category is the fandom (issue 2).
+        fields, sources = extract_fields(str(self.EPUB_FIXTURE))
+        self.assertEqual(fields.get('fandoms'), ['TestCategory01'])
+        self.assertEqual(sources.get('fandoms'), 'fff_titlepage')
+        self.assertIn('TestCategory01', compute_standard_fields(fields)['tags'])
+
     def test_serialized_date_fields_carry_the_datetime_class(self):
         fields, _sources = extract_fields(str(self.EPUB_FIXTURE))
         blob = serialize_saved_metadata(fields)
@@ -336,6 +343,8 @@ class CoverPageBeforeTitlePageTest(unittest.TestCase):
         self.assertEqual(fields.get('numWords'), 823304)
         for key in ('category', 'genre', 'status', 'numChapters', 'numWords'):
             self.assertEqual(sources.get(key), 'fff_titlepage')
+        # Other sites use Category for their own labels, not fandoms.
+        self.assertNotIn('fandoms', fields)
 
     def test_cover_page_alone_yields_nothing(self):
         from extract_epub_metadata.extractors.fff_titlepage import _is_titlepage

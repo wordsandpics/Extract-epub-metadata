@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+- Recover the fandom from FanFicFare title pages of AO3 and fanfiction.net EPUBs,
+  where it is listed under Category. Fandom columns and Tags now include it.
+- Rename the AO3 Category mapping field to "AO3 Category (M/M, F/F, Gen...)" so it is
+  not mistaken for FanFicFare's Category.
+
 ## [1.2.1] - 2026-11-05
 
 - Rename the plugin to Extract Fanfic Metadata, as it also reads TXT and AO3 PDF files.

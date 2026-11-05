@@ -91,6 +91,8 @@ TITLEPAGE_LABEL_TO_KEY = {
 # _split_composite_label_value below; having no key mapping here is what
 # makes them silently dropped, no extra filtering code needed.
 
+_CATEGORY_IS_FANDOM_SITES = {'archiveofourown.org', 'fanfiction.net', 'www.fanfiction.net'}
+
 LIST_KEYS = {
     'warnings', 'fandoms', 'ships', 'characters', 'freeformtags',
     'ao3categories', 'category', 'genre',
@@ -406,6 +408,12 @@ def extract_fields(epub_stream):
             source_tiers.setdefault(key, ficlab_sources[key])
 
     _derive_fields(fields)
+    # FFF's title page has no Fandom line. For AO3 and fanfiction.net its
+    # Category holds the fandoms; other sites use it for their own labels.
+    if (titlepage_mapped.get('category') and not fields.get('fandoms')
+            and fields.get('site') in _CATEGORY_IS_FANDOM_SITES):
+        fields['fandoms'] = list(titlepage_mapped['category'])
+        source_tiers['fandoms'] = 'fff_titlepage'
     _finalize_dates(fields)
     _finalize_numerics(fields)
 

@@ -239,7 +239,7 @@ FIELD_LABELS = {
     'characters': 'Characters',
     'warnings': 'Archive Warnings',
     'freeformtags': 'Additional Tags',
-    'ao3categories': 'Category',
+    'ao3categories': 'AO3 Category (M/M, F/F, Gen...)',
     'lastupdate': 'Last Update (text)',
     'numWords': 'Word Count',
     'numChapters': 'Chapter Count',
