@@ -39,6 +39,18 @@ class ConvertedHtmlTests(unittest.TestCase):
         self.assertEqual(f['author'],['TestPseud (TestAccount)'])
         self.assertEqual(f['description'],'First summary paragraph.\n\nSecond summary paragraph.')
 
+    def test_translation_and_related_work_credits_are_not_authors(self):
+        # AO3 lists translations in the preface with rel=author links (issue 3).
+        credits=('<p>Notes</p><blockquote class="userstuff"><p>See <a href="https://archiveofourown.org/users/NoteUser/pseuds/NoteUser">NoteUser</a>.</p></blockquote>'
+                 '<ul><li>Translation into Test Language available: <a href="https://archiveofourown.org/works/98000953">Translated Work</a> by '
+                 '<a rel="author" href="https://archiveofourown.org/users/Translator/pseuds/Translator">Translator</a></li></ul>')
+        header='<div id="preface"><p>Posted originally on the Archive of Our Own at <a href="'+URL+'">'+URL+'</a></p>'+TAGS
+        for docs in ({'preface.xhtml':header+BYLINE+credits+'</div>'},
+                     {'header.xhtml':header+'</div>','byline.xhtml':'<div id="preface">'+BYLINE+credits+'</div>'}):
+            f=self.extract(docs)
+            self.assertEqual(f['author'],['TestPseud (TestAccount)'])
+            self.assertEqual(f['authorUrl'],['https://archiveofourown.org/users/TestAccount/pseuds/TestPseud'])
+
     def test_relative_work_url_is_unique_and_not_first_link_guess(self):
         body=TAGS+BYLINE+'<a href="/works/98000950/chapters/98000951">Chapter</a>'
         f=self.extract({'page.xhtml':body})
