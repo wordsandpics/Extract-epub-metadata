@@ -17,5 +17,5 @@ toolbar button are kept.
 
 ## Notes
 
-- Requires Calibre 6.0 or newer. Checked on Calibre 9.15 for macOS. Windows and Linux
-  were not rechecked.
+- Requires Calibre 6.0 or newer. Checked on Calibre 9.15 for macOS; the switch from the
+  old name was also tried in Calibre Zen. Windows and Linux were not rechecked.

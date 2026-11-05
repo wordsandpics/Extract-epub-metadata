@@ -18,7 +18,7 @@ For HTML files, import them into Calibre and convert to EPUB before running the 
 
 Requires **Calibre 6.0 or newer**. FanFicFare is optional.
 
-Download the installable plugin ZIP from the latest release’s [Assets](https://github.com/wordsandpics/Extract-epub-metadata/releases/latest). In Calibre, open **Preferences → Plugins → Load plugin from file**, select the ZIP, then restart Calibre.
+Download the installable plugin ZIP from the latest release’s [Assets](https://github.com/wordsandpics/Extract-fanfic-metadata/releases/latest). In Calibre, open **Preferences → Plugins → Load plugin from file**, select the ZIP, then restart Calibre.
 
 ## Use
 
