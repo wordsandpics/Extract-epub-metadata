@@ -26,6 +26,7 @@ from calibre_plugins.extract_epub_metadata.serialize import serialize_saved_meta
 
 
 class ExtractEpubMetadataAction(InterfaceAction):
+    # Former plugin name, kept so existing toolbar placements still find this action.
     name = 'Extract Epub Metadata'
     action_spec = (
         'Extract Metadata', None,
@@ -218,7 +219,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
                 notes.extend(getattr(result, 'notes', []))
             if not written and notes:
                 summary += '\n\n' + '\n'.join(dict.fromkeys(notes))
-            info_dialog(self.gui, 'Extract Epub Metadata', summary,
+            info_dialog(self.gui, 'Extract Fanfic Metadata', summary,
                         det_msg='\n'.join(dict.fromkeys(notes)), show=True)
 
     def run_anthology_report(self):

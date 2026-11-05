@@ -124,7 +124,7 @@ class PreviewDialog(QDialog):
 
     def __init__(self, gui, results):
         QDialog.__init__(self, gui)
-        self.setWindowTitle('Extract Epub Metadata -- Preview')
+        self.setWindowTitle('Extract Fanfic Metadata -- Preview')
         self.resize(760, 480)
         self.results = results
 
@@ -201,7 +201,7 @@ class ColumnMappingDialog(QDialog):
 
     def __init__(self, gui, custom_columns, current_mapping, reserved_column=None):
         QDialog.__init__(self, gui)
-        self.setWindowTitle('Extract Epub Metadata -- Custom Column Mapping')
+        self.setWindowTitle('Extract Fanfic Metadata -- Custom Column Mapping')
         self.resize(600, 420)
 
         # current_mapping is {column_key: metadata_key} (matches how it's

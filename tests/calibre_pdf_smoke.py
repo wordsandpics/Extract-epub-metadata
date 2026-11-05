@@ -18,7 +18,7 @@ from calibre.library import db as open_library
 from qt.core import QWidget
 app=Application([])
 ROOT=Path(__file__).resolve().parents[1]
-plugin=find_plugin('Extract Epub Metadata')
+plugin=find_plugin('Extract Fanfic Metadata')
 assert plugin is not None
 with plugin:
     from calibre_plugins.extract_epub_metadata.action import ExtractEpubMetadataAction

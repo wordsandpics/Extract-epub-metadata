@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1] - 2026-11-05
+
+- Rename the plugin to Extract Fanfic Metadata, as it also reads TXT and AO3 PDF files.
+  Calibre treats this as a new plugin; remove Extract Epub Metadata after installing it.
+  Settings and the toolbar button are kept. Recovery behavior is unchanged.
+
 ## [1.2.0] - 2026-11-03
 
 - Read recognizable AO3-generated PDF headers directly through the existing preview

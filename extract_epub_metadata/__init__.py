@@ -1,6 +1,6 @@
 from calibre.customize import InterfaceActionBase
 
-__version__ = (1, 2, 0)
+__version__ = (1, 2, 1)
 
 
 class ExtractEpubMetadataBase(InterfaceActionBase):
@@ -10,7 +10,7 @@ class ExtractEpubMetadataBase(InterfaceActionBase):
     doesn't need to import Qt.
     """
 
-    name = 'Extract Epub Metadata'
+    name = 'Extract Fanfic Metadata'
     description = (
         'Recover metadata from fanfiction EPUBs, TXT archive headers or AO3 PDFs already in Calibre; save it '
         'for FanFicFare or write standard and custom fields.'

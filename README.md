@@ -1,4 +1,6 @@
-# Extract EPUB Metadata
+# Extract Fanfic Metadata
+
+Formerly Extract EPUB Metadata.
 
 Recover metadata already stored in your fanfiction EPUBs, TXT archives and AO3-generated PDFs and add it to Calibre. Useful for saved stories that are missing metadata or can no longer be downloaded.
 
@@ -20,7 +22,7 @@ Download the installable plugin ZIP from the latest release’s [Assets](https:/
 
 ## Use
 
-1. Open **Preferences → Plugins → Extract EPUB Metadata → Customize plugin** and choose what to update:
+1. Open **Preferences → Plugins → Extract Fanfic Metadata → Customize plugin** and choose what to update:
 
    - **Save extracted metadata:** Store it in the Long Text column you use for FanFicFare’s Saved Metadata.
    - **Update standard metadata:** Write fields such as Title, Authors, Tags, Series and Comments.

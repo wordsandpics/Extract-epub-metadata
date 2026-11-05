@@ -181,6 +181,8 @@ The suite runs without Calibre installed and uses only synthetic EPUB and TXT ex
 See the [fixture catalogue](FIXTURE-INVENTORY.md). Recreate the examples with `python3 tests/build_fixtures.py`; this uses only the standard library and invented scenario data.
 
 
+The plugin was renamed from Extract Epub Metadata in 1.2.1. The action name, settings file and import name keep the old form so existing toolbars and settings carry over.
+
 For a real Calibre check, set `CALIBRE_CONFIG_DIRECTORY` to a configuration in a
 **temporary folder**, install FanFicFare and a ZIP built from the contents of
 `extract_epub_metadata/` there, then run `tests/calibre_smoke.py` using

@@ -30,7 +30,7 @@ from calibre.gui2.library.models import BooksModel
 from calibre.utils.date import UNDEFINED_DATE, is_date_undefined
 ROOT = Path(__file__).resolve().parents[1]
 app = Application([])
-plugin = find_plugin('Extract Epub Metadata')
+plugin = find_plugin('Extract Fanfic Metadata')
 assert plugin is not None, 'Install the plugin in the scratch configuration first.'
 with plugin:
     from calibre_plugins.extract_epub_metadata.action import ExtractEpubMetadataAction
