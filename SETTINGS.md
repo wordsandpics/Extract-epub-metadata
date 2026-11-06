@@ -105,7 +105,7 @@ what Calibre calls it when you create a column.
 | Title | The story's title. | Text |
 | Summary | The story's summary. | Text (Long text suits it best) |
 | Rating | Content rating, e.g. "Teen And Up Audiences" or "Mature". | Text |
-| Archive Warnings | Archive warnings, e.g. "Creator Chose Not To Use Archive Warnings". | A list |
+| Archive Warnings | Archive warnings, e.g. "Major Character Death". | A list |
 | Language | Full language name, e.g. "English". | Text |
 | Language Code | Short language code, e.g. "en". | Text |
 | Status | "Completed" or "In-Progress". | Text |

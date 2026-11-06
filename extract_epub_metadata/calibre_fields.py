@@ -292,7 +292,7 @@ FIELD_HELP = {
     'fandoms': 'The fandom(s)/canon(s) this story is set in.',
     'ships': 'Relationships/pairings, as tagged on the source site.',
     'characters': 'Characters, as tagged on the source site.',
-    'warnings': "Archive warnings, e.g. \"Creator Chose Not To Use Archive Warnings\".",
+    'warnings': "Archive warnings, e.g. \"Major Character Death\".",
     'freeformtags': "AO3's freeform/additional tags.",
     'ao3categories': 'AO3 category, e.g. "M/M", "F/F", "Gen".',
     'lastupdate': 'Last-update text FanFicFare uses, e.g. "Last Update Year/Month: 2024/03".',
