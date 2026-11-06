@@ -6,6 +6,8 @@
   where it is listed under Category. Fandom columns and Tags now include it.
 - Rename the AO3 Category mapping field to "AO3 Category (M/M, F/F, Gen...)" so it is
   not mistaken for FanFicFare's Category.
+- Add a [Settings and fields](SETTINGS.md) guide, and hover help for every
+  custom-column field. Date Recovered's help now says it uses the file's download date when recorded.
 
 ## [1.2.1] - 2026-11-05
 

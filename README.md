@@ -29,6 +29,7 @@ Download the installable plugin ZIP from the latest release’s [Assets](https:/
    - **Update custom columns:** Map recovered fields, such as word count or rating, to your own columns.
 
    You can combine these options. Existing values are kept unless you enable overwrite.
+   See [Settings and fields](SETTINGS.md) for every option and field.
 
 2. Select your books and choose **Extract Metadata** from the plugin’s toolbar button.
 
@@ -52,4 +53,4 @@ Recovery depends on the file’s contents and layout. Some fields may be missing
 
 Provided as-is, with limited support. Back up your library before making bulk changes. Issues and pull requests are welcome, but responses may be slow.
 
-[Changelog](CHANGELOG.md) · [Testing and fixtures](FIXTURE-INVENTORY.md)
+[Settings and fields](SETTINGS.md) · [Changelog](CHANGELOG.md) · [Testing and fixtures](FIXTURE-INVENTORY.md)

@@ -263,10 +263,11 @@ FIELD_LABELS = {
 # a tooltip on the field's label in the mapping dialog, since the
 # friendlier names above don't always make that obvious on their own.
 FIELD_HELP = {
-    'author': 'Author name(s).',
+    'title': "The story's title.",
+    'author': "Each author's name, kept separate.",
     'authorId': "The site's username for the author.",
     'authorUrl': "Link to the author's profile.",
-    'byline': 'Author name(s) as a single line of text.',
+    'byline': 'All author names as one line of text, e.g. "Name1, Name2".',
     'description': "The story's summary.",
     'rating': 'Content rating, e.g. "Teen And Up Audiences" or "Mature".',
     'language': 'Full language name, e.g. "English".',
@@ -286,15 +287,25 @@ FIELD_HELP = {
     'numChaptersTotal': 'The final planned chapter count, only present when the source itself '
                          'reports one -- absent (not zero) for an open-ended, still-updating '
                          'work whose author hasn\'t set a total.',
+    'formatname': 'The file the metadata came from: "epub", "txt" or "pdf".',
+    'formatext': 'The matching file extension, e.g. ".epub".',
     'fandoms': 'The fandom(s)/canon(s) this story is set in.',
     'ships': 'Relationships/pairings, as tagged on the source site.',
+    'characters': 'Characters, as tagged on the source site.',
     'warnings': "Archive warnings, e.g. \"Creator Chose Not To Use Archive Warnings\".",
     'freeformtags': "AO3's freeform/additional tags.",
     'ao3categories': 'AO3 category, e.g. "M/M", "F/F", "Gen".',
-    'lastupdate': 'Human-readable last-updated text, e.g. "2024/03".',
-    'dateCreated': 'When this plugin ran -- not a date from the source site.',
+    'lastupdate': 'Last-update text FanFicFare uses, e.g. "Last Update Year/Month: 2024/03".',
+    'numChapters': 'Number of chapters in the saved copy.',
+    'datePublished': 'When the story was first published, as recorded in the file.',
+    'dateUpdated': 'When the story was last updated, as recorded in the file.',
+    'dateCreated': 'When the file was downloaded, if it records this; otherwise when this '
+                   'plugin ran. Not a date from the story itself.',
     STATUS_COMPLETE_KEY: 'True if the recovered status is "Completed", false otherwise.',
     'collectionUrl': 'The anthology or series URL, not an individual story URL.',
+    'collectionTags': 'Tags recorded for the collection as a whole.',
+    'collectionDateBegun': 'When the series was begun, from a saved series page.',
+    'collectionDateUpdated': 'When the series was last updated, from a saved series page.',
     'collectionStatus': 'The saved series page completion flag; it does not describe each story.',
     'collectionStoryCount': 'Embedded stories recovered, or the work count reported by the saved series page.',
     'collectionCompletedCount': 'Known completed stories. Partial counts exclude unknown statuses; absent if all statuses are unknown.',
