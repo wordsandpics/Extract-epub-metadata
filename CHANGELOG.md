@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [1.2.2] - 2026-11-06
 
 - Recover the fandom from FanFicFare title pages of AO3 and fanfiction.net EPUBs,
   where it is listed under Category. Fandom columns and Tags now include it.
