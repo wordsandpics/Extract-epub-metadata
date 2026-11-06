@@ -147,17 +147,17 @@ remain available.
 When a book has both EPUB and TXT, EPUB takes precedence. TXT is used only when
 the book has no EPUB; an unreadable EPUB does not trigger a TXT fallback.
 
-## Anthologies and series collections
+## Anthologies
 
-**Extract Metadata** recognizes epubmerge anthologies and EPUBs whose primary URL is a series URL. A story that merely links to a series is still treated as an ordinary story.
+**Extract Metadata** recognizes epubmerge anthologies and EPUBs whose primary URL is a series URL (series EPUBs); both are called anthologies, as in FanFicFare. A story that merely links to a series is still treated as an ordinary story.
 
-Collection title, authors, language, tags, and description come from the outer EPUB metadata. Embedded stories may provide individual authors, URLs, summaries, dates, statuses, and counts. WebToEpub series EPUBs may contain only a saved series page; in that case, the plugin uses explicit collection totals and dates when available rather than inventing individual story details.
+Anthology title, authors, language, tags, and description come from the outer EPUB metadata. Embedded stories may provide individual authors, URLs, summaries, dates, statuses, and counts. WebToEpub series EPUBs may contain only a saved series page; in that case, the plugin uses explicit series totals and dates when available rather than inventing individual story details.
 
-The ordinary **Word Count** mapping uses the total for the collection. A calculated total is written only when every embedded story has a reliable count. Additional collection fields include work count, completed count, unknown statuses, total chapters, collection URL, and series dates.
+The ordinary **Word Count** mapping uses the total for the anthology. A calculated total is written only when every embedded story has a reliable count. Additional anthology fields include work count, completed count, unknown statuses, total chapters, anthology URL, and series dates. Internal field keys keep the `collection` prefix so saved mappings carry over.
 
-FanFicFare’s Saved Metadata import expects one story URL, so Saved Metadata is skipped for collections. Use standard metadata or custom-column updates instead. Ratings, warnings, and summaries remain associated with individual stories rather than being combined into collection-wide values.
+FanFicFare’s Saved Metadata import expects one story URL, so Saved Metadata is skipped for anthologies. Use standard metadata or custom-column updates instead. Ratings, warnings, and summaries remain associated with individual stories rather than being combined into anthology-wide values.
 
-Existing anthology identifiers are preserved. Collection previews show which values will be written or kept; books with no eligible changes can’t be selected for writing.
+Existing anthology identifiers are preserved. Anthology previews show which values will be written or kept; books with no eligible changes can’t be selected for writing.
 
 ### Anthology status report
 

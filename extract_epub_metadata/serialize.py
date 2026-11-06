@@ -118,7 +118,7 @@ def serialize_saved_metadata(fields):
     matching fanficfare/story.py's Story.dump_html_metadata() output.
     """
     if fields.get('collectionType'):
-        raise ValueError('FanFicFare Saved Metadata supports single stories, not collections.')
+        raise ValueError('FanFicFare Saved Metadata supports single stories, not anthologies.')
     # FFF's loader accepts only dates or naive ISO datetimes. Preserve the
     # original offset-bearing timestamp alongside a compatible UTC value;
     # simply dropping tzinfo would change the instant for non-UTC offsets.

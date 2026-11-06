@@ -14,6 +14,9 @@
 - The mapping field for AO3's M/M, F/F, Gen label is now called
   **AO3 Category (M/M, F/F, Gen...)**, so it isn't mistaken for the fandom.
   Your existing column mappings are kept.
+- Anthology fields and previews now say **anthology** instead of "collection",
+  matching FanFicFare. For example, Collection Total Chapters is now
+  **Anthology Total Chapters**. Your existing column mappings are kept.
 
 ## New
 

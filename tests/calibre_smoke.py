@@ -306,7 +306,7 @@ with plugin:
             plugin_prefs[STORE_NAME] = dict(prefs, mode1Enabled=True, mode2Enabled=False, mode3Enabled=False, preview=False, addMissingIdentifier=False)
             matrix_ids = [good.book_id]
             action.run()
-            assert 'Collections do not receive' in confirmations[-1]
+            assert 'Anthologies do not receive' in confirmations[-1]
             # Use the explicit unsupported source, independent of scenario ordering.
             api.set_field('identifiers', {lj.book_id: {}})
             matrix_ids = [lj.book_id]

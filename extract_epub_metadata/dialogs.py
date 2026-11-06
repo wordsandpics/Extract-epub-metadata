@@ -26,6 +26,11 @@ def _format_field_dict(fields, sources=None):
     return lines
 
 
+# Plain names for the preview; FanFicFare calls these anthologies.
+_ANTHOLOGY_TYPES = {'epubmerge anthology': 'FanFicFare anthology',
+                    'series collection': 'series EPUB'}
+
+
 class BookResult:
     """One book's outcome from the extraction/mapping/serialization pipeline.
     `blob` and `standard_fields` are only populated for modes that are
@@ -67,9 +72,9 @@ class BookResult:
         lines = list(self.notes)
         collection = self.fields.get('collectionType')
         if collection:
-            lines.extend(['Collection: %s' % collection,
-                          'Collection URL: %s' % self.fields.get('collectionUrl', 'not recovered'),
-                          'Saved Metadata skipped: FanFicFare imports single stories, not collections.'])
+            lines.extend(['Anthology type: %s' % _ANTHOLOGY_TYPES.get(collection, collection),
+                          'Anthology URL: %s' % self.fields.get('collectionUrl', 'not recovered'),
+                          'Saved Metadata skipped: FanFicFare imports single stories, not anthologies.'])
         if self.identifier_url:
             note = ' (already set, not changed)' if self.identifier_already_set else ' (will be added)'
             lines.append('Story URL identifier: %s%s' % (self.identifier_url, note))
@@ -98,7 +103,7 @@ class BookResult:
             lines.extend(_format_field_dict(self.fields, self.sources))
 
         if collection:
-            lines.extend(['', '=== Recovered Collection Facts ==='])
+            lines.extend(['', '=== Recovered Anthology Facts ==='])
             lines.extend(_format_field_dict(
                 {k: v for k, v in self.fields.items()
                  if k not in ('collectionRecords', 'collectionType')}, self.sources))

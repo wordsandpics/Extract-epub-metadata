@@ -214,7 +214,7 @@ class ExtractEpubMetadataAction(InterfaceAction):
             notes = []
             for result in results:
                 if getattr(result, 'fields', {}).get('collectionType'):
-                    notes.append('Collections do not receive FanFicFare Saved Metadata. '
+                    notes.append('Anthologies do not receive FanFicFare Saved Metadata. '
                                  'Use standard/custom-column updates or the anthology report.')
                 notes.extend(getattr(result, 'notes', []))
             if not written and notes:

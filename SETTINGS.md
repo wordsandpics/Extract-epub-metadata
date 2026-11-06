@@ -145,7 +145,7 @@ books, the plugin puts that into Fandom(s).
 
 | Field | What it holds | Holds |
 |---|---|---|
-| Word Count | The story's word count. For anthologies and collections, a reliable total across all stories, or a total stated on a saved series page. | A number |
+| Word Count | The story's word count. For anthologies, a reliable total across all stories, or a total stated on a saved series page. | A number |
 | Chapter Count | Number of chapters in the saved copy. | A number |
 | Total Chapters (if known) | The planned final chapter count, only when the file states one. Blank, not zero, for a work still in progress with no set total. | A number |
 | Chapters (Downloaded/Total) | Chapters saved vs. total chapters, e.g. "12/20". | Text |
@@ -170,18 +170,18 @@ how many the story will have, when known. Chapters (Downloaded/Total) shows both
 | File Format | The file the metadata came from: "epub", "txt" or "pdf". | Text |
 | File Extension | The matching file extension, e.g. ".epub". | Text |
 
-### Anthologies and series collections
+### Anthologies
 
-These fields only apply to anthology and collection EPUBs and saved series pages.
+These fields only apply to anthology EPUBs, including EPUBs of a whole series or a saved series page.
 
 | Field | What it holds | Holds |
 |---|---|---|
-| Collection URL | The anthology or series URL, not an individual story's. | Text |
-| Collection Tags (from EPUB) | Tags recorded for the collection as a whole. | A list |
+| Anthology URL | The anthology or series URL, not an individual story's. | Text |
+| Anthology Tags (from EPUB) | Tags recorded for the anthology as a whole. | A list |
 | Series Completion (from saved page) | Whether a saved series page marks the series complete. It doesn't describe each story. | Text |
-| Collection Story/Work Count | Stories found in the collection, or the work count on a saved series page. | A number |
-| Collection Completed Story Count | Stories known to be complete. Blank if no story's status is known. | A number |
-| Collection Unknown Status Count | Stories with no recognizable completion status. | A number |
-| Collection Total Chapters | Total chapters across all stories. Blank if any story's count is unknown. | A number |
+| Anthology Story/Work Count | Stories found in the anthology, or the work count on a saved series page. | A number |
+| Anthology Completed Story Count | Stories known to be complete. Blank if no story's status is known. | A number |
+| Anthology Unknown Status Count | Stories with no recognizable completion status. | A number |
+| Anthology Total Chapters | Total chapters across all stories. Blank if any story's count is unknown. | A number |
 | Series Begun (from saved page) | When the series was begun, from a saved series page. | A date |
 | Series Updated (from saved page) | When the series was last updated, from a saved series page. | A date |
